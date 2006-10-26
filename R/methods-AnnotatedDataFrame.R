@@ -1,0 +1,6 @@
+setMethod("alleleA", "AnnotatedDataFrame", function(object) pData(object)$alleleA)
+setMethod("alleleB", "AnnotatedDataFrame", function(object) pData(object)$alleleB)
+setMethod("chromosome", "AnnotatedDataFrame", function(object) pData(object)$Chromosome)
+setMethod("dbSnpId", "AnnotatedDataFrame", function(object) pData(object)$dbSNP.RS.ID)
+setMethod("position", "AnnotatedDataFrame", function(object) pData(object)$Physical.Position)
+setMethod("probeSetId", "AnnotatedDataFrame", function(object) pData(object)$Probe.Set.ID)

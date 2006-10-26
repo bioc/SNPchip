@@ -1,0 +1,27 @@
+import(Biobase,  geneplotter, oligo)
+exportPattern("^[^\\.]")
+exportClasses(AnnotatedSnpSet,
+              AnnotatedSnpCallSet,
+              AnnotatedSnpCopyNumberSet,
+              AnnotatedSnpSetList)
+exportMethods(addFeatureData,
+              alleleA,
+              alleleB,
+              chromosome,
+              chromosomeAnnotation, 
+              "chromosomeAnnotation<-",
+              coerce,              
+              copyNumber,
+              dbSnpId,
+              enzyme,
+              initialize,
+              plotChromosome,
+              plotCytoband,
+              plotSnp,
+              position,              
+              probeSetId,
+              show,              
+              smoothSnp,
+              snpSetList,
+              summary)
+              
