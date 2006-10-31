@@ -1,9 +1,9 @@
 \name{snpSetList-methods}
 \docType{methods}
 \alias{snpSetList}
-\title{Method for function snpSetList in Package SNPscan}
+\title{Method for function snpSetList }
 \description{
-Method for function \code{snpSetList} in Package SNPscan
+Method for function \code{snpSetList} 
 }
 \section{Methods}{
 \describe{

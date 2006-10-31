@@ -31,8 +31,9 @@ setMethod("plotChromosome", "AnnotatedSnpSet",
                    panel.xaxis=FALSE,
                    panel.yaxis=FALSE,
                    yTicks=5,
-                   xTicks=5, ...){
-            chrom <- unique(SNPscan::chromosome(object))
+                   xTicks=5,
+                   log="", ...){
+            chrom <- unique(SNPchip::chromosome(object))
             if(length(chrom) > 1) stop("object must contain only 1 chromosome")
             if(is.null(ylim)) ylim <- c(floor(min(copyNumber(object), na.rm=TRUE)), ceiling(max(copyNumber(object), na.rm=TRUE)))
             ##If more than 1 sample is present, it only plots the first
@@ -46,24 +47,29 @@ setMethod("plotChromosome", "AnnotatedSnpSet",
             y[y > ylim[2]] <- ylim[2]
             x <- position(object)
 
-            chrAnn <- SNPscan::chromosomeAnnotation(object)[chrom, ]
+            chrAnn <- SNPchip::chromosomeAnnotation(object)[chrom, ]
             chromosomeSize <- chrAnn$chromosomeSize
             if(is.null(xlim)){
               xlim <- c(0, chromosomeSize)
               xlim[2] <- xlim[2]+2e6
             }
-            par(las=1, ps=ps, mar=mar)
-            plot(x, y, pch=pch, cex.axis=cex.axis,
-                 xlab=xlab, ylab=ylab,
+            if(log == "y") ylimit <- NULL else ylimit <- ylim
+            par(las=1, ps=ps, mar=mar, "ylog")
+            plot(x, y,
+                 pch=pch,
+                 cex.axis=cex.axis,
+                 xlab=xlab,
+                 ylab=ylab,
                  main=main,
                  yaxs=yaxs,
                  xlim=xlim,
                  xaxs=xaxs,
-                 ylim=ylim,
+                 ylim=ylimit,
                  xaxt="n",
                  yaxt=yaxt,
                  type="n",
-                 bty=bty)
+                 bty=bty,
+                 log=log)
             if(panel.xaxis) axis(side=1, at=pretty(xlim, n=xTicks),
                                  labels=as.character(round(pretty(xlim, n=xTicks)/1e6,0)),
                                  cex.axis=cex.axis)

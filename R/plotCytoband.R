@@ -2,7 +2,7 @@
 setMethod("plotCytoband", "AnnotatedSnpSet",
           function(object, cytoBand, mar=c(0, 0, 0, 0), xlim=NULL,
                    cex.axis=0.8, ...){
-            chrom <- unique(SNPscan::chromosome(object))            
+            chrom <- unique(SNPchip::chromosome(object))            
             cytoBand_chr <- cytoBand[as.character(cytoBand$chrom) == chrom,]
             cytoBand_chr_p <- cytoBand_chr[grep("^p",as.character(cytoBand_chr$name)),]
             cytoBand_chr_q <- cytoBand_chr[grep("^q",as.character(cytoBand_chr$name)),]

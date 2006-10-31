@@ -2,9 +2,9 @@
 \docType{methods}
 \alias{show-methods}
 \alias{show,AnnotatedSnpSet-method}
-\title{show method for SNPscan objects}
+\title{show methods}
 \description{
-show method for SNPscan objects
+Show methods
 }
 \section{Methods}{
 \describe{

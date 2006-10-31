@@ -7,7 +7,7 @@ setMethod("addFeatureData", "eSet",
             }
             if(is.null(path)){
               print(paste("Loading annotation data from", path))
-              mapping <- .getAnnotation(annotation(object))
+              annotation <- .getAnnotation(annotation(object))
             }
             if(!is.null(path)){
               if(annotation(object) == "mapping10k"){

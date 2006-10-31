@@ -3,9 +3,9 @@
 \alias{smoothSnp-methods}
 \alias{smoothSnp,AnnotatedSnpSet-method}
 \alias{smoothSnp}
-\title{Methods for Function smoothSnp in Package SNPscan }
+\title{Methods for Function smoothSnp}
 \description{
-Methods for function \code{smoothSnp} in Package SNPscan
+Methods for function \code{smoothSnp}
 }
 \section{Methods}{
 \describe{

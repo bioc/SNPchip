@@ -1,1 +1,2 @@
 0.1.21 Updated to R-2.4.0 build.  Put snp Annotation in featureData slot.
+0.1.35 Updated vignette.  Added par(log) option to plotSnp and plotChromosome.

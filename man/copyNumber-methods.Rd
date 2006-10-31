@@ -3,7 +3,7 @@
 \alias{copyNumber-methods}
 \alias{copyNumber,SnpCopyNumberSet-method}
 \alias{copyNumber,SnpQSet-method}
-\title{Methods for Function copyNumber in Package SNPscan}
+\title{Methods for Function copyNumber}
 \description{
 Methods for function \code{copyNumber} 
 }

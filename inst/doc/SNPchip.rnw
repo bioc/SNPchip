@@ -1,0 +1,355 @@
+% NOTE -- ONLY EDIT THE .Rnw FILE!!!  The .tex file is
+% likely to be overwritten.
+% \VignetteIndexEntry{SNPchip Vignette}
+% \VignetteKeywords{copy number, genotype, SNP}
+%\VignettePackage{SNPchip}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[12pt]{article}
+
+\usepackage{amsmath,pstricks,fullpage}
+\usepackage[authoryear,round]{natbib}
+\usepackage{hyperref}
+\usepackage{setspace}
+\parindent 0in  % Left justify
+\newcommand{\scscst}{\scriptscriptstyle}
+\newcommand{\scst}{\scriptstyle}
+
+\newcommand{\Rpackage}[1]{\textit{#1}}
+\newcommand{\Rfunction}[1]{\texttt{#1}}
+\newcommand{\Robject}[1]{\texttt{#1}}
+
+
+\title{Tools for visualization of processed Affymetrix SNP chip data}
+\author{Robert Scharpf, Jonathan Pevsner, Jason Ting, and Ingo Ruczinski}
+
+\begin{document}
+
+\maketitle
+
+\section*{Introduction}
+
+\Rpackage{SNPchip} defines classes useful for organizing high
+throughput genomic data.  The classes defined here extend the
+\Robject{eSet} class in \Rpackage{Biobase}, utilizing the existing
+Bioconductor infrastructure for organizing high dimensional genomic
+data.  The classes and methods included in the \Rpackage{SNPchip} are
+useful for summarizing and visualing SNP data, as well as providing a
+foundation upon which statistical and visualization tools can be
+further developed.  
+
+\section{Simple Usage}
+
+We illustrate the structure of the class \Robject{AnnotatedSnpSet}
+with a small dataset provided with the package.
+
+<<exampleData>>=
+library(SNPchip)
+data(annSnpset)
+annSnpset
+@ 
+
+\Robject{annSnpset} is an instance of the \Robject{AnnotatedSnpSet}
+class.  Here, the assayData slot in \Robject{AnnotatedSnpSet} contains
+5850 SNPs with estimates of copy number and genotype calls, as well as
+a corresponding confidence score.  Typically, such an object would
+contain 100,000 - 500,000 estimates of genotype calls and copy number.
+We illustrate in Section \ref{classes} how to create an instance of
+\Robject{AnnotatedSnpSet} from probe-level summaries of SNP chip data.
+In addition to estimates of genotype call and copy number, the
+\Robject{annSnpset} contains both chromosome-level annotation, as well
+as SNP-level annotation.  The chromosome-level annotation includes the
+centromere start and stop sites and chromosome size (in number of base
+pairs), and could be extended to include location of cytobands, or any
+other feature of a chromosome.
+
+<<chromosomeAnnotation>>=
+data(chromosomeAnnotation)
+chromosomeAnnotation[1:5, ]
+@ 
+
+We provide SNP-level annotation that can be downloaded as static
+tables maintained at our website.  The method \Robject{addFeatureData}
+checks the annotation slot of the \Robject{AnnotatedSnpSet} object,
+and then downloads the appropriate static table and stores this data
+in the featureData slot.
+
+<<annotationSlot>>=
+annotation(annSnpset)
+@ 
+
+<<addFeatureData, eval=FALSE>>=
+addFeatureData(annSnpset)
+@ 
+
+As annotation packages for SNP chips become more fully developed and
+supported, the use of static tables for SNP annotation will be
+deprecated.
+
+A genome-wide view of copy number and genotype calls versus physical
+position can be made using \Rfunction{plotSnp}.  Here, we plot
+chromosomes 1-22 and X (the integer 23 is used to represent X) of
+samples 1 - 4 in the object \Robject{annSnpset}:
+<<plotSnp, fig=TRUE>>=
+plotSnp(annSnpset, 1:23, 1:4, summaryPanel=TRUE, width.right=20, cex.chr=0.6)
+@ 
+
+The copy number estimates have been centered to have mean zero -- a
+centered copy number of 0 corresponds to a copy number of two. The
+default plot layout generally works well, but can be adjusted through
+the arguments mar, oma, and width.right in \Robject{plotSnp}.  The
+latter argument specifies how much room to allow for the summary panel
+relative to the size of the smallest chromosome plotted.  For
+instance, if plotting chromosomes 1-22 and X, width.right set to 15
+allows a plotting region for the summary paenl that is 15 times larger
+than chromosome 21. A more focused view of chromosomes 1, 7, 16, 19,
+and X of sample 2 could be obtained by
+<<plotSnpChromosomes, fig=TRUE>>=
+plotSnp(annSnpset, c(1, 7, 16, 19, 23), 2, summaryPanel=TRUE,
+        cexAA=2, cexAB=2, width.right=5)
+@ 
+
+The size of the plotted estimates can be adjusted by the genotype call
+using the arguments cexAA, cexAB, and cexNC for homozygous AA or BB,
+heterozygous AB, and no call, respectively.
+
+The R functions \Rfunction{plotChromosome} and
+\Rfunction{plotCytoband} are useful for visualization of 1 chromosome
+in sample 5.  The following code chunk illustrates how easy it is to
+subset 1 chromosome and one sample, and then plot the resulting
+\Robject{AnnotatedSnpSet} object.  Because an additional plotting
+region is needed to plot the cytoband, we specify two rows in the
+\Rfunction{layout}.
+
+<<plotChromosomeExample, fig=TRUE>>=
+data(cytoband)
+chr1 <- annSnpset[chromosome(annSnpset) == "chr1", 5]
+chr1
+layout(matrix(1:2, nr=2, nc=1), heights=c(1, .05))
+par(oma=c(6, 4, 0, 3))
+plotChromosome(chr1, mar=c(3, 0, 1, 0), colCentromere="bisque", 
+               cexAA=3, cexAB=3, cexNC=3,
+               panel.xaxis=TRUE, 
+               xlab="Mb", cex.axis=0.7, cex.legend=0.7)
+par(las=3)
+mtext("copy number", 2, line=2, outer=TRUE, cex=0.7)
+par(las=1)
+plotCytoband(chr1, cytoband, cex.axis=0.5)
+@ 
+
+
+\section{High throughput SNP classes}
+\label{classes}
+
+All that is needed to create an instance of
+\Robject{AnnotatedSnpCallSet} or \Robject{AnnotatedSnpCopyNumberSet}is
+a matrix of genotype calls and copy number, respectively, and their
+corresponding confidence scores.  If estimates of both copy number and
+genotype calls are available, we can create an
+\Robject{AnnotatedSnpSet} that inherits methods from both
+\Robject{AnnotatedSnpCopyNumberSet} and \Robject{AnnotatedSnpCallSet}.
+In this way, \Rpackage{SNPchip} is completely independent of the
+pre-processing method used to produce probe-level summaries.  To
+illustrate, the following code chunk loads a list of matrices obtained
+from normal subjects in the Hapmap project and pre-processed by CRLMM
+(B. Carvalho {\it et.~al}, {\it Biostatistics}, in press).  Only every
+10th SNP from the Xba 50k chip is included in the matrices.
+
+<<loadData>>=
+data(hapmap)
+str(hapmap)
+@ 
+
+Each matrix in the list contains probeset summaries (rows) by column
+(samples).  Currently, we only provide annotation for the Affymetrix
+SNP chips and so the rownames of the matrices should be Affymetrix
+probeset id's.  For purposes of visualization, an identifier from any
+technology could be used so long as the SNP-level annotation stored in
+the featureData slot is a data.frame with columns
+\texttt{Physical.Position} and \texttt{chromosome}.
+
+<<affyids>>=
+rownames(hapmap$calls)[1:5]
+@ 
+
+<<SnpSetclass>>=
+snpset <- new("AnnotatedSnpSet", 
+              calls=hapmap$calls,
+              callsConfidence=hapmap$callsConfidence,
+              cnConfidence=hapmap$callsConfidence, 
+              copyNumber=hapmap$copyNumber,
+              annotation="mapping100k",
+              chromosomeAnnotation=chromosomeAnnotation)
+@ 
+
+If you have an internet connection, you can add the SNP-level annotation:
+<<addFeatureData, eval=FALSE>>=
+annSnpset <- addFeatureData(snpset)
+@ 
+
+This may take several minutes depending on your internet connection.
+To do this manually, the annotation files can be downloaded from
+\texttt{http://biostat.jhsph.edu/~iruczins/publications/sm/2006.scharpf.bioinfo/mapping/}.
+Then, specifying the path to the downloaded files in the
+\Rfunction{addFeatureData} function:
+
+<<retrieve100kAnnotation, eval=FALSE>>=
+annSnpset <- addFeatureData(snpset, path="./")
+@
+
+Below, we illustrate how one might convert output from Affymetrix CNAT
+software to an object of class \Robject{AnnotatedSnpSet}.  For
+instance, any one of the .txt files for the CEPH trios provided at the
+Affymetrix website can be converted as follows
+
+<<cnatData,eval=FALSE>>=
+fname <- "100k_trios.Hind.1.txt"
+cnat <- read.table(fname, as.is=TRUE, sep="\t", header=TRUE, row.names=1, skip=0)
+cn <- as.matrix(cnat[, grep("SPA_CN", colnames(x))])
+calls <- cnat[,grep("_Call", colnames(x))]
+calls[calls == "AA"] <- 1
+calls[calls == "AB"] <- 2
+calls[calls == "BB"] <- 3
+calls[calls == "NoCall"] <- 4
+calls <- matrix(as.integer(as.matrix(calls)), nc = dim(calls)[2], byrow=FALSE)
+cnConfidence <- as.matrix(cnat[, grep("SPA_pVal", colnames(cnat))])
+callsConfidence <- as.matrix(cnat[, grep("LOH", colnames(cnat))])
+rownames(calls) <- rownames(cn) <- rownames(cnConfidence) <- rownames(callsConfidence) <- x$Probe.Set
+colnames(cn) <- colnames(calls) <- colnames(callsConfidence) <- colnames(cnConfidence) <- substr(colnames(cn), 1, 7)
+trios <- new("AnnotatedSnpSet", 
+             calls=calls, 
+             copyNumber=copyNumber,
+             callsConfidence=callsConfidence,
+             cnConfidence=cnConfidence,
+             annotation="mapping100k",
+             chromosomeAnnotation=chromosomeAnnotation)
+@ 
+
+The SNP-level annotation for the trios data can be retrieved as
+described previously.
+
+\section{Descriptive and statistical summaries}
+
+Descriptive statistics for copy number and genotype calls are provided
+with the \Rfunction{summary} method. For each chromosome in the
+\Robject{AnnotatedSnpSet}, \Rfunction{summary} calculates the average
+and standard deviation of the copy number estimates, as well as the \%
+homozygous and heterozygous calls.  In addition, summary calculates
+the average copy number, standard deviation, \% homozygous and
+heterozygous across all autosomes in the \Robject{AnnotatedSnpSet}.
+The dimensions of the four matrices are S x C + 1, where S is the
+number of samples and C is the number of chromosomes in the
+\Robject{AnnotatedSnpSet}.
+<<summary>>=
+x <- summary(annSnpset)
+str(x)
+##Would be useful to have a plot method for the summary object
+@ 
+
+Plot the overall means:
+<<summaryPlot, fig=TRUE>>=
+plot(x[[2]][1,], xlab="chromosome", ylab="overall mean")
+@ 
+
+\subsection*{Smoothing example}
+
+The basic unit for all of the above visualization tools and summary
+methods is an \Robject{AnnotatedSnpSet} of a single chromosome.  For
+instance, \Rfunction{plotSnp} converts the \Robject{AnnotatedSnpSet}
+to a list of \Robject{AnnotatedSnpSet}, where each element in the list
+is an \Robject{AnnotatedSnpSet} of a single chromosome.  In the code
+below, we are interested in a quick method for smoothing copy number
+estimates for each chromosome and apply a loess smoother to each
+element in an object of class \Robject{AnnotatedSnpSetList}.  The
+following code chunk first assigns heterozygous calls to the integer 1
+and homozygous calls to the integer zero.  In this way, regions of
+deletions will have homozygous calls of zero. We simulated a deletion
+of 50 consecutive SNPs and then converted the
+\Robject{AnnotatedSnpSet} to an object of class
+\Robject{AnnotatedSnpSetList}.
+
+<<annotatedSnpSetList>>=
+chrom <- paste("chr", 1:5, sep="")
+sim <- annSnpset[chromosome(annSnpset) %in% chrom, 1:3]
+sim
+##simulate deletion
+copyNumber(sim)[101:150, 1] <- copyNumber(sim)[101:150, 1] - 1
+calls(sim)[101:150, 1] <- 0
+@ 
+
+<<smoothing, echo=FALSE, eval=FALSE>>=
+##convert homozygous to 0 and heterozygous to 1
+calls(sim)[calls(sim) == 1 | calls(sim) == 3] <- 0
+calls(sim)[calls(sim) == 2] <- 1
+sim.list <- as(sim, "AnnotatedSnpSetList")
+snpSetList(sim.list)[1]
+smoothChromosome <- function(obj, span){ 
+  loessX <-  function(X, location, span){
+    fit <- loess(X ~ location, span = span)$fitted 
+    return(fit) 
+  }
+  cn.smooth <- apply(copyNumber(obj), 2, loessX, position(obj),
+                     span = span)
+  call.smooth <- apply(calls(obj), 2, loessX,
+                       location = position(obj), span = span)
+
+  copyNumber(obj) <- cn.smooth
+  calls(obj) <- call.smooth
+  obj
+}
+obj.list <- snpSetList(sim.list)
+obj.list[1]
+sim.smooth <- sim.list
+sim.smooth@snpSetList <- lapply(obj.list, smoothChromosome, span = 1/10)
+##convert back to AnnotatedSnpSet
+smooth.obj <- as(sim.smooth, "AnnotatedSnpSet")
+smooth.obj
+@ 
+
+The \Rfunction{smoothSnp} converts an object of class
+\Rfunction{AnnotatedSnpSet} to an \Robject{AnnotatedSnpSetList} and
+fits a loess smoother to each element in the list:
+<<smoothSnp>>=
+##Insert a deletion in chromosome 1
+smooth.obj <- smoothSnp(chromosomes=1:5, object=sim, samples=1:3)
+@ 
+
+A plot of the smoothed calls versus copynumber can be used to
+visualize the deletion and deciding on a threshold for calling
+deletions.
+<<plotSmooth,fig=TRUE>>=
+par(las=1, mar=c(4, 4, 0.5, 0.5), oma=rep(0, 4))
+plot(calls(smooth.obj)[chromosome(smooth.obj)=="chr1", 1], copyNumber(smooth.obj)[chromosome(smooth.obj)=="chr1", 1], 
+     ylim=c(-1,1), pch=".", cex=3,
+     xlab="", ylab="smooth copy number", xaxt="n", xlim=c(-0.05, 30/70+.2))
+axis(side=1, at=c(0, 30/70), labels=c("all AA or BB", "30 AB : 70 AA or BB"))
+@ 
+
+\section{Integration with other Bioconductor packages}
+
+To retreive additional annotation on the known SNP's in the region of
+this simulated deletion, we could use the \Rpackage{RSNPper}.  The
+installation instructions for \Rpackage{RSNPper} is available at
+Bioconductor. 
+
+<<nsnpsInRegion, eval=FALSE>>=
+library(RSNPper)
+x <- as.character(c(position(smooth.obj)[101], position(smooth.obj)[110]))
+itemsInRange(item="countsnps", chr="chr1", start=x[1], end=x[2])
+@ 
+
+To find all the genes in the region of the deletion, and then find
+additional annotation on the SNPs that these genes carry:
+<<genesInRegion, eval=FALSE>>=
+gir <- itemsInRange(item="genes", chr="chr1", start=x[1], end=x[2])
+##get RSNPper identifiers for the genes
+f <- function(x) {allGeneMeta(geneInfo(x["NAME"]))["GENEID"]}
+id <- lapply(gir[1:5], f)
+str(id)
+##See all the SNP's associated with the first gene
+snpinfo <- geneSNPs("817")
+names(snpinfo[[1]])
+snpinfo[[1]]["ROLE"]
+@ 
+
+\end{document}

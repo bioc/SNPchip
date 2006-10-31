@@ -14,6 +14,7 @@ setMethod("plotSnp", "AnnotatedSnpSet",
                    cexNC=1,
                    cex.axis=0.8,
                    cex.legend=1,
+                   cex.chr=0.8,
                    oma=c(5, 3, 4, 0.5),
                    mar=c(0, 0, 0, 0.2),
                    width.right=NULL,
@@ -43,7 +44,7 @@ setMethod("plotSnp", "AnnotatedSnpSet",
             samplenames <- sampleNames(object)
             chrAnn <- chromosomeAnnotation(object)[chromosomes,]
             object <- as(object, "AnnotatedSnpSetList")            
-            object <- SNPscan::snpSetList(object)
+            object <- SNPchip::snpSetList(object)
             names(object) <- chromosomes
             k <- 1
             S <- dim(object[[1]])[2]
@@ -53,7 +54,7 @@ setMethod("plotSnp", "AnnotatedSnpSet",
             widths <- widths/min(widths)
             if(summaryPanel){
               if(is.null(width.right)){
-                width.right <- length(chromosomes)/3.5
+                width.right <- length(chromosomes)/1.5
               }
               N <- N+1
               widths <- c(widths, width.right)
@@ -88,7 +89,12 @@ setMethod("plotSnp", "AnnotatedSnpSet",
                                yTicks=yTicks,
                                mar=mar)
                 if(i == 1){
-                  if(side.last == 1) mtext(chrom, 3, line=2.5, cex=(cex.axis)*1.1)
+                  if(chrom == chromosomes[2]){
+                    label <- chrom
+                  } else {
+                    label <- strsplit(chrom, "chr")[[1]][2]
+                  }
+                  if(side.last == 1) mtext(label, 3, line=2.5, cex=cex.chr)
                 }
                 if(i == S) {
                   quants <- quantile(xlim, probs)
@@ -96,14 +102,21 @@ setMethod("plotSnp", "AnnotatedSnpSet",
                   axis(side, at=quants, outer=TRUE,
                        labels=as.character(round(quants/1e6, 0)),
                        cex.axis=cex.axis)
-                  if(side == 1) mtext(chrom, 1, line=3.5, cex=(cex.axis)*1.05)
+                  if(side == 1){
+                    if(chrom == chromosomes[1]){
+                      label <- chrom
+                    } else{
+                      strsplit(chrom, "chr")[[1]][2]
+                    }
+                    mtext(label, 1, line=3.5, cex=cex.chr)
+                  }
                   side.last <- side
                   if(!alternate.xaxis) side.last <- 3
                 }
               }
               k <- k+1
             }
-            mtext("Mb", 1, line=2.2, outer=TRUE, cex=(cex.axis)*1.15)
+            mtext("Mb", 1, line=2.2, outer=TRUE, cex=(cex.chr)*1.15)
 
             ###########################################################################
             ##Plot summary statistics

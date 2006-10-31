@@ -25,32 +25,50 @@ setMethod("probeSetId", "AnnotatedSnpSet", function(object) probeSetId(featureDa
 
 setMethod("initialize", "AnnotatedSnpSet",
           function(.Object,
-                   phenoData=new("AnnotatedDataFrame"),
-                   assayData=new("AnnotatedDataFrame"),
+                   assayData = assayDataNew(
+                     calls=calls,
+                     callsConfidence = callsConfidence,
+                     copyNumber=copyNumber,
+                     cnConfidence=cnConfidence, ...),
+                   phenoData=annotatedDataFrameFrom(assayData, byrow=FALSE),
+                   featureData=annotatedDataFrameFrom(assayData, byrow=TRUE),
                    experimentData=new("MIAME"),
-                   featureData=new("AnnotatedDataFrame"),
                    annotation=character(),
-                   chromosomeAnnotation=data.frame())
-          {
-            .Object@assayData=assayData
-            .Object@phenoData=phenoData
-            .Object@annotation=annotation
-            .Object@featureData=featureData
+                   chromosomeAnnotation=data.frame(),
+                   calls=new("matrix"),
+                   callsConfidence=matrix(numeric(), nrow=nrow(calls),
+                     ncol=ncol(calls),
+                     dimnames=dimnames(calls)),
+                   copyNumber=matrix(numeric(), nrow=nrow(calls),
+                     ncol=ncol(calls),
+                     dimnames=dimnames(calls)),
+                   cnConfidence=matrix(numeric(), nrow=nrow(calls),
+                     ncol=ncol(calls),
+                     dimnames=dimnames(calls)),
+                   ...){
+            data(chromosomeAnnotation)
+            .Object@assayData <- assayData
+            .Object@phenoData <- phenoData
+            .Object@annotation <- annotation
+            .Object@featureData <- featureData
             .Object@chromosomeAnnotation <- chromosomeAnnotation
+            .Object@experimentData <- experimentData
             .Object
           })
 
 
 setMethod("show", "AnnotatedSnpSet", function(object){
-            tmp <- as(object, "eSet")
-            show(tmp)
-            
-            cat("\nchromosomeAnnotation\n")
-            N <- as.character(unique(chromosome(object)))
-            if(length(N) > 2) N <- N[1:2]
-            print(chromosomeAnnotation(object)[N,])
-            cat("...\n")
-          })
+  tmp <- as(object, "eSet")
+  show(tmp)
+
+  cat("\nchromosomeAnnotation\n")
+  N <- dim(chromosomeAnnotation(object))[1]
+##  N <- as.character(unique(chromosome(object)))
+##  if(length(N) > 2) N <- N[1:2]
+  if(N > 2)  print(chromosomeAnnotation(object)[1:2, ])
+  cat("...\n")
+  print(chromosomeAnnotation(object)[N, ])
+})
 
 setMethod("summary", "AnnotatedSnpSet", function(object, digits=3, ...){
   
