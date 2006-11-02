@@ -7,6 +7,7 @@ setMethod("plotSnp", "AnnotatedSnpSet",
                    colAB="red",
                    colNC="green3",
                    colCentromere="bisque",
+                   col.axis="brown",
                    pch=".",
                    cex=1,
                    cexAA=1,
@@ -32,8 +33,18 @@ setMethod("plotSnp", "AnnotatedSnpSet",
                    factor=0.1,
                    yTicks=5,
                    xTicks=2,
-                   probs=c(0, 1),
+                   bty="n",
+                   bw=FALSE,
                    ...){
+
+            ##If black and white, change the default color scheme
+            if(bw){
+              colAA <- gray(0.6)
+              colAB <- "black"
+              colNC <- gray(0.8)
+              cex.axis <- "black"
+              colCentromere <- gray(0.7)
+            }
             chromosomes <- paste("chr", chromosomes, sep="")
             chromosomes[chromosomes == "chr23"] <- "chrX"
             chromosomes[chromosomes == "chr24"] <- "chrY"
@@ -83,7 +94,7 @@ setMethod("plotSnp", "AnnotatedSnpSet",
                                legend=FALSE,
                                centromereBorder=NA,
                                xlab="", ylab="",
-                               bty="n",
+                               bty=bty,
                                panel.xaxis=FALSE,
                                panel.yaxis=yaxis,
                                yTicks=yTicks,
@@ -97,11 +108,15 @@ setMethod("plotSnp", "AnnotatedSnpSet",
                   if(side.last == 1) mtext(label, 3, line=2.5, cex=cex.chr)
                 }
                 if(i == S) {
+                  if(length(chromosomes) <= 5){
+                    probs <- seq(0, 1, by=1/(xTicks+2))
+                    probs <- probs[-c(1, length(probs))]
+                  } else {probs <- c(0, 1)}
                   quants <- quantile(xlim, probs)
                   if(side.last == 1) side <- 3 else side <- 1
                   axis(side, at=quants, outer=TRUE,
                        labels=as.character(round(quants/1e6, 0)),
-                       cex.axis=cex.axis)
+                       cex.axis=cex.axis, col.axis=col.axis)
                   if(side == 1){
                     if(chrom == chromosomes[1]){
                       label <- chrom
@@ -116,7 +131,7 @@ setMethod("plotSnp", "AnnotatedSnpSet",
               }
               k <- k+1
             }
-            mtext("Mb", 1, line=2.2, outer=TRUE, cex=(cex.chr)*1.15)
+            mtext("Mb ", 1, at=0, line=1, outer=TRUE, cex=(cex.chr)*1.05, col=col.axis, adj=1)
 
             ###########################################################################
             ##Plot summary statistics
