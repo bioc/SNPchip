@@ -17,8 +17,7 @@ object.  Points are color-coded by the genotype call.
 \examples{
 data(annSnpset)
 ##for formatting the plot layout, see the vignette
-plotSnp(chromosomes = 1:10, object = annSnpset, samples = 1:2, height.bottom =
-.5)
+plotSnp(chromosomes = 1:10, object = annSnpset, samples = 1:2)
 }
 \keyword{methods}
 

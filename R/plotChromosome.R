@@ -1,5 +1,5 @@
 setMethod("plotChromosome", "AnnotatedSnpSet",
-          function(object, ylim=NULL,
+          function(object, 
                    col="black",
                    colAA="blue",
                    colAB="red",
@@ -12,27 +12,39 @@ setMethod("plotChromosome", "AnnotatedSnpSet",
                    cexAB=1,
                    cexNC=1,
                    bty="o",
+                   legend.bty="n",
                    xlim=NULL,
+                   ylim=NULL,                   
                    cex.axis=0.8,
                    cex.legend=1,
+                   cex.main=1,
                    xlab="Mb",
                    ylab="copy number",
                    ps=16,
                    digits=3,
                    lwdCn=2,
-                   legend=TRUE,
+                   legendStats=TRUE,
+                   legendPch=TRUE,
                    legend.loc="topleft",
                    xaxt="s",
                    yaxt="s",
+                   xaxs="i",                   
                    yaxs="r",
-                   xaxs="i",
                    main="",
                    mar=c(4, 4, 1, 0.2),
                    panel.xaxis=FALSE,
                    panel.yaxis=FALSE,
                    yTicks=5,
                    xTicks=5,
-                   log="", ...){
+                   log="",
+                   bw=FALSE, ...){
+            if(bw){
+              colAA <- gray(0.6)
+              colAB <- "black"
+              colNC <- gray(0.8)
+              col.axis <- "black"
+              colCentromere <- gray(0.7)
+            }
             chrom <- unique(SNPchip::chromosome(object))
             if(length(chrom) > 1) stop("object must contain only 1 chromosome")
             if(is.null(ylim)) ylim <- c(floor(min(copyNumber(object), na.rm=TRUE)), ceiling(max(copyNumber(object), na.rm=TRUE)))
@@ -58,14 +70,15 @@ setMethod("plotChromosome", "AnnotatedSnpSet",
             plot(x, y,
                  pch=pch,
                  cex.axis=cex.axis,
+                 cex.main=cex.main,
                  xlab=xlab,
                  ylab=ylab,
                  main=main,
+                 xaxs=xaxs,                 
                  yaxs=yaxs,
-                 xlim=xlim,
-                 xaxs=xaxs,
+                 xlim=xlim,                 
                  ylim=ylimit,
-                 xaxt=xaxt,
+                 xaxt="n",
                  yaxt=yaxt,
                  type="n",
                  bty=bty,
@@ -106,14 +119,16 @@ setMethod("plotChromosome", "AnnotatedSnpSet",
             stats <- c(cn, cn.sd, ht, ho)
             stats <- round(stats, digits)
             names(stats) <- c("cn", "cn.sd", "ht", "ho")
-            if(legend){
+            if(legendStats){
               par(bg="antiquewhite1")
               legend(legend.loc, legend = c(substr(x["samplenames"], 1, min(nchar(x["samplenames"]),10)),
                                   paste(stats["ho"], " %AA/BB", sep = ""),
                                   paste(stats["ht"], " %AB", sep = ""),
                                   paste(stats["cn"], " avg CN"),
-                                  paste(stats["cn.sd"], " sd")), bty = "o", cex = cex.legend,
-                     text.col = c("black", colAA, colAB, "black", "black"))  
+                                  paste(stats["cn.sd"], " sd")), bty = legend.bty, cex = cex.legend,
+                     text.col = c("black", colAA, colAB, "black", "black"))
+            }
+            if(legendPch){
               legend("topright",
                      pch=20,
                      col=c(colAA, colAB),

@@ -24,7 +24,8 @@ setMethod("plotSnp", "AnnotatedSnpSet",
                    plotIt=TRUE,
                    digits=3,
                    legend=TRUE,
-                   legend.location="topleft",
+                   legend.stats="left",
+                   legend.pch="topleft",
                    legend.bty="o",
                    legend.col="white",
                    alternate.xaxis=TRUE,
@@ -39,10 +40,10 @@ setMethod("plotSnp", "AnnotatedSnpSet",
 
             ##If black and white, change the default color scheme
             if(bw){
-              colAA <- gray(0.6)
-              colAB <- "black"
-              colNC <- gray(0.8)
-              cex.axis <- "black"
+              colAA <- gray(0.7)
+              colAB <- gray(0)
+              colNC <- gray(0.9)
+              col.axis <- gray(0)
               colCentromere <- gray(0.7)
             }
             chromosomes <- paste("chr", chromosomes, sep="")
@@ -85,15 +86,23 @@ setMethod("plotSnp", "AnnotatedSnpSet",
                 if(k == 1){ yaxis=TRUE; side.last <- 3} else yaxis=FALSE
                 chromosomeSize <- chrAnn[chrom, 3]                
                 xlim <- c(0, chromosomeSize)
-                plotChromosome(object[[chrom]][, i], colAA=colAA, colAB=colAB, colNC=colNC,
-                               cexAA=cexAA, cexAB=cexAB, cexNC=cexNC,
-                               ylim=ylim, xlim=xlim,
+                plotChromosome(object[[chrom]][, i],
+                               colAA=colAA,
+                               colAB=colAB,
+                               colNC=colNC,
+                               cexAA=cexAA,
+                               cexAB=cexAB,
+                               cexNC=cexNC,
+                               ylim=ylim,
+                               xlim=xlim,
                                yaxt="n",
                                xaxt="n", 
                                yaxs="r",
-                               legend=FALSE,
+                               legendStats=FALSE,
+                               legendPch=FALSE,
                                centromereBorder=NA,
-                               xlab="", ylab="",
+                               xlab="",
+                               ylab="",
                                bty=bty,
                                panel.xaxis=FALSE,
                                panel.yaxis=yaxis,
@@ -108,15 +117,33 @@ setMethod("plotSnp", "AnnotatedSnpSet",
                   if(side.last == 1) mtext(label, 3, line=2.5, cex=cex.chr)
                 }
                 if(i == S) {
-                  if(length(chromosomes) <= 5){
+                  if(length(chromosomes) <= 6){
                     probs <- seq(0, 1, by=1/(xTicks+2))
                     probs <- probs[-c(1, length(probs))]
-                  } else {probs <- c(0, 1)}
-                  quants <- quantile(xlim, probs)
+                    quants <- quantile(xlim, probs)                                                                                
+                    tcl <- NULL
+                    las <- 1
+                  } else {
+                    probs <- c(0, 0.5, 1)
+                    quants <- quantile(xlim, probs)                                                            
+                    labels <- c("", round(chromosomeSize/1e6, 0), "")
+                    tcl <- 0
+                    las <- 3
+                  }
+                  if(length(chromosomes) <= 6)
+                    labels <- as.character(round(quants/1e6, 0))
                   if(side.last == 1) side <- 3 else side <- 1
-                  axis(side, at=quants, outer=TRUE,
-                       labels=as.character(round(quants/1e6, 0)),
-                       cex.axis=cex.axis, col.axis=col.axis)
+                  axis(side,
+                       at=quants,
+                       outer=TRUE,
+                       labels=labels,
+                       tcl=tcl,
+                       cex.axis=cex.axis,
+                       col=col.axis,
+                       col.axis=col.axis,
+                       las=las, line=0,
+                       lwd=1,
+                       mgp=c(2, 0.5, 0))
                   if(side == 1){
                     if(chrom == chromosomes[1]){
                       label <- chrom
@@ -131,7 +158,11 @@ setMethod("plotSnp", "AnnotatedSnpSet",
               }
               k <- k+1
             }
-            mtext("Mb ", 1, at=0, line=1, outer=TRUE, cex=(cex.chr)*1.05, col=col.axis, adj=1)
+            mtext("Mb ", 1, at=0, line=0, outer=TRUE, cex=cex.axis,
+                  col=col.axis, adj=1, las=las)
+            if(alternate.xaxis & length(chromosomes) >= 2)
+              mtext("Mb ", 3, at=0, line=0, outer=TRUE, cex=cex.axis,
+                    col=col.axis, adj=0, las=las)            
 
             ###########################################################################
             ##Plot summary statistics
@@ -152,11 +183,13 @@ setMethod("plotSnp", "AnnotatedSnpSet",
               showSummary <- function(x){
                 par(mar=rep(0,4))
                 plot(0:1, 0:1, type="n", xlab="", ylab="", xaxt="n", yaxt="n", bty="n")
-                legend("topleft", legend=c(substr(x["samplenames"], 1, 10),
+                legend(legend.stats, legend=c(
                                     paste(x["ho"], " %AA/BB", sep=""),
                                     paste(x["ht"], " %AB", sep=""),
                                     paste(x["cn"], " avg CN"),
                                     paste(x["cn.sd"], " sd")), bty="n",
+                       title=substr(x["samplenames"], 1, 10),
+                       y.intersp=1.5,
                        cex=cex.legend,
                        text.col=c("black", colAA, colAB, "black", "black"))
               }
@@ -167,12 +200,13 @@ setMethod("plotSnp", "AnnotatedSnpSet",
             if(legend){
               op <- par(bg=legend.col)
               if(summaryPanel){
-                if(legend.location == "topleft") legend.location <- "bottomleft"
+#                if(legend.location == "topleft") legend.location <- "bottomleft"
                 legend.bty <- "n"
               }
-              legend(legend.location, pch=20, 
+              legend(legend.pch, pch=20, 
                      col=c(colAA, colAB),
                      legend=c("AA/BB", "AB"), cex=cex.legend,
+                     y.intersp=1.5,
                      bty=legend.bty, pt.cex=cex.legend*1.5)
             }
           })
