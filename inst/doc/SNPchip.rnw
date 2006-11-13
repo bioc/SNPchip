@@ -20,7 +20,7 @@
 \newcommand{\Robject}[1]{\texttt{#1}}
 
 
-\title{Tools for visualization of processed Affymetrix SNP chip data}
+\title{Tools for high throughput SNP chip data}
 \author{Robert Scharpf, Jonathan Pevsner, Jason Ting, and Ingo Ruczinski}
 
 \begin{document}
