@@ -137,6 +137,17 @@ par(las=1)
 plotCytoband(chr1, cytoband, cex.axis=0.5)
 @ 
 
+\section{Available annotation}
+
+Currently, we provide annotation via static tables to download from
+our website.  Bioconductor is developing annotation packages that will
+be current and more memory efficient.  Here we provide a list of the
+annotation that is currently available for each SNP.
+
+<<loadAnnotation>>=
+try(load(url("http://biostat.jhsph.edu/~iruczins/publications/sm/2006.scharpf.bioinfo/mapping/mapping10k.rda")))
+colnames(mapping10k$annotation)
+@ 
 
 \section{High throughput SNP classes}
 \label{classes}
