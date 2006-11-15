@@ -29,14 +29,12 @@
 
 \section*{Introduction}
 
-\Rpackage{SNPchip} defines classes useful for organizing high
-throughput genomic data.  The classes defined here extend the
+\Rpackage{SNPchip} defines classes and methods useful for organizing
+high throughput genomic data.  The classes defined here extend the
 \Robject{eSet} class in \Rpackage{Biobase}, utilizing the existing
 Bioconductor infrastructure for organizing high dimensional genomic
-data.  The classes and methods included in the \Rpackage{SNPchip} are
-useful for summarizing and visualing SNP data, as well as providing a
-foundation upon which statistical and visualization tools can be
-further developed.  
+data.  This provides a foundation upon which statistical and
+visualization tools can be further developed.
 
 \section{Simple Usage}
 
