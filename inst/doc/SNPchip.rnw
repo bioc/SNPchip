@@ -70,14 +70,16 @@ We provide SNP-level annotation that can be downloaded as static
 tables maintained at our website.  The method \Robject{addFeatureData}
 checks the annotation slot of the \Robject{AnnotatedSnpSet} object,
 and then downloads the appropriate static table and stores this data
-in the featureData slot.
+in the featureData slot.  Annotation is provided for 10k, 100k, and
+500k Affymetrix chips. See Section \ref{sec:annotation} for more
+information.
 
 <<annotationSlot>>=
 annotation(annSnpset)
 @ 
 
 <<addFeatureData, eval=FALSE>>=
-addFeatureData(annSnpset)
+obj <- addFeatureData(annSnpset)
 @ 
 
 As annotation packages for SNP chips become more fully developed and
@@ -137,15 +139,44 @@ plotCytoband(chr1, cytoband, cex.axis=0.5)
 
 \section{Available annotation}
 
-Currently, we provide annotation via static tables to download from
-our website.  Bioconductor is developing annotation packages that will
-be current and more memory efficient.  Here we provide a list of the
-annotation that is currently available for each SNP.
+Currently, we provide annotation via static tables that can be
+downloaded from our website.  Bioconductor annotation packages for
+high throughput SNP platforms are under development.  Column headers
+for the annotation that is currently available for each SNP is here.
 
-<<loadAnnotation>>=
+<<loadAnnotation, eval=FALSE>>=
 try(load(url("http://biostat.jhsph.edu/~iruczins/publications/sm/2006.scharpf.bioinfo/mapping/mapping10k.rda")))
 colnames(mapping10k$annotation)
 @ 
+
+To use the entire data.frame for annotation, one could do the following:
+<<addFeaturedata, eval=FALSE>>=
+save(mapping50kXba240, "mapping50kXba240.rda", compress=TRUE)
+save(mapping50kHind240, "mapping50kHind240.rda", compress=TRUE)
+obj <- addFeatureData(annSnpset, path="./")
+colnames(pData(featureData(obj)))
+@ 
+
+Alternatively,
+<<addFeatureData, eval=FALSE>>=
+obj <- addFeatureData(annSnpset)
+@ 
+
+will automatically download the annotation from the website and store
+it in the featureData slot.
+
+Accessors have not been written for all the available annotation
+(afterall, annotation packages will be available for this purpose in
+the near future), but here is how one could retrieve the flanking
+sequence for the 1st 10 SNPs in the R object \Robject{obj}
+
+<<flankingSeq, eval=FALSE>>=
+pData(featureData(obj))$Flank[1:10]
+@ 
+
+For more detailed annotation on specific SNPs, see the R package
+RSNPper available at Bioconductor.
+
 
 \section{High throughput SNP classes}
 \label{classes}

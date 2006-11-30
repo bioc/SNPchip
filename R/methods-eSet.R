@@ -1,9 +1,16 @@
 setMethod("addFeatureData", "eSet", 
-          function(object, path=NULL){ #, snpAnnotation){
-
-            if(sum(annotation(object) == "mapping10k" | annotation(object) == "mapping100k" |
+          function(object, path=NULL){
+            ##This code will be removed as soon as annotation packages are available
+            if(sum(annotation(object) == "mapping10k" |
+                   annotation(object) == "mapping50kHind240" |
+                   annotation(object) == "mapping50kXba240" |
+                   annotation(object) == "mapping50kHind240:mapping50kXba240"|
+                   annotation(object) == "mapping100k" |
+                   annotation(object) == "mapping250kNsp" |
+                   annotation(object) == "mapping250kSty" |
+                   annotation(object) == "mapping250kNsp:mapping250kSty" |
                    annotation(object) == "mapping500k") < 1){
-              stop("Annotation slot should be 'mapping10k', 'mapping100k', or 'mapping500k'")
+              stop("Annotation is only provided for the following Affymetrix platforms at this time:  mapping10k,  mapping50kHind240, mapping50kXba240, mapping50kHind240:mapping50kXba240, mapping100k (soon to be deprecated), mapping250kNsp, mapping250kSty, mapping250kNsp:mapping250kSty, mapping500k (soon to be deprecated)")
             }
             if(is.null(path)){
               print(paste("Loading annotation data from", path))
@@ -12,23 +19,34 @@ setMethod("addFeatureData", "eSet",
             if(!is.null(path)){
               if(annotation(object) == "mapping10k"){
                 load(paste(path, annotation(object), ".rda", sep=""))
-                annotation <- mapping$annotation
+                annotation <- mapping10k
               }
-              if(annotation(object) == "mapping100k"){
+              if(annotation(object) == "mapping50kHind240"){
+                load(paste(path, "mapping50kHind240.rda", sep=""))
+                annotation <-mapping50kHind240
+              }
+              if(annotation(object) == "mapping50kXba240"){
+                load(paste(path, "mapping50kXba240.rda", sep=""))
+                annotation <- mapping50kXba240
+              }              
+              if(annotation(object) == "mapping50kHind240:mapping50kXba240"){
                 print("loading Hind...")
                 load(paste(path, "mapping50kHind240.rda", sep=""))
-                mappingHind <- mapping$annotation
-                print("loading Xba...")
                 load(paste(path, "mapping50kXba240.rda", sep=""))
-                mappingXba <- mapping$annotation
-                annotation <- rbind(mappingHind, mappingXba)
+                annotation <- rbind(mapping50kHind240, mapping50kXba240)
               }
-              if(annotation(object) == "mapping500k"){
+              if(annotation(object) == "mapping250kNsp"){
                 load(paste(path, "mapping250kNsp.rda", sep=""))
-                mappingNsp <- mapping500kNsp$annotation
+                annotation <- mapping250kNsp
+              }
+              if(annotation(object) == "mapping250kSty"){
                 load(paste(path, "mapping250kSty.rda", sep=""))
-                mappingSty <- mapping500kSty$annotation
-                annotation <- rbind(mappingNsp, mappingSty)
+                annotation <- mapping250kSty
+              }              
+              if(annotation(object) == "mapping250kNsp:mapping250kSty"){
+                load(paste(path, "mapping250kNsp.rda", sep=""))
+                load(paste(path, "mapping250kSty.rda", sep=""))
+                annotation <- rbind(mapping250kNsp, mapping250kSty)
               }
             }
             annotation <- as.matrix(annotation)
