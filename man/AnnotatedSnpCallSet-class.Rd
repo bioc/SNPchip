@@ -1,6 +1,9 @@
 \name{AnnotatedSnpCallSet-class}
 \docType{class}
 \alias{AnnotatedSnpCallSet-class}
+\alias{plotChromosome,AnnotatedSnpCallSet-method}
+\alias{plotSnp,AnnotatedSnpCallSet-method}
+\alias{snpSetList,AnnotatedSnpCallSet-method}
 
 \title{Class "AnnotatedSnpCallSet"}
 \description{Container for genotype call data accompanied by SNP annotation}
@@ -26,11 +29,10 @@ Class \code{VersionedBiobase}, by class \code{SnpCallSet}.
 Class \code{Versioned}, by class \code{SnpCallSet}.
 }
 \section{Methods}{
-  \describe{Methods for class AnnotatedSnpCallSet
+  \describe{
   }
 }
-\references{ }
-\author{}
+\author{Robert Scharpf}
 \note{}
 
 \seealso{

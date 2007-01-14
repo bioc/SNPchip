@@ -1,7 +1,13 @@
 \name{AnnotatedSnpSet-class}
 \docType{class}
 \alias{AnnotatedSnpSet-class}
-
+\alias{alleleA,AnnotatedSnpSet-method}
+\alias{alleleB,AnnotatedSnpSet-method}
+\alias{chromosome,AnnotatedSnpSet-method}
+\alias{enzyme,AnnotatedSnpSet-method}
+\alias{plotCytoband,AnnotatedSnpSet-method}
+\alias{plotSnp,AnnotatedSnpSet-method}
+\alias{position,AnnotatedSnpSet-method}
 \title{Class "AnnotatedSnpSet" }
 \description{Container for genotype and copy number data from SNP chips,
 as well as chromosome-level features}
@@ -37,8 +43,27 @@ Class \code{Versioned}, by class AnnotatedSnpCopyNumberSet, distance 5.
 }
 \section{Methods}{
   \describe{
+    \item{alleleA}{\code{signature(object="AnnotatedSnpSet")}: return
+      the A allele for the specified SNPs in object}
+    
     \item{alleleB}{\code{signature(object="AnnotatedSnpSet")}: return
-      the B allele for one or more SNPs} 
+      the B allele for the specified SNPs in object}
+
+    \item{chromosome}{\code{signature(object="AnnotatedSnpSet")}:
+      accessor for the chromosome}
+
+    \item{plotCytoband}{\code{signature(object="AnnotatedSnpSet")}:
+    Plots the cytoband for a single chromosome.}
+  
+    \item{plotSnp}{\code{signature(object="AnnotatedSnpSet")}: Makes a
+      scatterplot of copy number (vertical axis) versus physical
+      position (horizontal axis) for each chromosome and sample in the
+      AnnotatedSnpSet object.  Points are color-coded by the genotype
+      call.}
+
+    \item{position}{\code{signature(object="AnnotatedSnpSet")}: Returns
+      physical position of SNP along the chromosome in numbers of
+      basepairs from the 5' end (an integer)}
   }
 }
 \references{ }
@@ -47,5 +72,9 @@ Class \code{Versioned}, by class AnnotatedSnpCopyNumberSet, distance 5.
 \seealso{
 }
 \examples{
+data(annSnpset)
+annSnpset
+##for formatting the plot layout, see the vignette
+plotSnp(annSnpset, 1:10, 1:2)
 }
 \keyword{classes}

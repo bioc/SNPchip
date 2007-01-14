@@ -1,12 +1,10 @@
 \name{alleleA-methods}
 \docType{methods}
-\alias{alleleA}
 \alias{alleleA-methods}
-\alias{alleleA,AnnotatedDataFrame-method}
 \alias{alleleA,SnpCallSet-method}
 \alias{alleleA,SnpCopyNumberSet-method}
+\alias{alleleA,AnnotatedDataFrame-method}
 \alias{alleleA,oligoSnpSet-method}
-\alias{alleleA,AnnotatedSnpSet-method}
 \title{ Accessor for allele A of a SNP}
 \description{
  Accessors \code{alleleA}  retrieve allele A of a SNP

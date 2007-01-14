@@ -29,7 +29,7 @@ setMethod("addFeatureData", "eSet",
                 load(paste(path, "mapping50kXba240.rda", sep=""))
                 annotation <- mapping50kXba240
               }              
-              if(annotation(object) == "mapping50kHind240:mapping50kXba240"){
+              if(annotation(object) == "mapping100k"){
                 print("loading Hind...")
                 load(paste(path, "mapping50kHind240.rda", sep=""))
                 load(paste(path, "mapping50kXba240.rda", sep=""))

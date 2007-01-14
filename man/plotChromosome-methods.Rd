@@ -1,6 +1,5 @@
 \name{plotChromosome-methods}
 \docType{methods}
-\alias{plotChromosome}
 \alias{plotChromosome-methods}
 \alias{plotChromosome,AnnotatedSnpSet-method}
 \title{Plots copy number and genotype calls versus physical position for

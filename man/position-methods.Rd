@@ -5,7 +5,6 @@
 \alias{position,AnnotatedDataFrame-method}
 \alias{position,SnpCopyNumberSet-method}
 \alias{position,oligoSnpSet-method}
-\alias{position,AnnotatedSnpSet-method}
 \title{Methods for Function position}
 \description{
  Methods for function \code{position} 
@@ -27,5 +26,6 @@
 
     \item{object = "AnnotatedSnpSet"}{Returns physical position of SNP along the
       chromosome in numbers of basepairs from the 5' end (an integer)}
-}}
+  }
+}
 \keyword{methods}

@@ -1,6 +1,10 @@
 \name{AnnotatedSnpCopyNumberSet-class}
 \docType{class}
 \alias{AnnotatedSnpCopyNumberSet-class}
+\alias{plotCytoband,AnnotatedSnpCopyNumberSet-method}
+\alias{plotChromosome,AnnotatedSnpCopyNumberSet-method}
+\alias{plotSnp,AnnotatedSnpCopyNumberSet-method}
+\alias{snpSetList,AnnotatedSnpCopyNumberSet-class}
 
 \title{Class "AnnotatedSnpCopyNumberSet"}
 \description{Container for copy number data}

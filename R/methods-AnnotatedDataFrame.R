@@ -4,3 +4,4 @@ setMethod("chromosome", "AnnotatedDataFrame", function(object) pData(object)$Chr
 setMethod("dbSnpId", "AnnotatedDataFrame", function(object) pData(object)$dbSNP.RS.ID)
 setMethod("position", "AnnotatedDataFrame", function(object) pData(object)$Physical.Position)
 setMethod("probeSetId", "AnnotatedDataFrame", function(object) pData(object)$Probe.Set.ID)
+setMethod("enzyme", "AnnotatedDataFrame", function(object) pData(object)$enzyme)

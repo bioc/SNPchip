@@ -5,7 +5,6 @@
 \alias{chromosome,SnpCallSet-method}
 \alias{chromosome,SnpCopyNumberSet-method}
 \alias{chromosome,oligoSnpSet-method}
-\alias{chromosome,AnnotatedSnpSet-method}
 \title{Accessor for SNP annotation}
 \description{
 accessor for chromosome SNP annotation

@@ -1,16 +1,13 @@
 \name{enzyme-methods}
 \docType{methods}
-\alias{enzyme}
 \alias{enzyme-methods}
 \alias{enzyme,AnnotatedDataFrame-method}
 \alias{enzyme,SnpCopyNumberSet-method}
 \alias{enzyme,SnpCallSet-method}
 \alias{enzyme,oligoSnpSet-method}
-\alias{enzyme,AnnotatedSnpSet-method}
 \title{Enzyme for DNA digestion}
 \description{
-Accessor to retrieve which enzyme was used to produce the probe
-fragments that comprise the probe set of a SNP
+  An indicator for which chip the SNP originated from.
 }
 \section{Methods}{
   \describe{
