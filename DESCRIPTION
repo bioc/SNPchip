@@ -1,10 +1,10 @@
 Package: SNPchip
-Version: 0.1.45
+Version: 0.1.46
 Date: 2006-10-05
 Title: Classes and Methods for high throughput SNP chip data 
 Author: Robert Scharpf <rscharpf@jhsph.edu>, Jason Ting, Jonathon Pevsner, and Ingo Ruczinski <ingo@jhsph.edu>
 Maintainer: Robert Scharpf <rscharpf@jhsph.edu> 
-Depends: R (>= 2.4.0), Biobase (>= 1.11.0), tools, methods, geneplotter, oligo, stats, graphics
+Depends: R (>= 2.5.0), Biobase (>= 1.11.0), tools, methods, geneplotter, oligo, stats, graphics
 Suggests: 
 Description:  A collection of tools for high throughput SNP chip data.
 License: GPL version 2 or newer

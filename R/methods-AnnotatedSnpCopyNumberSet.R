@@ -44,9 +44,9 @@ setMethod("plotSnp", "AnnotatedSnpCopyNumberSet",
                    cex.legend=1, cex.chr=0.8, oma=c(5, 3, 4, 0.5), mar=c(0, 0, 0, 0.2),
                    width.right=NULL, summaryPanel=FALSE, showLayout=TRUE, plotIt=TRUE,
                    digits=3, legend=TRUE, legend.stats="left", legend.pch="topleft",
-                   legend.bty="o", legend.col="white", alternate.xaxis=TRUE,
+                   legend.bty="o", legend.col="white", alternate.xaxis=FALSE,
                    xaxis=TRUE, jitter=TRUE, factor=0.1, yTicks=5, xTicks=2, bty="n",
-                   bw=FALSE, ...){
+                   bw=FALSE, log="", ...){
             ##If black and white, change the default color scheme
             if(bw){
               col.axis <- gray(0)
@@ -90,15 +90,19 @@ setMethod("plotSnp", "AnnotatedSnpCopyNumberSet",
             par(mar=mar, oma=oma)
             for(chrom in chromosomes){
               for(i in 1:S){
-                if(k == 1){ yaxis=TRUE; side.last <- 3} else yaxis=FALSE
+                if(k == 1){
+                  yaxis=TRUE
+                  side.last <- 3
+                } else yaxis=FALSE
                 chromosomeSize <- chrAnn[chrom, 3]                
                 xlim <- c(0, chromosomeSize)
                 plotChromosome(object[[chrom]][, i], ylim=ylim, xlim=xlim,
                                yaxt="n", xaxt="n", yaxs="r", legendStats=FALSE,
                                legendPch=FALSE, centromereBorder=NA, xlab="", ylab="",
                                bty=bty, panel.xaxis=FALSE, panel.yaxis=yaxis,
-                               yTicks=yTicks, mar=mar)
-                if(side.last == 1) mtext(label, 3, line=2.5, cex=cex.chr)
+                               yTicks=yTicks, mar=mar, cex=cex, log=log)
+                if(side.last == 1) mtext(chrom, 3, line=2.5, cex=cex.chr)
+                ##If it is the last sample to plot, plot the x-axis
                 if(i == S) {
                   if(length(chromosomes) <= 6){
                     probs <- seq(0, 1, by=1/(xTicks+2))
@@ -113,7 +117,7 @@ setMethod("plotSnp", "AnnotatedSnpCopyNumberSet",
                     tcl <- 0
                     las <- 3
                   }
-                  if(length(chromosomes) <= 6)
+                  if(length(chromosomes) <= 6) 
                     labels <- as.character(round(quants/1e6, 0))
                   if(side.last == 1) side <- 3 else side <- 1
                   axis(side, at=quants, outer=TRUE, labels=labels, tcl=tcl, cex.axis=cex.axis,
@@ -123,7 +127,8 @@ setMethod("plotSnp", "AnnotatedSnpCopyNumberSet",
                     if(chrom == chromosomes[1]){
                       label <- chrom
                     } else{
-                      strsplit(chrom, "chr")[[1]][2]
+#                      label <- strsplit(chrom, "chr")[[1]][2]
+                      label <- chrom
                     }
                     mtext(label, 1, line=3.5, cex=cex.chr)
                   }
@@ -245,11 +250,11 @@ setMethod("plotChromosome", "AnnotatedSnpCopyNumberSet",
               xlim <- c(0, chromosomeSize)
               xlim[2] <- xlim[2]+2e6
             }
-            if(log == "y") ylimit <- NULL else ylimit <- ylim
+##            if(log == "y") ylimit <- NULL else ylimit <- ylim
             par(las=1, ps=ps, mar=mar, "ylog")
             plot(x, y, pch=pch, cex.axis=cex.axis, cex.main=cex.main, xlab=xlab, ylab=ylab,
-                 main=main, xaxs=xaxs, yaxs=yaxs, xlim=xlim, ylim=ylimit, xaxt="n",
-                 yaxt=yaxt, bty=bty, log=log, col=col)
+                 main=main, xaxs=xaxs, yaxs=yaxs, xlim=xlim, ylim=ylim, xaxt="n",
+                 yaxt=yaxt, bty=bty, log=log, col=col, cex=cex)
             if(panel.xaxis) axis(side=1, at=pretty(xlim, n=xTicks),
                                  labels=as.character(round(pretty(xlim, n=xTicks)/1e6,0)),
                                  cex.axis=cex.axis)

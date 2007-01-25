@@ -18,7 +18,9 @@ Objects can be created by calls of the form \code{new("AnnotatedSnpCallSet", phe
     \item{\code{featureData}:}{Object of class
       \code{AnnotatedDataFrame} contains annotation for the SNP's, such as chromosome, physical position, and alleles. }    
     \item{\code{experimentData}:}{Object of class \code{MIAME}}
-    \item{\code{annotation}:}{Object of class \code{character}}
+    \item{\code{annotation}:}{For 100k chips, "mapping50kHind240",
+      "mapping50kXba240" , or "mapping100k".  For 500k chips, mmust be
+      "mapping250kNsp" or "mapping250kSty"}
     \item{\code{.__classVersion__}:}{Object of class \code{Versions}}
   }
 }

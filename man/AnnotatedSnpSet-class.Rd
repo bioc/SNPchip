@@ -25,7 +25,9 @@ Objects can be created by calls of the form \code{new("AnnotatedSnpSet", phenoDa
       \code{AnnotatedDataFrame}.  Contains annotation for the SNP's,
       such as chromosome, physical position, and alleles. }
     \item{\code{experimentData}:}{Object of class \code{MIAME}  }
-    \item{\code{annotation}:}{Object of class \code{character}  }
+    \item{\code{annotation}:}{For 100k chips, "mapping50kHind240",
+      "mapping50kXba240" , or "mapping100k".  For 500k chips, mmust be
+      "mapping250kNsp" or "mapping250kSty"}
     \item{\code{.__classVersion__}:}{Object of class \code{Versions}  }
   }
 }

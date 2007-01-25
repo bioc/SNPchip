@@ -1,4 +1,4 @@
-import(Biobase, geneplotter, oligo)
+import(Biobase, geneplotter, oligo) 
 exportPattern("^[^\\.]")
 exportClasses(AnnotatedSnpSet,
               AnnotatedSnpCallSet,
