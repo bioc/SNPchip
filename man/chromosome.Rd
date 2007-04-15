@@ -1,26 +1,24 @@
-\name{chromosome}
+\name{chromosome-methods}
+\docType{methods}
 \alias{chromosome}
-\title{accessor for chromosome SNP annotation}
+\alias{chromosome-methods}
+\alias{chromosome,oligoSnpSet-method}
+\alias{chromosome,SnpCallSet-method}
+\alias{chromosome,SnpCopyNumberSet-method}
+\alias{chromosome,AnnotatedDataFrame-method}
+
+\title{Accessor for chromosome SNP annotation}
 \description{
+  Extracts character string of chromosome number for each SNP in the
+  \code{AnnotatedDataFrame} object.}
 }
-\usage{
-chromosome(object)
-}
-\arguments{
-  \item{object}{a \code{SnpSet} object}
-}
-\details{
-}
-\value{
-  The chromosome for each SNP (a vector of strings)
-}
-\author{Robert Scharpf}
-\note{
-}
-\seealso{}
-\examples{
-data(annSnpset)
-##Get the chromosome information for the first 5 SNPs.
-chromosome(annSnpset)[1:5]
-}
+
+\section{Methods}{
+\describe{
+\item{chromosome}{\code{signature(object="AnnotatedDataFrame")}:
+  Character vector indicating the chromosome on which the SNPs in the
+  \code{AnnotatedDataFrame} object are located.}
+}}
 \keyword{methods}
+\keyword{manip}
+

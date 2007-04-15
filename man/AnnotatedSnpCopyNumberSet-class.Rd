@@ -1,10 +1,23 @@
 \name{AnnotatedSnpCopyNumberSet-class}
 \docType{class}
 \alias{AnnotatedSnpCopyNumberSet-class}
-\alias{plotCytoband,AnnotatedSnpCopyNumberSet-method}
-\alias{plotChromosome,AnnotatedSnpCopyNumberSet-method}
+\alias{alleleA,SnpCopyNumberSet-method}
+\alias{alleleA,AnnotatedSnpCopyNumberSet-method}
+\alias{alleleB,AnnotatedSnpCopyNumberSet-method}
+\alias{alleleB,SnpCopyNumberSet-method}
+\alias{coerce,AnnotatedSnpCopyNumberSet,AnnotatedSnpSet-method}
+\alias{chromosome,AnnotatedSnpCopyNumberSet-method}
+\alias{chromosomeAnnotation,AnnotatedSnpCopyNumberSet-method}
+\alias{chromosomeAnnotation<-,AnnotatedSnpCopyNumberSet,data.frame-method}
+\alias{dbSnpId,AnnotatedSnpCopyNumberSet-method}
+\alias{enzyme,AnnotatedSnpCopyNumberSet-method}
+\alias{fragmentLength,AnnotatedSnpCopyNumberSet-method}
+%\alias{plotCytoband,AnnotatedSnpCopyNumberSet-method}
+%\alias{plotChromosome,AnnotatedSnpCopyNumberSet-method}
 \alias{plotSnp,AnnotatedSnpCopyNumberSet-method}
-\alias{snpSetList,AnnotatedSnpCopyNumberSet-class}
+\alias{position,AnnotatedSnpCopyNumberSet-method}
+%\alias{probeSetId,AnnotatedSnpCopyNumberSet-method}
+
 
 \title{Class "AnnotatedSnpCopyNumberSet"}
 \description{Container for copy number data}

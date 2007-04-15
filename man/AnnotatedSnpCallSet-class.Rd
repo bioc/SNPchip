@@ -1,9 +1,11 @@
 \name{AnnotatedSnpCallSet-class}
 \docType{class}
 \alias{AnnotatedSnpCallSet-class}
-\alias{plotChromosome,AnnotatedSnpCallSet-method}
-\alias{plotSnp,AnnotatedSnpCallSet-method}
-\alias{snpSetList,AnnotatedSnpCallSet-method}
+\alias{alleleA,SnpCallSet-class}
+\alias{alleleB,SnpCallSet-class}
+\alias{chromosomeAnnotation,AnnotatedSnpCallSet-method}
+\alias{chromosomeAnnotation<-,AnnotatedSnpCallSet,data.frame-method}
+
 
 \title{Class "AnnotatedSnpCallSet"}
 \description{Container for genotype call data accompanied by SNP annotation}

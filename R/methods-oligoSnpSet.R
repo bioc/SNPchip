@@ -13,7 +13,7 @@ setMethod("chromosome", "oligoSnpSet", function(object) chromosome(featureData(o
 setMethod("dbSnpId", "oligoSnpSet", function(object) dbSnpId(featureData(object)))
 setMethod("enzyme", "oligoSnpSet", function(object) enzyme(featureData(object)))
 setMethod("position", "oligoSnpSet", function(object) position(featureData(object)))
-setMethod("probeSetId", "oligoSnpSet", function(object) probeSetId(featureData(object)))
+##setMethod("probeSetId", "oligoSnpSet", function(object) probeSetId(featureData(object)))
 
 setMethod("initialize", "oligoSnpSet",
           function(.Object,

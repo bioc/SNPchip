@@ -1,5 +1,9 @@
 \name{enzyme}
 \alias{enzyme}
+\alias{enzyme,SnpCallSet-method}
+\alias{enzyme,SnpCopyNumberSet-method}
+\alias{enzyme,AnnotatedDataFrame-method}
+\alias{enzyme,oligoSnpSet-method}
 \title{Enzyme used to digest DNA}
 \description{When two chips have been combined (e.g., Xba and Hind),
   enzyme is an accessor for whether a particular SNP was interrogated on

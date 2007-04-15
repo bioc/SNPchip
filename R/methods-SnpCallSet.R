@@ -21,7 +21,7 @@ setMethod("chromosome", "SnpCallSet", function(object) chromosome(featureData(ob
 setMethod("dbSnpId", "SnpCallSet", function(object) dbSnpId(featureData(object)))
 setMethod("enzyme", "SnpCallSet", function(object) enzyme(featureData(object)))
 setMethod("position", "SnpCallSet", function(object) position(featureData(object)))
-setMethod("probeSetId", "SnpCallSet", function(object) probeSetId(featureData(object)))
+##setMethod("probeSetId", "SnpCallSet", function(object) probeSetId(featureData(object)))
 
 setMethod("summary", signature(object = "SnpCallSet"),
           function(object, digits = 3, noCalls = FALSE, ...){

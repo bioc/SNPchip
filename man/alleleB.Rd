@@ -1,5 +1,8 @@
 \name{alleleB}
 \alias{alleleB}
+\alias{alleleB,oligoSnpSet-method}
+\alias{alleleB,SnpCallSet-method}
+\alias{alleleB,AnnotatedDataFrame-method}
 \title{Accessor for the B allele}
 \description{
 }

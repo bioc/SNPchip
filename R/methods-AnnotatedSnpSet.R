@@ -1,13 +1,3 @@
-setAs("AnnotatedSnpSet", "AnnotatedSnpSetList",
-      function(from){
-        chr <- as.character(unique(chromosome(from)))
-        snpSetList <- list()
-        for(i in 1:length(chr)){
-          snpSetList[[i]] <- from[chromosome(from) == chr[i], ]
-        }
-        new("AnnotatedSnpSetList", snpSetList=snpSetList)
-      })
-
 setMethod("chromosomeAnnotation", "AnnotatedSnpSet", function(object) object@chromosomeAnnotation)
 setReplaceMethod("chromosomeAnnotation", c("AnnotatedSnpSet", "data.frame"),
                  function(object, value){
@@ -17,11 +7,13 @@ setReplaceMethod("chromosomeAnnotation", c("AnnotatedSnpSet", "data.frame"),
 
 setMethod("alleleA", "AnnotatedSnpSet", function(object) alleleA(featureData(object)))
 setMethod("alleleB", "AnnotatedSnpSet", function(object) alleleB(featureData(object)))
-setMethod("chromosome", "AnnotatedSnpSet", function(object) chromosome(featureData(object)))
+##setMethod("chromosome", "AnnotatedSnpSet", function(object) chromosome(featureData(object)))
 setMethod("dbSnpId", "AnnotatedSnpSet", function(object) dbSnpId(featureData(object)))
 setMethod("enzyme", "AnnotatedSnpSet", function(object) enzyme(featureData(object)))
+setMethod("fragmentLength", "AnnotatedSnpSet", function(object) fragmentLength(fData(object)))
 setMethod("position", "AnnotatedSnpSet", function(object) position(featureData(object)))
-setMethod("probeSetId", "AnnotatedSnpSet", function(object) probeSetId(featureData(object)))
+##setMethod("probeSetId", "AnnotatedSnpSet", function(object) probeSetId(featureData(object)))
+
 
 setMethod("initialize", "AnnotatedSnpSet",
           function(.Object,
@@ -57,459 +49,361 @@ setMethod("initialize", "AnnotatedSnpSet",
           })
 
 
-setMethod("show", "AnnotatedSnpSet", function(object){
-  tmp <- as(object, "eSet")
-  show(tmp)
+setMethod("show", "AnnotatedSnpSet", function(object) {
+  cat(class( object ), " (storageMode: ", storageMode(object), ")\n", sep="")
+  adim <- dim(object)
+  if (length(adim)>1)
+  cat("assayData:",
+      if (length(adim)>1) paste(adim[[1]], "features,", adim[[2]], "samples") else NULL,
+      "\n")
+  cat("  element names:", paste(assayDataElementNames(object), collapse=", "), "\n")
+  cat("phenoData\n")
+  show(phenoData(object))
+  cat("featureData\n")
+  show(featureData(object))
+  cat("experimentData: use 'experimentData(object)'\n")
+  pmids <- pubMedIds(object)
+  if (length(pmids) > 0 && all(pmids != ""))
+      cat("  pubMedIds:", paste(pmids, sep=", "), "\n")
+  cat("Annotation ")
+  show(annotation(object))
 
   cat("\nchromosomeAnnotation\n")
-  N <- dim(chromosomeAnnotation(object))[1]
-##  N <- as.character(unique(chromosome(object)))
-##  if(length(N) > 2) N <- N[1:2]
-  if(N > 2)  print(chromosomeAnnotation(object)[1:2, ])
-  cat("...\n")
-  print(chromosomeAnnotation(object)[N, ])
+  N <- 1:nrow(chromosomeAnnotation(object))
+  print(chromosomeAnnotation(object)[selectSome(N), ])
 })
 
 setMethod("summary", "AnnotatedSnpSet", function(object, digits=3, ...){
-  
   ##Calculate mean,sd copy number and prop no calls, prop het calls
   ##for each chromosome in each sample.  Return an S x 23 matrix for
   ##each.
-  chrList <- as.list(unique(chromosome(object)))
-  if(sum(chromosome(object) != "chrX") > 0) chrList[[length(chrList) + 1]] <- "autosome"
-
-  chrStats <- list()
-  chromosomeMeanCn <- function(chrom, object){
-    if(chrom != "autosome"){
-      cn <- copyNumber(object)[chromosome(object) == chrom, ]      
-    } else  cn <- copyNumber(object)[chromosome(object) != "chrX",]
-    colMeans(as.matrix(cn))
-  }
-  chrStats[[1]] <- sapply(chrList, chromosomeMeanCn, object)
-
+  x <- list()
+##  chrList <- as.list(unique(chromosome(object)))
+##  if(sum(chromosome(object) != "X") > 0) chrList[[length(chrList) + 1]] <- "autosome"
+  cn <- split(copyNumber(object), chromosome(object))
+  cn <- lapply(cn, matrix, ncol=ncol(object), byrow=TRUE)
+  x[[1]] <- round(sapply(cn, colMeans), digits)
+##  chrStats <- list()
+##  chromosomeMeanCn <- function(chrom, object){
+##    if(chrom != "autosome"){
+##      cn <- copyNumber(object)[chromosome(object) == chrom, ]      
+##    } else  cn <- copyNumber(object)[chromosome(object) != "X",]
+##    colMeans(as.matrix(cn))
+##  }
+##  chrStats[[1]] <- sapply(chrList, chromosomeMeanCn, object)
+  colSds <- function(x) apply(x, 2, "sd")
+  x[[2]] <- round(sapply(cn, colSds), digits)
+  
   ##standard deviation of copy number for each chromosome
-  chromosomeSdCn <- function(chrom, object){
-    if(chrom != "autosome"){
-      cn <- copyNumber(object)[chromosome(object) == chrom, ]
-    } else  cn <- copyNumber(object)[chromosome(object) != "chrX",]
-    cn <- apply(as.matrix(cn), 2, stats::sd)
-  }
-  chrStats[[2]] <- sapply(chrList, chromosomeSdCn, object)
+##  chromosomeSdCn <- function(chrom, object){
+##    if(chrom != "autosome"){
+##      cn <- copyNumber(object)[chromosome(object) == chrom, ]
+##    } else  cn <- copyNumber(object)[chromosome(object) != "X",]
+##    cn <- apply(as.matrix(cn), 2, stats::sd)
+##  }
+##  chrStats[[2]] <- sapply(chrList, chromosomeSdCn, object)
 
   ##Proportion of no calls for each chromosome
-  propNoCalls <- function(chrom, object){
-    if(chrom != "autosome"){
-      calls <- calls(object)[chromosome(object) == chrom, ]
-    } else  calls <- calls(object)[chromosome(object) != "chrX", ]
-    calls <- as.matrix(calls)
-    colMeans(calls == 4)    
-  }
-  chrStats[[3]] <- sapply(chrList, propNoCalls, object)
+  calls <- split(calls(object), chromosome(object))
+  calls <- lapply(calls, matrix, ncol=ncol(object), byrow=TRUE)
+  calls.missing <- lapply(calls, "==", 4)
+  x[[3]] <- round(sapply(calls.missing, colMeans), digits)
+                              
+#  propNoCalls <- function(chrom, object){
+#    if(chrom != "autosome"){
+#      calls <- calls(object)[chromosome(object) == chrom, ]
+#    } else  calls <- calls(object)[chromosome(object) != "X", ]
+#    calls <- as.matrix(calls)
+#    colMeans(calls == 4)    
+#  }
+#  chrStats[[3]] <- sapply(chrList, propNoCalls, object)
 
   ##Proportion of homozygous calls given that a call was made
-  propHo <- function(chrom, calls, chromosomes){
-    if(chrom != "autosome"){
-      calls <- calls[chromosomes == chrom, ]
-    } else calls <- calls[chromosomes != "chrX", ]
+  homozygousCall <- function(x) x == 1 | x == 3
+  calls.homozygous <- lapply(calls, homozygousCall)
+  x[[4]] <- round(sapply(calls.homozygous, colMeans), digits)
+  x[[5]] <- round(1-x[[4]]-x[[3]], digits)
+  names(x) <- c("avgCN", "sdCN", "%NoCalls", "%Hom", "%Het")
 
-    perSample <- function(x){
-      x <- x[x != 4]
-      x[x == 2] <- 0
-      x[x == 3] <- 1
-      mean(x)
-    }
-    apply(as.matrix(calls), 2, perSample) 
+  overall <- lapply(x, colMeans)
+  x <- mapply("rbind", x, overall, SIMPLIFY=FALSE)
+
+  labelRows <- function(x, sn){
+    rownames(x) <- c(sn, "overall")
+    return(x)
   }
-  chrStats[[4]] <- sapply(chrList, propHo, chromosomes=chromosome(object), calls=calls(object))
+  x <- lapply(x, labelRows, sn=sampleNames(object))
+
+  reorderX <- function(x){
+    y <- c(1:22, "X", "Y")
+    y <- y[y %in% colnames(x)]
+    x <- x[, y]
+  }
+  xx <- lapply(x, reorderX)
   
-  colNames <- function(x, chrom){
-    if(is.matrix(x)) colnames(x) <- chrom else{
-      x <- t(as.matrix(x))
-      colnames(x) <- chrom
-    }
-    x
-  }
-  chrStats <- lapply(chrStats, colNames, chrom=unlist(chrList))
-  names(chrStats) <- c("avgCopyNumber", "sdCopyNumber", "propNoCalls", "propHo")
-
   ##Calculate grand average
-  if(dim(object)[2] > 1){
-    grand<- list()
-    grand[[1]] <- colMeans(chrStats$avgCopyNumber)
-    grand[[2]] <- apply(chrStats$sdCopyNumber, 2, stats::sd)
-    grand[[3]] <- colMeans(chrStats$propNoCalls)
-    grand[[4]] <- colMeans(chrStats$propHo)
-    grand <- do.call("rbind", grand)
-    rownames(grand) <- c("overall mean", "sd of means", "avg prop no calls", "avg prop AA/BB among calls")
-  } else grand <- NULL
-
-  stats <- list(chromosome=chrStats, overall=grand)
-  return(stats)
+##  if(dim(object)[2] > 1){
+##    grand<- list()
+##    grand[[1]] <- colMeans(chrStats$avgCopyNumber)
+##    grand[[2]] <- apply(chrStats$sdCopyNumber, 2, stats::sd)
+##    grand[[3]] <- colMeans(chrStats$propNoCalls)
+##    grand[[4]] <- colMeans(chrStats$propHo)
+##    grand <- do.call("rbind", grand)
+##    rownames(grand) <- c("overall mean", "sd of means", "avg prop no calls", "avg prop AA/BB among calls")
+##  } else grand <- NULL
+##  stats <- list(chromosome=chrStats, overall=grand)
+  return(xx)
 })
 
-setMethod("plotSnp", "AnnotatedSnpSet",
-          function(object, chromosomes, samples,
-                   ylim=NULL,
-                   xlim=NULL,
-                   col="black",
-                   colAA="blue",
-                   colAB="red",
-                   colNC="green3",
-                   colCentromere="bisque",
-                   col.axis="brown",
-                   pch=".",
-                   cex=1,
-                   cexAA=1,
-                   cexAB=1,
-                   cexNC=1,
-                   cex.axis=0.8,
-                   cex.legend=1,
-                   cex.chr=0.8,
-                   oma=c(5, 3, 4, 0.5),
-                   mar=c(0, 0, 0, 0.2),
-                   width.right=NULL,
-                   summaryPanel=FALSE,
-                   showLayout=TRUE,
-                   plotIt=TRUE,
-                   digits=3,
-                   legend=TRUE,
-                   legend.stats="left",
-                   legend.pch="topleft",
-                   legend.bty="o",
-                   legend.col="white",
-                   alternate.xaxis=TRUE,
-                   xaxis=TRUE,
-                   jitter=TRUE,
-                   factor=0.1,
-                   yTicks=5,
-                   xTicks=2,
-                   bty="n",
-                   bw=FALSE,
-                   ...){
 
+      
+setAs("AnnotatedSnpSet", "AnnotatedSnpCopyNumberSet",
+      function(from){
+        object <- new("AnnotatedSnpCopyNumberSet",
+                      copyNumber=copyNumber(from),
+                      cnConfidence=cnConfidence(from),
+                      phenoData=phenoData(from),
+                      featureData=featureData(from),
+                      annotation=annotation(from),
+                      chromosomeAnnotation=chromosomeAnnotation(from))
+        object
+      })
+
+setMethod("plotSnp", "AnnotatedSnpSet",
+          function(object,
+                   chromosomes,
+                   samples,
+#                   start.Mb=NULL, ##position in Mb
+#                   stop.Mb=NULL,  ##position in Mb
+                   snpId=c(NA, 1e6),  ##SNP identifier, distance to plot on either side
+                   ##################################################
+                   ##margins
+                   oma=c(5, 4, 4, 0.5),
+                   mar=c(0.5, 0, 0.5, 0.2),
+##                   par=TRUE,
+                   width.right=NULL,
+                   showLayout=FALSE,
+                   plot=TRUE,
+                   ##################################################
+                   ##plotting symbols and colors
+                   col=c("royalblue", "red", "royalblue", "green3"), 
+                   bg=rep("white", 4),
+                   cex=c(2, 3, 2, 2),
+                   pch=rep(".", 4), ##, length(unique(as.vector(calls(object))))),                                      
+                   col.centromere=c("bisque", NA),
+                   bw=FALSE,
+                   lwd=2,
+                   col.axis="brown",
+                   cex.axis=1,
+                   cex.main=1,
+                   cex.lab=1,
+                   ##################################################
+                   ##Axis
+                   xlim=NULL,                   
+                   ylim=NULL,
+                   log="",                   
+                   xaxis.side=rep(c(1, 3), length.out=length(chromosomes)),
+                   xaxs="i",                   
+                   xaxt="n",
+                   yaxs="i",
+                   yaxt="n",
+                   xlab="",
+                   ylab="",
+                   lab=c(2, 5, 7), ##see par
+                   adj=0,
+                   ##################################################
+                   ##legend
+                   main="",
+                   legend=c(TRUE, TRUE), ##legend for stats,  legend for plotting symbols
+                   legend.panel=c(TRUE, FALSE),  ##plot legend on separate panel?
+                   legend.location=c("topright", "bottomright"),
+                   legend.bty=c("n", "n"),
+                   legend.col=c("white", "white"),
+                   ncol=2,
+                   cex.legend=c(1, 1),
+                   digits=3,
+                   pt.cex=cex.legend*1.5,
+                   bty="n",
+                   ##################################################
+                   addCytoband=FALSE,
+                   height.cytoband=0.5, ##relative to plotting region for samples
+                   ...){
+            chromosome.order <- as.character(chromosomes)
+            if(any(legend.panel)) oma[4] <- 0
+            
             ##If black and white, change the default color scheme
             if(bw){
-              colAA <- gray(0.7)
-              colAB <- gray(0)
-              colNC <- gray(0.9)
+              col <- c(gray(0.7, gray(0), gray(0.7), gray(0.9)))
               col.axis <- gray(0)
-              colCentromere <- gray(0.7)
+              col.centromere <- c(gray(0.7), NA)
             }
-            chromosomes <- paste("chr", chromosomes, sep="")
-            chromosomes[chromosomes == "chr23"] <- "chrX"
-            chromosomes[chromosomes == "chr24"] <- "chrY"
-            object <- object[chromosome(object) %in% chromosomes, samples]
+            chromosomeAnnotation <- chromosomeAnnotation(object)[chromosome.order, ]
+            
+            object <- object[chromosome(object) %in% chromosome.order, samples]
+            S <- ncol(object)
+            ##If plotting cytoband, need an extra row
+            if(addCytoband){
+              S <- S+1 
+              xaxis.side <- rep(3, length.out=length(chromosome.order))
+              oma <- c(6, 4, 4, 0.5)
+            }
             obj <- object
             
             if(is.null(ylim)) ylim <- c(ceiling(min(copyNumber(object), na.rm=TRUE)), floor(max(copyNumber(object), na.rm=TRUE)))
-            samplenames <- sampleNames(object)
-            chrAnn <- chromosomeAnnotation(object)[chromosomes,]
-            object <- as(object, "AnnotatedSnpSetList")            
-            object <- SNPchip::snpSetList(object)
-            names(object) <- chromosomes
+            if(log == "y" & ylim[1] <= 0) {
+              print("Must specify lower y-axis limit > 0 when plotting on log scale")
+              ylim[1] <- 0.5
+            }
+            objList <- split(object, chromosome(object))
+
             k <- 1
-            S <- dim(object[[1]])[2]
-            N <- length(object)
-            
-            widths <- chrAnn$chromosomeSize
+            N <- length(objList)
+
+            widths <- chromosomeAnnotation$chromosomeSize
             widths <- widths/min(widths)
-            if(summaryPanel){
+            if(any(legend.panel)){
               if(is.null(width.right)){
-                width.right <- length(chromosomes)/1.5
+                width.right <- length(chromosome.order)/1.5
               }
               N <- N+1
               widths <- c(widths, width.right)
             }
+            if(addCytoband) heights <- c(rep(1, S-1), height.cytoband) else heights <- rep(1, S)
             nf <- layout(matrix(1:(S*N),
                                 nc=N,
-                                byrow=FALSE), widths=widths)
-
+                                byrow=FALSE), widths=widths, heights=heights)
             ##Option to return just the layout
-            if(!plotIt) {
+            if(!plot) {
               layout.show(nf)
               return()
             }
             par(mar=mar, oma=oma)
-            for(chrom in chromosomes){
-              for(i in 1:S){
-                if(k == 1){ yaxis=TRUE; side.last <- 3} else yaxis=FALSE
-                chromosomeSize <- chrAnn[chrom, 3]                
-                xlim <- c(0, chromosomeSize)
-                plotChromosome(object[[chrom]][, i],
-                               colAA=colAA,
-                               colAB=colAB,
-                               colNC=colNC,
-                               cexAA=cexAA,
-                               cexAB=cexAB,
-                               cexNC=cexNC,
-                               ylim=ylim,
-                               xlim=xlim,
-                               yaxt="n",
-                               xaxt="n", 
-                               yaxs="r",
-                               legendStats=FALSE,
-                               legendPch=FALSE,
-                               centromereBorder=NA,
-                               xlab="",
-                               ylab="",
-                               bty=bty,
-                               panel.xaxis=FALSE,
-                               panel.yaxis=yaxis,
-                               yTicks=yTicks,
-                               mar=mar)
-                if(i == 1){
-                  if(length(chromosomes) > 1){
-                    if(chrom == chromosomes[2]){
-                      label <- chrom
-                    } else {
-                      label <- strsplit(chrom, "chr")[[1]][2]
-                    }
-                  }
-                  if(side.last == 1) mtext(label, 3, line=2.5, cex=cex.chr)
+
+            ##Make sure colors recycle correctly
+            N <- sort(unique(as.vector(calls(object))))
+            col <- col[N]
+            pch <- pch[N]
+            cex <- cex[N]
+            bg <- bg[N]
+            if(addCytoband){  data(cytoband); S <- S-1}
+            names(xaxis.side) <- chromosome.order
+            
+            for(i in chromosome.order){
+              for(j in 1:S){
+                if(i == chromosome.order[1]) yaxis <- TRUE
+                obj <- objList[[i]][, j]
+                cn <- as.vector(copyNumber(obj))
+                calls <- as.vector(calls(obj))
+                chromosomeSize <- chromosomeAnnotation[i, 3]
+##                if(is.null(xlim)) xlim <- c(0, chromosomeSize)
+                if(is.null(xlim)) {
+                  xlimit <- range(position(obj), na.rm=TRUE)
+                } else xlimit <- xlim
+
+                ##################################################
+                ##Plot homozygous calls first
+                homozygous <- calls == 1 | calls == 3
+                plot(position(obj)[homozygous], cn[homozygous],
+                     pch=pch[calls[homozygous]],
+                     col=col[calls[homozygous]],
+                     bg=bg[calls[homozygous]],
+                     cex=cex[calls[homozygous]],
+                     cex.axis=cex.axis,
+                     cex.main=cex.main,
+                     xlab=xlab,
+                     ylab=ylab,
+                     main=main,
+                     xaxs=xaxs,                 
+                     yaxs=yaxs,
+                     xlim=xlimit,                 
+                     ylim=ylim,
+                     xaxt="n",
+                     yaxt=yaxt,
+                     bty=bty,
+                     log=log)
+                ##################################################
+                ##Plot heterozygous calls last
+                points(position(obj)[!homozygous], cn[!homozygous],
+                       pch=pch[calls[!homozygous]],
+                       col=col[calls[!homozygous]],
+                       bg=bg[calls[!homozygous]],
+                       cex=cex[calls[!homozygous]])                
+
+                ######################################################################
+                ##Draw centromere
+                ######################################################################
+                
+                centromere <- chromosomeAnnotation[i, 1:2]
+                if(log == "y"){
+                  if(ylim[1] < 0.5) ylim[1] <- 0.5
                 }
-                if(i == S) {
-                  if(length(chromosomes) <= 6){
-                    probs <- seq(0, 1, by=1/(xTicks+2))
-                    probs <- probs[-c(1, length(probs))]
-                    quants <- quantile(xlim, probs)                                                                                
-                    tcl <- NULL
-                    las <- 1
-                  } else {
-                    probs <- c(0, 0.5, 1)
-                    quants <- quantile(xlim, probs)                                                            
-                    labels <- c("", round(chromosomeSize/1e6, 0), "")
-                    tcl <- 0
-                    las <- 3
-                  }
-                  if(length(chromosomes) <= 6)
-                    labels <- as.character(round(quants/1e6, 0))
-                  if(side.last == 1) side <- 3 else side <- 1
-                  axis(side,
-                       at=quants,
+                rect(xleft=centromere[[1]], ybottom=ylim[1],
+                     xright=centromere[[2]], ytop=ylim[2],
+                     col=col.centromere[1],
+                     border=col.centromere[2])
+                
+                ######################################################################
+                ##Axes
+                ######################################################################
+                if(i == chromosome.order[1]){
+                  axis(2, at=pretty(ylim, lab[2]), labels=pretty(ylim, lab[2]),
+                       outer=FALSE, cex.axis=cex.axis, las=1)
+                }
+                if(j == 1 & xaxis.side[i] == 3) mtext(i, 3, line=2.5, cex=cex.lab, outer=FALSE)
+                if(j == S & xaxis.side[i] == 1) mtext(i, 1, line=2.5, cex=cex.lab, outer=FALSE)
+                  axis(xaxis.side[i],
+                       at=pretty(xlimit, lab[2]),
                        outer=TRUE,
-                       labels=labels,
-                       tcl=tcl,
+                       labels=pretty(xlimit, lab[2])/1e6,
                        cex.axis=cex.axis,
                        col=col.axis,
                        col.axis=col.axis,
-                       las=las, line=0,
+                       las=1, line=0,
                        lwd=1,
                        mgp=c(2, 0.5, 0))
-                  if(side == 1){
-                    if(chrom == chromosomes[1]){
-                      label <- chrom
-                    } else{
-                      strsplit(chrom, "chr")[[1]][2]
-                    }
-                    mtext(label, 1, line=3.5, cex=cex.chr)
-                  }
-                  side.last <- side
-                  if(!alternate.xaxis) side.last <- 3
-                }
               }
               k <- k+1
+              if(addCytoband){
+                plotCytoband(obj, cytoBand=cytoband, cex.axis=cex.axis, xaxs=xaxs,
+                             xlim=xlimit)
+              }
             }
-            mtext("Mb ", 1, at=0, line=0, outer=TRUE, cex=cex.axis,
-                  col=col.axis, adj=1, las=las)
-            if(alternate.xaxis & length(chromosomes) >= 2)
-              mtext("Mb ", 3, at=0, line=0, outer=TRUE, cex=cex.axis,
-                    col=col.axis, adj=0, las=las)            
-
+            if(i == chromosome.order[1])
+              mtext("Mb ", xaxis.side[i], line=2, outer=TRUE, cex=cex.lab,
+                    col=col.axis, adj=0, las=1)
             ###########################################################################
             ##Plot summary statistics
-            object <- obj
-            if(summaryPanel){
-              if(sum(chromosome(object) != "chrX") > 0){
-                obj <- object[chromosome(object) != "chrX", ]
-              } else { obj <- object}
-              cn <- colMeans(as.matrix(copyNumber(obj)))
-              cn.sd <- apply(copyNumber(obj), 2, stats::sd)                
-              ht <- colMeans(ifelse(calls(obj) == 2, 1, 0))
-              ho <- colMeans(ifelse(calls(obj) == 1 | calls(obj) == 3, 1, 0))
-              stats <- cbind(cn, cn.sd, ht, ho)
-              stats <- round(stats, digits)
-            }            
-
-            if(summaryPanel){
-              showSummary <- function(x){
-                par(mar=rep(0,4))
-                plot(0:1, 0:1, type="n", xlab="", ylab="", xaxt="n", yaxt="n", bty="n")
-                legend(legend.stats, legend=c(
-                                    paste(x["ho"], " %AA/BB", sep=""),
-                                    paste(x["ht"], " %AB", sep=""),
-                                    paste(x["cn"], " avg CN"),
-                                    paste(x["cn.sd"], " sd")), bty="n",
-                       title=substr(x["samplenames"], 1, 10),
-                       y.intersp=1.5,
-                       cex=cex.legend,
-                       text.col=c("black", colAA, colAB, "black", "black"))
-              }
-              stats <- data.frame(stats); stats$samplenames <- samplenames
-              apply(stats, 1, showSummary)
+            ###########################################################################            
+            if(legend[1]){
+              showSummary(object, where=legend.location[1], bty=legend.bty[1],
+                          legend.panel=legend.panel[1], cex=cex.legend[1], col=col,
+                          digits=digits)
             }
             ##plot legend
-            if(legend){
-              op <- par(bg=legend.col)
-              if(summaryPanel){
-#                if(legend.location == "topleft") legend.location <- "bottomleft"
-                legend.bty <- "n"
-              }
-              legend(legend.pch, pch=20, 
-                     col=c(colAA, colAB),
-                     legend=c("AA/BB", "AB"), cex=cex.legend,
-                     y.intersp=1.5,
-                     bty=legend.bty, pt.cex=cex.legend*1.5)
-            }
-          })
-
+##          }
+          if(legend[2]){
+            if(legend.panel[2]) plot(0:1, 0:1, type="n", xlab="", ylab="", xaxt="n", yaxt="n", bty="n")              
+            op <- par(bg=legend.col[2])
+            if(any(pch == ".")) pt.cex[pch == "."] <- 6
+            legend(legend.location[2],
+                   pch=pch[1:2], 
+                   col=col[1:2],
+                   legend=c("AA/BB", "AB"),
+                   cex=cex.legend[2],
+                   y.intersp=1.5,
+                   bty=legend.bty[2], pt.cex=pt.cex,
+                   xjust=1, ncol=ncol)
+          }
+        })
             
-setMethod("plotChromosome", "AnnotatedSnpSet",
-          function(object, 
-                   col="black",
-                   colAA="blue",
-                   colAB="red",
-                   colNC="green3",
-                   colCentromere="bisque",
-                   centromereBorder=NA,
-                   pch=".",
-                   cex=1,
-                   cexAA=1,
-                   cexAB=1,
-                   cexNC=1,
-                   bty="o",
-                   legend.bty="n",
-                   xlim=NULL,
-                   ylim=NULL,                   
-                   cex.axis=0.8,
-                   cex.legend=1,
-                   cex.main=1,
-                   xlab="Mb",
-                   ylab="copy number",
-                   ps=16,
-                   digits=3,
-                   lwdCn=2,
-                   legendStats=TRUE,
-                   legendPch=TRUE,
-                   legend.loc="topleft",
-                   xaxt="s",
-                   yaxt="s",
-                   xaxs="i",                   
-                   yaxs="r",
-                   main="",
-                   mar=c(4, 4, 1, 0.2),
-                   panel.xaxis=FALSE,
-                   panel.yaxis=FALSE,
-                   yTicks=5,
-                   xTicks=5,
-                   log="",
-                   bw=FALSE, ncol=1, ...){
-            if(bw){
-              colAA <- gray(0.6)
-              colAB <- "black"
-              colNC <- gray(0.8)
-              col.axis <- "black"
-              colCentromere <- gray(0.7)
-            }
-            chrom <- unique(SNPchip::chromosome(object))
-            if(length(chrom) > 1) stop("object must contain only 1 chromosome")
-            if(is.null(ylim)) ylim <- c(floor(min(copyNumber(object), na.rm=TRUE)), ceiling(max(copyNumber(object), na.rm=TRUE)))
-            ##If more than 1 sample is present, it only plots the first
-            if(dim(object)[2] > 1){
-              warning("Only plotting the first sample")
-              object <- object[,1]
-            }
-
-            y <- copyNumber(object)
-            y[y < ylim[1]] <- ylim[1]
-            y[y > ylim[2]] <- ylim[2]
-            x <- position(object)
-
-            chrAnn <- SNPchip::chromosomeAnnotation(object)[chrom, ]
-            chromosomeSize <- chrAnn$chromosomeSize
-            if(is.null(xlim)){
-              xlim <- c(0, chromosomeSize)
-              xlim[2] <- xlim[2]+2e6
-            }
-            if(log == "y") ylimit <- NULL else ylimit <- ylim
-            par(las=1, ps=ps, mar=mar, "ylog")
-            plot(x, y,
-                 pch=pch,
-                 cex.axis=cex.axis,
-                 cex.main=cex.main,
-                 xlab=xlab,
-                 ylab=ylab,
-                 main=main,
-                 xaxs=xaxs,                 
-                 yaxs=yaxs,
-                 xlim=xlim,                 
-                 ylim=ylimit,
-                 xaxt="n",
-                 yaxt=yaxt,
-                 type="n",
-                 bty=bty,
-                 log=log)
-            if(panel.xaxis) axis(side=1, at=pretty(xlim, n=xTicks),
-                                 labels=as.character(round(pretty(xlim, n=xTicks)/1e6,0)),
-                                 cex.axis=cex.axis)
-            if(panel.yaxis) axis(side=2, at=pretty(ylim, n=yTicks), outer=TRUE,
-                                 cex.axis=cex.axis)
-            calls <- calls(object)
-            hom <- calls == 1 | calls == 3
-            het <- calls == 2
-            points(jitter(x[hom], 1), jitter(y[hom], 1),
-                   col = colAA,
-                   cex = cexAA,
-                   pch = pch)
-            points(jitter(x[het],1), jitter(y[het], 1),
-                   col = colAB,
-                   cex = cexAB,
-                   pch = pch)
-            if(any(calls==4)){
-              points(x[calls == 4], y[calls == 4, 1],
-                     col = colNC,
-                     cex = cexNC,
-                     pch = pch)
-            }
-            ######################################################################
-            ##Draw centromere
-            ######################################################################
-            centromere <- chrAnn[chrom, 1:2]
-            rect(xleft=centromere[[1]], ybottom=ylim[1],
-                 xright=centromere[[2]], ytop=ylim[2], col=colCentromere,
-                 border=centromereBorder)
-            cn <- mean(copyNumber(object))
-            cn.sd <- sd(copyNumber(object))
-            ht <- mean(ifelse(calls(object) == 2, 1, 0))
-            ho <- mean(ifelse(calls(object) == 1 | calls(object) == 3, 1, 0))
-            stats <- c(cn, cn.sd, ht, ho)
-            stats <- round(stats, digits)
-            names(stats) <- c("cn", "cn.sd", "ht", "ho")
-            if(legendStats){
-              par(bg="antiquewhite1")
-              legend(legend.loc, legend = c(substr(x["samplenames"], 1, min(nchar(x["samplenames"]),10)),
-                                  paste(stats["ho"], " %AA/BB", sep = ""),
-                                  paste(stats["ht"], " %AB", sep = ""),
-                                  paste(stats["cn"], " avg CN"),
-                                  paste(stats["cn.sd"], " sd")), bty = legend.bty, cex = cex.legend,
-                     text.col = c("black", colAA, colAB, "black", "black"), ncol=ncol)
-            }
-            if(legendPch){
-              legend("topright",
-                     pch=20,
-                     col=c(colAA, colAB),
-                     legend=c("AA/BB", "AB"),
-                     cex=cex.legend,
-                     bty="n",
-                     pt.cex=cex.legend*1.5)
-              par(bg="white")
-            }
-          })
 
 ##Courtesy of Jason Ting
 setMethod("plotCytoband", "AnnotatedSnpSet",
-          function(object, cytoBand, mar=c(0, 0, 0, 0), xlim=NULL,
-                   cex.axis=0.8, ...){
-            chrom <- unique(SNPchip::chromosome(object))            
+          function(object, cytoBand=NULL, xlim=NULL, cex.axis=0.8, xaxs="r",
+                   chromosome=NULL, main="", ...){
+            if(is.null(cytoBand)) {data(cytoband); cytoBand <- cytoband}
+            if(is.null(chromosome))  chrom <- unique(chromosome(object))  else chrom <- as.character(chromosome)[1]
+
             cytoBand_chr <- cytoBand[as.character(cytoBand$chrom) == chrom,]
             cytoBand_chr_p <- cytoBand_chr[grep("^p",as.character(cytoBand_chr$name)),]
             cytoBand_chr_q <- cytoBand_chr[grep("^q",as.character(cytoBand_chr$name)),]
@@ -519,24 +413,24 @@ setMethod("plotCytoband", "AnnotatedSnpSet",
             ##  1st  band of arm or 1st  band after  "stalk"
             ##  last band of arm or last band before "stalk"
             for (band in 1:length(cytoBand_chr$chromEnd)) {
-              if (band==1)                             { cut.left[band] = T; cut.right[band] = F } else
-              if (band==p.bands)                       { cut.left[band] = F; cut.right[band] = T } else
-              if (band==(p.bands+1))                   { cut.left[band] = T; cut.right[band] = F } else
-              if (band==length(cytoBand_chr$chromEnd)) { cut.left[band] = F; cut.right[band] = T } else{
-                cut.left[band] = F; cut.right[band] = F
+              if (band==1)                             { cut.left[band] <- TRUE; cut.right[band] <- FALSE} else
+              if (band==p.bands)                       { cut.left[band] <- FALSE; cut.right[band] <- TRUE} else
+              if (band==(p.bands+1))                   { cut.left[band] <- TRUE; cut.right[band] <- FALSE} else
+              if (band==length(cytoBand_chr$chromEnd)) { cut.left[band] <- FALSE; cut.right[band] <- TRUE} else{
+                cut.left[band] <- FALSE; cut.right[band] <- FALSE
               }
             }
             for (band in 1:length(cytoBand_chr$chromEnd)) {
               if (as.character(cytoBand_chr$gieStain[band])=="stalk") {
-                cut.right[band-1] = T
-                cut.left[band]    = NA
-                cut.right[band]   = NA
-                cut.left[band+1]  = T
+                cut.right[band-1] <- TRUE
+                cut.left[band] <- NA
+                cut.right[band] <- NA
+                cut.left[band+1] <- TRUE
               }
             }
-            par(mar=mar)
-            plot(c(0,cytoBand_chr$chromEnd[length(cytoBand_chr$chromEnd)]), c(0, 2),
-                 xlim=xlim, type="n", xlab="", ylab="", axes=F, xaxs="i")
+            plot(c(0,cytoBand_chr$chromEnd[length(cytoBand_chr$chromEnd)]),
+                 c(0, 2), xlim=xlim, type="n", xlab="", ylab="",
+                 axes=FALSE, xaxs=xaxs, main=main)
             for (i in 1:length(cytoBand_chr$chromEnd)) {
               start <- cytoBand_chr$chromStart[i]
               end   <- cytoBand_chr$chromEnd[i]
@@ -580,40 +474,21 @@ setMethod("plotCytoband", "AnnotatedSnpSet",
                         c(0, 0, 2, 2), col=color)
               }
             }
-            ##Figure margins too big in the next plot
-            ##  par(mai=c(0.05,0.5,0.05,0.1), ps=6)
-#            plot(c(0, cytoBand_chr$chromEnd[length(cytoBand_chr$chromEnd)]), c(0, 2),
-#                 xlim=xlim, type="n", xlab="", ylab="", axes=F, xaxs="i")
-#            browser()
-            par(las=3)  # rotate text to vertical
             my.x <- (cytoBand_chr$chromStart+cytoBand_chr$chromEnd)/2            
             axis(1, at=my.x, labels=as.character(cytoBand_chr$name), outer=TRUE, cex.axis=cex.axis,
-                 line=1)
-#            for (i in 1:length(cytoBand_chr$name)) {
-#             my.x <- (cytoBand_chr$chromStart[i]+cytoBand_chr$chromEnd[i])/2
-##              text(x=my.x, y=1.7, labels=cytoBand_chr$name[i], adj=c(1,0.5))
-#              axis(1, at=my.x, labels=cytoBand_chr$name[i], outer=TRUE)
-##              lines(c(my.x, my.x), c(1.9, 2))
-#            }
-            par(ps=10, las=1)  # rotate text back to horizontal
+                 line=1, las=3)
           })
 
 #create object of class snpscan with smoothed copynumbers and smoothed loh calls
 #LOH calls are smoothed by setting homozygous = 0 and heterozygous = 1
 setMethod("smoothSnp", "AnnotatedSnpSet",
-          function(chromosomes,
-                   object,
+          function(object, chromosomes,
                    samples,
                    span=1/10,
                    method="loess",
                    imputeNoCalls=TRUE,
                    verbose=TRUE){
-            chromosomes <- paste("chr", chromosomes, sep = "")
-            chromosomes[chromosomes == "chr23"] <- "chrX"
-            chromosomes[chromosomes == "chr24"] <- "chrY"
             object <- object[chromosome(object) %in% chromosomes, samples]
-            chrAnn <- chromosomeAnnotation(object)[chromosomes,]
-
             ##convert homozygous to 0 and heterozygous to 1
             calls(object)[calls(object) == 1 | calls(object) == 3] <- 0
             calls(object)[calls(object) == 2] <- 1
@@ -622,21 +497,19 @@ setMethod("smoothSnp", "AnnotatedSnpSet",
                 fit <- loess(X ~ location, span = span)$fitted
                 return(fit)
               }
-              cn.smooth <- apply(copyNumber(obj), 2, loessX, position(obj),
-                                 span = span)
-              call.smooth <- apply(calls(obj), 2, loessX,
-                                   location = position(obj), span = span)
-
+              ##Order by physical position before smoothing
+              obj <- obj[order(position(obj)), ]
+              cn.smooth <- apply(copyNumber(obj), 2, loessX, position(obj), span=span)
+              call.smooth <- apply(calls(obj), 2, loessX, location=position(obj), span=span)
+              rownames(cn.smooth) <- rownames(call.smooth) <- featureNames(obj) 
               copyNumber(obj) <- cn.smooth
               calls(obj) <- call.smooth
               obj
             }
-            obj <- as(object, "AnnotatedSnpSetList")
-            obj.list <- snpSetList(obj)
-            obj@snpSetList <- lapply(obj.list, smoothChromosome, span = span)
-
-            obj.new <- as(obj, "AnnotatedSnpSet")
-            return(obj.new)
+            object.list <- split(object, chromosome(object))
+            smooth.list <- lapply(object.list, smoothChromosome, span=span)
+            smooth.set <- unsplitS4(smooth.list, featureData(object))
+            return(smooth.set)
           })
 
 

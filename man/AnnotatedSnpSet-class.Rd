@@ -3,11 +3,19 @@
 \alias{AnnotatedSnpSet-class}
 \alias{alleleA,AnnotatedSnpSet-method}
 \alias{alleleB,AnnotatedSnpSet-method}
+\alias{coerce,AnnotatedSnpSet,AnnotatedSnpCopyNumberSet-method}
 \alias{chromosome,AnnotatedSnpSet-method}
+\alias{chromosomeAnnotation,AnnotatedSnpSet-method}
+\alias{chromosomeAnnotation<-,AnnotatedSnpSet,data.frame-method}
+\alias{dbSnpId,AnnotatedSnpSet-method}
 \alias{enzyme,AnnotatedSnpSet-method}
+\alias{fData,AnnotatedSnpSet-method}
+\alias{fragmentLength,AnnotatedSnpSet-method}
 \alias{plotCytoband,AnnotatedSnpSet-method}
 \alias{plotSnp,AnnotatedSnpSet-method}
 \alias{position,AnnotatedSnpSet-method}
+\alias{smoothSnp,AnnotatedSnpSet-method}
+
 \title{Class "AnnotatedSnpSet" }
 \description{Container for genotype and copy number data from SNP chips,
 as well as chromosome-level features}
@@ -25,9 +33,8 @@ Objects can be created by calls of the form \code{new("AnnotatedSnpSet", phenoDa
       \code{AnnotatedDataFrame}.  Contains annotation for the SNP's,
       such as chromosome, physical position, and alleles. }
     \item{\code{experimentData}:}{Object of class \code{MIAME}  }
-    \item{\code{annotation}:}{For 100k chips, "mapping50kHind240",
-      "mapping50kXba240" , or "mapping100k".  For 500k chips, mmust be
-      "mapping250kNsp" or "mapping250kSty"}
+    \item{\code{annotation}:}{Character string for type of SNP
+      chip. e.g., "pd.mapping50k.xba240"}
     \item{\code{.__classVersion__}:}{Object of class \code{Versions}  }
   }
 }
@@ -54,10 +61,17 @@ Class \code{Versioned}, by class AnnotatedSnpCopyNumberSet, distance 5.
     \item{chromosome}{\code{signature(object="AnnotatedSnpSet")}:
       accessor for the chromosome}
 
+    \item{fData}{\code{signature(object="AnnotatedSnpSet")}:
+      accessor for the data.frame containing feature-level annotation.
+      Usually very large.}    
+
+    \item{fragmentLength}{\code{signature(object="AnnotatedSnpSet")}:
+      accessor for the length of the PCR fragment on which the SNP resides}    
+
     \item{plotCytoband}{\code{signature(object="AnnotatedSnpSet")}:
     Plots the cytoband for a single chromosome.}
   
-    \item{plotSnp}{\code{signature(object="AnnotatedSnpSet")}: Makes a
+    \item{plotSnp}{\code{signature(object="AnnotatedSnpSet", ...)}: Makes a
       scatterplot of copy number (vertical axis) versus physical
       position (horizontal axis) for each chromosome and sample in the
       AnnotatedSnpSet object.  Points are color-coded by the genotype
@@ -71,7 +85,7 @@ Class \code{Versioned}, by class AnnotatedSnpCopyNumberSet, distance 5.
 \references{ }
 \author{Rob Scharpf}
 \note{}
-\seealso{
+\seealso{\code{\link[SNPchip]{plotSnp}}}
 }
 \examples{
 data(annSnpset)

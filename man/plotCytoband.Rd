@@ -1,38 +1,58 @@
 \name{plotCytoband}
 \alias{plotCytoband}
-\title{Plot the cytobands for a chromosome}
-\description{
-}
+\title{Adds cytoband to plot.}
+
+\description{ Adds cytobands to views of chromosome copy number and
+  genotype plots.  }
+
 \usage{
 plotCytoband(object, ...)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{object}{\code{AnnotatedSnpSet} object }
-  \item{\dots}{Additional arguments}
+  \item{object}{Object of class \code{AnnotatedSnpSet}}
+  \item{\dots}{Additional arguments to par such as xlim, cex.axis, xaxs, and main.}
 }
 \details{
+  This function is meant to primarily be called by plotSnp and displayed beneath copy number and genotype estimates.
 }
-\value{
-}
-\author{Jason Ting}
-\note{
-}
-\seealso{See Also \code{\link{plotChromosome}}}
+
+\value{ Only recommended when plotting 5 or fewer chromosomes
+(resolution is poor otherwise). It is possible to plot partial views
+of a chromosome and its cytoband as well (see examples).  }
+
+\references{}
+\author{Robert Scharpf and Jason Ting}
 \examples{
 data(annSnpset)
 data(cytoband)
-chr1 <- annSnpset[chromosome(annSnpset) == "chr1", 5]
-layout(matrix(1:2, nr=2, nc=1), heights=c(1, .05))
-par(oma=c(4, 4, 0, 3))
-plotChromosome(chr1, mar=c(3, 0, 1, 0), colCentromere="bisque", 
-               cexAA=3, cexAB=3, cexNC=3,
-               panel.xaxis=TRUE, 
-               xlab="Mb", cex.axis=0.7, cex.legend=0.7)
-par(las=3)
-mtext("copy number", 2, line=2, outer=TRUE, cex=0.7)
-par(las=1)
-plotCytoband(chr1, cytoband, cex.axis=0.5)
+str(cytoband)
+chr1 <- annSnpset[chromosome(annSnpset) == "1", ]
+
+par(mfrow=c(1, 1), mar=c(0, 0, 3, 0), oma=c(5, 0, 3, 0))
+plotCytoband(object=chr1, chromosome="1", main="chromosome 1")
+
+plotSnp(chr1, 1, 5, oma=c(6, 4, 0, 3), cex=c(3,3,3),
+        cex.axis=1.2, cex.legend=c(1.2, 1.2), addCytoband=TRUE,
+        legend.location=c("topleft", "bottomleft"),
+        height.cytoband=0.2, width.right=0.2, bty="o", cex.lab=1.5, ncol=1)
+
+##The x-axis begins at the first SNP past the centromere
+qarm <- position(chr1) > centromere(chromosomeAnnotation(annSnpset), "1")[[2]] & !is.na(position(chr1))
+plotSnp(chr1[qarm, ], 1, 5, oma=c(6, 4, 0, 3), cex=rep(1,3), pch=rep(20,3),
+        cex.axis=1.2, cex.legend=c(1.2, 1.2), addCytoband=TRUE,
+        legend.location=c("topleft", "bottomleft"),
+        height.cytoband=0.2, width.right=0.2, bty="o", cex.lab=1.5, ncol=1, xaxs="r")
+
+##Not equivalent to previous plot because the x-axis begins at the end
+##of the centromere (note that there are no SNPs close to the centromere).
+qarm <- c(centromere(chromosomeAnnotation(annSnpset), "1")[[2]],
+          chromosomeSize(chromosomeAnnotation(annSnpset), "1")[[1]])
+plotSnp(chr1, 1, 5, oma=c(6, 4, 0, 3), cex=c(1, 1, 1), pch=rep(20, 3),
+        cex.axis=1.2, cex.legend=c(1.2, 1.2), addCytoband=TRUE,
+        legend.location=c("topleft", "bottomleft"),
+        height.cytoband=0.2, width.right=0.2, bty="o", cex.lab=1.5, ncol=1, adj=0,
+        xlim=qarm)
 }
-\keyword{methods}
+\seealso{\code{\link[SNPchip]{plotSnp}}, \code{\link[SNPchip]{AnnotatedSnpSet}}}
+\keyword{aplot}
 

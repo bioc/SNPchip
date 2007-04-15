@@ -2,11 +2,8 @@ import(Biobase, geneplotter, oligo)
 exportPattern("^[^\\.]")
 exportClasses(AnnotatedSnpSet,
               AnnotatedSnpCallSet,
-              AnnotatedSnpCallSetList,
-              AnnotatedSnpCopyNumberSet,
-              AnnotatedSnpCopyNumberSetList,
-              AnnotatedSnpSetList)
-exportMethods(addFeatureData,
+              AnnotatedSnpCopyNumberSet)
+exportMethods(getSnpAnnotation,
               alleleA,
               alleleB,
               chromosome,
@@ -16,14 +13,13 @@ exportMethods(addFeatureData,
               copyNumber,
               dbSnpId,
               enzyme,
+              fData,
+              "fData<-",
+              fragmentLength,
               initialize,
-              plotChromosome,
-              plotCytoband,
               plotSnp,
               position,              
-              probeSetId,
               show,              
               smoothSnp,
-              snpSetList,
               summary)
-              
+export("showSummary", "centromere", "chromosomeSize", "unsplitS4")              

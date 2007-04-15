@@ -28,4 +28,4 @@ setMethod("chromosome", "SnpCopyNumberSet", function(object) chromosome(featureD
 setMethod("dbSnpId", "SnpCopyNumberSet", function(object) dbSnpId(featureData(object)))
 setMethod("enzyme", "SnpCopyNumberSet", function(object) enzyme(featureData(object)))
 setMethod("position", "SnpCopyNumberSet", function(object) position(featureData(object)))
-setMethod("probeSetId", "SnpCopyNumberSet", function(object) probeSetId(featureData(object)))
+##setMethod("probeSetId", "SnpCopyNumberSet", function(object) probeSetId(featureData(object)))
