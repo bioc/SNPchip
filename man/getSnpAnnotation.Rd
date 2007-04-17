@@ -56,6 +56,8 @@ getSnpAnnotation(object, ...)
              cnConfidence=cnConfidence(annSnpset)[1:50,],
              phenoData=phenoData(annSnpset), annotation=annotation(annSnpset))
   obj
+\dontrun{
+##Requires pd.mapping50k.xba240 annotation package
   snp.annotation <- getSnpAnnotation(obj)
   snp.annotation
   class(snp.annotation)
@@ -63,6 +65,7 @@ getSnpAnnotation(object, ...)
   featureData(obj) <- snp.annotation
   validObject(obj)
   varLabels(featureData(obj))
+}
 
 ##Using NetAffx annotation (already saved as a data.frame)
 \dontrun{

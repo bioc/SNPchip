@@ -5,4 +5,5 @@
 0.1.38 Added black and white option to plotChromosome
 0.1.47 use sqlite for annotation, rewrite show method for snpset
 0.1.48 chromosome annotation automatically added (if NULL) in plotSnp method
+0.1.49 removed getSnpAnnotation example in the help file since the pd.mapping annotation packages are not available on Bioconductor
 
