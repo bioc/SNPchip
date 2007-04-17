@@ -67,10 +67,8 @@ setMethod("show", "AnnotatedSnpSet", function(object) {
       cat("  pubMedIds:", paste(pmids, sep=", "), "\n")
   cat("Annotation ")
   show(annotation(object))
-
   cat("\nchromosomeAnnotation\n")
-  N <- 1:nrow(chromosomeAnnotation(object))
-  print(chromosomeAnnotation(object)[selectSome(N), ])
+  print(chromosomeAnnotation(object))
 })
 
 setMethod("summary", "AnnotatedSnpSet", function(object, digits=3, ...){
