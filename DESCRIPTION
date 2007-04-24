@@ -1,5 +1,5 @@
 Package: SNPchip
-Version: 1.0.0
+Version: 1.1.0
 Date: 2006-10-05
 Title: Classes and Methods for high throughput SNP chip data 
 Author: Robert Scharpf <rscharpf@jhsph.edu>, Jason Ting, Jonathon Pevsner, and Ingo Ruczinski <ingo@jhsph.edu>
