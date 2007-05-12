@@ -8,7 +8,7 @@ Depends: R (>= 2.5.0), Biobase (>= 1.11.0), tools, methods, geneplotter, oligo, 
 Suggests: 
 Description:  A collection of tools for high throughput SNP chip data.
 License: GPL version 2 or newer
-SaveImage: yes	     
+LazyLoad: yes	     
 Collate: AllClasses.R AllGeneric.R 
 	 functions.R
 	 methods-eSet.R 
