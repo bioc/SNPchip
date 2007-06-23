@@ -5,7 +5,7 @@
 %\VignettePackage{SNPchip}
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\documentclass[12pt]{article}
+\documentclass[]{article}
 
 \usepackage{amsmath,pstricks,fullpage}
 \usepackage[authoryear,round]{natbib}
@@ -18,6 +18,13 @@
 \newcommand{\Rpackage}[1]{\textit{#1}}
 \newcommand{\Rfunction}[1]{\texttt{#1}}
 \newcommand{\Robject}[1]{\texttt{#1}}
+
+\textwidth=6.2in
+\textheight=8.5in
+%\parskip=.3cm
+\oddsidemargin=.1in
+\evensidemargin=.1in
+\headheight=-.3in
 
 
 \title{Tools for high throughput SNP chip data}
@@ -42,6 +49,7 @@ We illustrate the structure of the class \Robject{AnnotatedSnpSet}
 with a small dataset provided with the package.
 
 <<exampleData>>=
+options(width=69)
 library(SNPchip)
 data(annSnpset)
 annSnpset
@@ -92,7 +100,7 @@ samples 1 - 4 in the object \Robject{annSnpset}:
 <<plotSnp, fig=TRUE, width=9, height=4>>=
 plotSnp(annSnpset, chromosomes=c(1:22, "X"), 
         samples=1:4, width.right=10, cex.axis=1, lab=c(3, 3, 5),
-        cex.lab=1.2, cex.legend=c(1, 1.2))
+        cex.lab=1.2, cex.legend=c(1, 1.2), legend=c(TRUE, FALSE))
 @ 
 
 The copy number estimates have been centered to have mean zero -- a
@@ -106,21 +114,21 @@ allows a plotting region for the summary paenl that is 15 times larger
 than chromosome 21. A more focused view of chromosomes 1, 7, 16, 19,
 and X of sample 2 could be obtained by
 
-<<plotSnpChromosomes, fig=TRUE, width=9, height=4>>=
+<<plotSnpChromosomes, fig=TRUE, width=10, height=4>>=
 plotSnp(annSnpset, c(1, 7, 16, 19, "X"), c(2, 5), 
         cex=c(1, 1, 1), pch=c(20, 21, 20), bg=c("royalblue", "white", "royalblue"),
-        bty="o", width.right=1.5, cex.axis=1.2, cex.lab=1.5, cex.legend=c(1.2, 1.2),
+        bty="o", width.right=1.6, cex.axis=1.2, cex.lab=1.5, cex.legend=c(1.2, 1.2),
         xaxs="r")
 @ 
 
 A plot of just the p-arm in sample 2 of chromosome 1:
-<<plotSnpChromosomes, fig=TRUE, width=9, height=4>>=
+<<plotSnpChromosomes, fig=TRUE, width=10, height=4>>=
 chr1 <- annSnpset[chromosome(annSnpset) == "1", ]
 start <- min(position(chr1)[position(chr1) > chromosomeAnnotation["1", 1]], na.rm=TRUE)
 plotSnp(chr1[position(chr1) > start, ], 1, 2, 
         xlim=range(position(chr1)[position(chr1) > start], na.rm=TRUE),
         cex=c(1, 1, 1), pch=c(20, 20, 20), bg=c("royalblue", "red", "royalblue"),
-        bty="o", width.right=.3, cex.axis=1.2, cex.lab=1.5, cex.legend=c(1.2, 1.2))
+        bty="o", width.right=.4, cex.axis=1.2, cex.lab=1.5, cex.legend=c(1.2, 1.2))
 @ 
 
 Cytobands can be added to graphs as follows:
@@ -169,7 +177,8 @@ be downloaded.
 
 Alternatively, one may obtain the NetAffx annotation saved as an R object here:
 <<netAffxAnnotation, eval=FALSE>>=
-try(load(url("http://biostat.jhsph.edu/~iruczins/publications/sm/2006.scharpf.bioinfo/mapping/mapping10k.rda")))
+path <- "http://biostat.jhsph.edu/~iruczins/publications/sm/2006.scharpf.bioinfo"
+try(load(url(paste(path, "/mapping/mapping10k.rda", sep=""))))
 colnames(mapping10k$annotation)
 @ 
 
@@ -242,7 +251,7 @@ annSnpset <- getSnpAnnotation(snpset)
 
 This may take several minutes depending on your internet connection.
 To do this manually using NetAffx annotation files, the annotation
-files can be downloaded from
+files can be downloaded from \\
 \texttt{http://biostat.jhsph.edu/~iruczins/publications/sm/2006.scharpf.bioinfo/mapping/}.
 This object should be converted to an object of class
 \Rfunction{AnnotatedDataFrame} with SNPs in the same order as in the
@@ -251,15 +260,15 @@ of the NetAffx annotation for the 50k Xba SNP chip, execute the
 following command:
 
 <<retrieve100kAnnotation, eval=FALSE>>=
-try(load(url("http://biostat.jhsph.edu/~iruczins/publications/sm/2006.scharpf.bioinfo/mapping/mapping50kXba240.rda")))
+try(load(url(paste(path, "/mapping/mapping50kXba240.rda", sep=""))))
 @
 
 \Rfunction{data.frame}s for the 50k Hind and the 250k Nsp and Sty chips are also available:
 
 <<otherAnnotation, eval=FALSE>>=
-try(load(url("http://biostat.jhsph.edu/~iruczins/publications/sm/2006.scharpf.bioinfo/mapping/mapping50kHind240.rda")))
-try(load(url("http://biostat.jhsph.edu/~iruczins/publications/sm/2006.scharpf.bioinfo/mapping/mapping250kNsp.rda")))
-try(load(url("http://biostat.jhsph.edu/~iruczins/publications/sm/2006.scharpf.bioinfo/mapping/mapping250kSty.rda")))
+try(load(url(paste(path, "/mapping/mapping50kHind240.rda", sep=""))))
+try(load(url(paste(path, "/mapping/mapping250kNsp.rda", sep=""))))
+try(load(url(paste(path, "/mapping/mapping250kSty.rda", sep=""))))
 @
 
 Below, we illustrate how one might convert output from Affymetrix CNAT
@@ -278,8 +287,10 @@ calls[calls == "NoCall"] <- 4
 calls <- matrix(as.integer(as.matrix(calls)), nc = dim(calls)[2], byrow=FALSE)
 cnConfidence <- as.matrix(cnat[, grep("SPA_pVal", colnames(cnat))])
 callsConfidence <- as.matrix(cnat[, grep("LOH", colnames(cnat))])
-rownames(calls) <- rownames(cn) <- rownames(cnConfidence) <- rownames(callsConfidence) <- x$Probe.Set
-colnames(cn) <- colnames(calls) <- colnames(callsConfidence) <- colnames(cnConfidence) <- substr(colnames(cn), 1, 7)
+rownames(calls) <- rownames(cn) <- x$Probe.Set
+rownames(cnConfidence) <- rownames(callsConfidence) <- x$Probe.Set
+colnames(cn) <- colnames(calls) <- substr(colnames(cn), 1, 7)
+colnames(callsConfidence) <- colnames(cnConfidence) <- substr(colnames(cn), 1, 7)
 trios <- new("AnnotatedSnpSet", 
              calls=calls, 
              copyNumber=copyNumber,
@@ -430,6 +441,13 @@ library(RSNPper)
 (dbId <- dbSnpId(annSnpset)[snps[2] == featureNames(annSnpset)])
 dbId <- strsplit(dbId, "rs")[[1]][2]
 print(SNPinfo(dbId))
+@ 
+
+\section{Session Information}
+The version number of R and packages loaded for generating the vignette were:
+
+<<echo=FALSE, results=tex>>=
+toLatex(sessionInfo())
 @ 
 
 \end{document}
