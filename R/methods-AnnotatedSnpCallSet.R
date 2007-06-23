@@ -3,6 +3,7 @@ setReplaceMethod("chromosomeAnnotation", c("AnnotatedSnpCallSet", "data.frame"),
   object@chromosomeAnnotation <- value
   object
 })
+
 setMethod("initialize", "AnnotatedSnpCallSet",
           function(.Object,
                    phenoData = new("AnnotatedDataFrame"),

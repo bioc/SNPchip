@@ -7,4 +7,4 @@
 0.1.48 chromosome annotation automatically added (if NULL) in plotSnp method
 0.1.49 removed getSnpAnnotation example in the help file since the pd.mapping annotation packages are not available on Bioconductor
 0.1.50 modified show method to print all the chromosome annotation
-
+1.1.1 changed SaveImage to LazyLoad

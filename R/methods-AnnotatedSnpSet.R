@@ -226,12 +226,11 @@ setMethod("plotSnp", "AnnotatedSnpSet",
                    addCytoband=FALSE,
                    height.cytoband=0.5, ##relative to plotting region for samples
                    ...){
-
             if(is.null(chromosomeAnnotation(object))){
               data(chromosomeAnnotation)
               chromosomeAnnotation(object) <- chromosomeAnnotation
             }
-              
+
             chromosome.order <- as.character(chromosomes)
             if(any(legend.panel)) oma[4] <- 0
             
