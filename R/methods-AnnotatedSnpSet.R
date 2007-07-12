@@ -202,7 +202,7 @@ setMethod("plotSnp", "AnnotatedSnpSet",
                    log="",                   
                    xaxis.side=rep(c(1, 3), length.out=length(chromosomes)),
                    xaxs="i",                   
-                   xaxt="n",
+                   xaxt="s",
                    yaxs="i",
                    yaxt="n",
                    xlab="",
@@ -335,7 +335,6 @@ setMethod("plotSnp", "AnnotatedSnpSet",
                 ######################################################################
                 ##Draw centromere
                 ######################################################################
-                
                 centromere <- chromosomeAnnotation[i, 1:2]
                 if(log == "y"){
                   if(ylim[1] < 0.5) ylim[1] <- 0.5
@@ -352,8 +351,9 @@ setMethod("plotSnp", "AnnotatedSnpSet",
                   axis(2, at=pretty(ylim, lab[2]), labels=pretty(ylim, lab[2]),
                        outer=FALSE, cex.axis=cex.axis, las=1)
                 }
-                if(j == 1 & xaxis.side[i] == 3) mtext(i, 3, line=2.5, cex=cex.lab, outer=FALSE)
-                if(j == S & xaxis.side[i] == 1) mtext(i, 1, line=2.5, cex=cex.lab, outer=FALSE)
+                if(xaxt != "n"){
+                  if(j == 1 & xaxis.side[i] == 3) mtext(i, 3, line=2.5, cex=cex.lab, outer=FALSE)
+                  if(j == S & xaxis.side[i] == 1) mtext(i, 1, line=2.5, cex=cex.lab, outer=FALSE)
                   axis(xaxis.side[i],
                        at=pretty(xlimit, lab[2]),
                        outer=TRUE,
@@ -364,6 +364,7 @@ setMethod("plotSnp", "AnnotatedSnpSet",
                        las=1, line=0,
                        lwd=1,
                        mgp=c(2, 0.5, 0))
+                }
               }
               k <- k+1
               if(addCytoband){
@@ -372,11 +373,14 @@ setMethod("plotSnp", "AnnotatedSnpSet",
               }
             }
             if(i == chromosome.order[1])
-              mtext("Mb ", xaxis.side[i], line=2, outer=TRUE, cex=cex.lab,
-                    col=col.axis, adj=0, las=1)
+              if(xaxt != "n"){
+                mtext("Mb ", xaxis.side[i], line=2, outer=TRUE, cex=cex.lab,
+                      col=col.axis, adj=0, las=1)
+              }
             ###########################################################################
             ##Plot summary statistics
-            ###########################################################################            
+            ###########################################################################
+            if(length(legend) == 1) legend <- rep(legend, 2)
             if(legend[1]){
               showSummary(object, where=legend.location[1], bty=legend.bty[1],
                           legend.panel=legend.panel[1], cex=cex.legend[1], col=col,

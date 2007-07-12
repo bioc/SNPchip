@@ -34,12 +34,13 @@ setMethod("getSnpAnnotation", "eSet",
             if(!validObject(featureData)) print("Not a valid AnnotatedDataFrame")
             featureData
           })
-setMethod("fData", "eSet", function(object) pData(featureData(object)))
-setReplaceMethod("fData", c("eSet", "data.frame"),
-                 function(object, value){
-                   pData(featureData(object)) <- value
-                   object
-                   })            
+
+##setMethod("fData", "eSet", function(object) pData(featureData(object)))
+##setReplaceMethod("fData", c("eSet", "data.frame"),
+##                 function(object, value){
+##                   pData(featureData(object)) <- value
+##                   object
+##                   })            
             
 
             

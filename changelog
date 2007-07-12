@@ -8,3 +8,11 @@
 0.1.49 removed getSnpAnnotation example in the help file since the pd.mapping annotation packages are not available on Bioconductor
 0.1.50 modified show method to print all the chromosome annotation
 1.1.1 changed SaveImage to LazyLoad
+1.1.5 - argument xaxt="n" in plotSnp now completely supresses x-axis. 
+	
+      - if argument legend has length = 1, it will automatically be repeated
+	(e.g., legend=FALSE converts to legend=c(FALSE, FALSE) and neither a legend
+	for the plotting symbols or descriptive statistics will be displayed
+
+      - removed fData and fData<- as these are now defined in Biobase with the exact same definitions
+	
