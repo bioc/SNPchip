@@ -39,7 +39,8 @@ Class \code{Versioned}, by class \code{SnpCallSet}.
 \author{Robert Scharpf}
 \note{}
 
-\seealso{
+\seealso{\code{\link{AnnotatedSnpCopyNumberSet-class}},
+  \code{\link{AnnotatedSnpSet-class}}
 }
 \examples{
 }

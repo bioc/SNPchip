@@ -12,11 +12,8 @@
 \alias{dbSnpId,AnnotatedSnpCopyNumberSet-method}
 \alias{enzyme,AnnotatedSnpCopyNumberSet-method}
 \alias{fragmentLength,AnnotatedSnpCopyNumberSet-method}
-%\alias{plotCytoband,AnnotatedSnpCopyNumberSet-method}
-%\alias{plotChromosome,AnnotatedSnpCopyNumberSet-method}
 \alias{plotSnp,AnnotatedSnpCopyNumberSet-method}
 \alias{position,AnnotatedSnpCopyNumberSet-method}
-%\alias{probeSetId,AnnotatedSnpCopyNumberSet-method}
 
 
 \title{Class "AnnotatedSnpCopyNumberSet"}
@@ -52,7 +49,7 @@ Class \code{Versioned}, by class \code{SnpCopyNumberSet}.
 \references{}
 \author{}
 \note{}
-\seealso{
+\seealso{\code{\link{AnnotatedSnpCallSet-class}}, \code{\link{AnnotatedSnpSet-class}}
 }
 \examples{
 }

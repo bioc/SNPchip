@@ -9,7 +9,6 @@
 \alias{chromosomeAnnotation<-,AnnotatedSnpSet,data.frame-method}
 \alias{dbSnpId,AnnotatedSnpSet-method}
 \alias{enzyme,AnnotatedSnpSet-method}
-\alias{fData,AnnotatedSnpSet-method}
 \alias{fragmentLength,AnnotatedSnpSet-method}
 \alias{plotCytoband,AnnotatedSnpSet-method}
 \alias{plotSnp,AnnotatedSnpSet-method}
@@ -61,10 +60,6 @@ Class \code{Versioned}, by class AnnotatedSnpCopyNumberSet, distance 5.
     \item{chromosome}{\code{signature(object="AnnotatedSnpSet")}:
       accessor for the chromosome}
 
-    \item{fData}{\code{signature(object="AnnotatedSnpSet")}:
-      accessor for the data.frame containing feature-level annotation.
-      Usually very large.}    
-
     \item{fragmentLength}{\code{signature(object="AnnotatedSnpSet")}:
       accessor for the length of the PCR fragment on which the SNP resides}    
 
@@ -85,7 +80,8 @@ Class \code{Versioned}, by class AnnotatedSnpCopyNumberSet, distance 5.
 \references{ }
 \author{Rob Scharpf}
 \note{}
-\seealso{\code{\link[SNPchip]{plotSnp}}}
+\seealso{\code{\link{AnnotatedSnpCallSet-class}},
+      \code{\link{AnnotatedSnpCopyNumberSet-class}}}
 }
 \examples{
 data(annSnpset)
