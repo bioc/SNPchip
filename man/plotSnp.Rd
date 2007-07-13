@@ -1,13 +1,22 @@
 \name{plotSnp}
 \alias{plotSnp}
-\title{Plots copy number and genotype calls.}
-\description{Plots copy number and genotype call versus physical position for
+\title{Plots copy number and genotype calls against physical position }
+\description{
+
+  Plots copy number and genotype call versus physical position for
   an arbitrary number of samples and chromosomes.
+
 }
 \usage{
-plotSnp(object, chromosomes, samples, snpId = c(NA, 1e+06), oma = c(5, 4, 4, 0.5), mar = c(0.5, 0, 0.5, 0.2), width.right = NULL, showLayout = FALSE, plot = TRUE, col = c("royalblue", "red", "royalblue", "green3"), bg = rep("white", 4), cex = c(2, 3, 2, 2), pch = rep(".", 4), col.centromere = c("bisque", NA), bw = FALSE, lwd = 2, col.axis = "brown", cex.axis = 1, cex.main = 1, cex.lab = 1, xlim = NULL, ylim = NULL, log = "", xaxis.side = rep(c(1, 3), length.out = length(chromosomes)), xaxs = "i", xaxt = "s", yaxs = "i", yaxt = "n", xlab = "", ylab = "", lab = c(2, 5, 7), adj = 0, main = "", legend = c(TRUE, TRUE), legend.panel = c(TRUE, FALSE), legend.location = c("topright", "bottomright"), legend.bty = c("n", "n"), legend.col = c("white", "white"), ncol = 2, cex.legend = c(1, 1), digits = 3, pt.cex = cex.legend * 1.5, bty = "n", addCytoband = FALSE, height.cytoband = 0.5, ...)
+plotSnp(object, ...)
 }
+
 \arguments{
+  \item{object}{ An object of class \code{AnnotatedSnpSet} or \code{AnnotatedSnpCopyNumberSet}}
+  \item{\dots}{ See Details}
+}
+\details{
+
   \item{object}{Object of class \code{AnnotatedSnpCopyNumberSet} or \code{AnnotatedSnpSet}}
   \item{chromosomes}{Vector of character strings for chromosome number.
   Chromosomes will be plotted in the order given.}
@@ -72,17 +81,21 @@ plotSnp(object, chromosomes, samples, snpId = c(NA, 1e+06), oma = c(5, 4, 4, 0.5
   \item{addCytoband}{Logical indicating whether to add a cytoband.}
   \item{height.cytoband}{Height of cytoband relative to height of samples.}
   \item{\dots}{ Additional arguments}
-}
-\details{
+  
 }
 \value{
+  
 }
-\references{}
-\author{Robert Scharpf}
+
+\references{ ~put references to the literature/web site here ~ }
+
+\author{}
+
 \note{
 }
-\seealso{\code{\link{par}}, \code{\link{plot}}, \code{\link{legend}}}
+\seealso{\code{\link{par}}}
 \examples{
+
 data(annSnpset)
 plotSnp(annSnpset, chromosomes=c(1:22, "X"), 
         samples=1:4, width.right=10, cex.axis=1, lab=c(3, 3, 5),

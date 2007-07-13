@@ -1,12 +1,22 @@
-setClass("AnnotatedSnpCallSet", representation(chromosomeAnnotation="data.frame"), contains="SnpCallSet")
-setClass("AnnotatedSnpCopyNumberSet", representation(chromosomeAnnotation="data.frame"), contains="SnpCopyNumberSet")
-setClass("AnnotatedSnpSet",  contains = c("AnnotatedSnpCallSet", "AnnotatedSnpCopyNumberSet"))
+setClass("AnnotatedSnpCallSet",
+         representation(chromosomeAnnotation="data.frame"),
+         contains="SnpCallSet")
+
+setClass("AnnotatedSnpCopyNumberSet",
+         representation(chromosomeAnnotation="data.frame"),
+         contains="SnpCopyNumberSet")
+
+setClass("AnnotatedSnpSet",
+         contains = c("AnnotatedSnpCallSet", "AnnotatedSnpCopyNumberSet"))
+
 setValidity("AnnotatedSnpSet", function(object){
   assayDataValidMembers(assayData(object), c("calls", "copyNumber", "callsConfidence", "cnConfidence"))
 })
+
 setValidity("AnnotatedSnpCallSet", function(object){
   assayDataValidMembers(assayData(object), c("calls", "callsConfidence"))
 })
+
 setValidity("AnnotatedSnpCopyNumberSet", function(object){
   assayDataValidMembers(assayData(object), c("copyNumber", "cnConfidence"))
 })
