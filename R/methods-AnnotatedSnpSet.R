@@ -225,6 +225,7 @@ setMethod("plotSnp", "AnnotatedSnpSet",
                    ##################################################
                    addCytoband=FALSE,
                    height.cytoband=0.5, ##relative to plotting region for samples
+                   useLayout=TRUE,
                    ...){
             if(is.null(chromosomeAnnotation(object))){
               data(chromosomeAnnotation)
@@ -262,25 +263,27 @@ setMethod("plotSnp", "AnnotatedSnpSet",
             k <- 1
             N <- length(objList)
 
-            widths <- chromosomeAnnotation$chromosomeSize
-            widths <- widths/min(widths)
-            if(any(legend.panel)){
-              if(is.null(width.right)){
-                width.right <- length(chromosome.order)/1.5
+            if(useLayout){
+              par(oma=oma, mar=mar)
+              widths <- chromosomeAnnotation$chromosomeSize
+              widths <- widths/min(widths)
+              if(any(legend.panel)){
+                if(is.null(width.right)){
+                  width.right <- length(chromosome.order)/1.5
+                }
+                N <- N+1
+                widths <- c(widths, width.right)
               }
-              N <- N+1
-              widths <- c(widths, width.right)
+              if(addCytoband) heights <- c(rep(1, S-1), height.cytoband) else heights <- rep(1, S)
+              nf <- layout(matrix(1:(S*N),
+                                  nc=N,
+                                  byrow=FALSE), widths=widths, heights=heights)
             }
-            if(addCytoband) heights <- c(rep(1, S-1), height.cytoband) else heights <- rep(1, S)
-            nf <- layout(matrix(1:(S*N),
-                                nc=N,
-                                byrow=FALSE), widths=widths, heights=heights)
             ##Option to return just the layout
             if(!plot) {
               layout.show(nf)
               return()
             }
-            par(mar=mar, oma=oma)
 
             ##Make sure colors recycle correctly
             N <- sort(unique(as.vector(calls(object))))

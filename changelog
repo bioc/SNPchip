@@ -23,4 +23,6 @@
 1.1.8 - removed the generic defintions for fData in SNPchip
 
 1.1.9 - fixed problem with unmatched braces in help files
+
+1.1.10 - added useLayout argument to plotSnp
 	
