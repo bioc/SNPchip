@@ -15,4 +15,6 @@
 	for the plotting symbols or descriptive statistics will be displayed
 
       - removed fData and fData<- as these are now defined in Biobase with the exact same definitions
+
+1.1.6 - removed fData help file
 	
