@@ -82,7 +82,6 @@ Class \code{Versioned}, by class AnnotatedSnpCopyNumberSet, distance 5.
 \note{}
 \seealso{\code{\link{AnnotatedSnpCallSet-class}},
       \code{\link{AnnotatedSnpCopyNumberSet-class}}}
-}
 \examples{
 data(annSnpset)
 annSnpset

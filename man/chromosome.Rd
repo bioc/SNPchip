@@ -9,9 +9,12 @@
 
 \title{Accessor for chromosome SNP annotation}
 \description{
+  
   Extracts character string of chromosome number for each SNP in the
-  \code{AnnotatedDataFrame} object.}
+  \code{AnnotatedDataFrame} object.
+
 }
+
 
 \section{Methods}{
 \describe{

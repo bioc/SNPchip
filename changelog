@@ -21,4 +21,6 @@
 1.1.7 - changed generic for plotSnp
 
 1.1.8 - removed the generic defintions for fData in SNPchip
+
+1.1.9 - fixed problem with unmatched braces in help files
 	
