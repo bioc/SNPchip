@@ -14,7 +14,8 @@
 	(e.g., legend=FALSE converts to legend=c(FALSE, FALSE) and neither a legend
 	for the plotting symbols or descriptive statistics will be displayed
 
-      - removed fData and fData<- as these are now defined in Biobase with the exact same definitions
+	- removed fData and fData<- as these are now defined in Biobase
+	with the exact same definitions
 
 1.1.6 - removed fData help file
 
@@ -26,3 +27,10 @@
 
 1.1.10 - added useLayout argument to plotSnp
 	
+1.1.11
+	- added argument outer=TRUE to plotCytoband. Specifying
+	outer=FALSE draws the axis for the cytoband within the plot
+	margins
+
+	- added argument cytobandAxis=TRUE to plotCytoband. When FALSE,
+	the cytoband axis is not drawn and only the cytoband is displayed

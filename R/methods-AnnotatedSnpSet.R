@@ -153,20 +153,6 @@ setMethod("summary", "AnnotatedSnpSet", function(object, digits=3, ...){
   return(xx)
 })
 
-
-      
-setAs("AnnotatedSnpSet", "AnnotatedSnpCopyNumberSet",
-      function(from){
-        object <- new("AnnotatedSnpCopyNumberSet",
-                      copyNumber=copyNumber(from),
-                      cnConfidence=cnConfidence(from),
-                      phenoData=phenoData(from),
-                      featureData=featureData(from),
-                      annotation=annotation(from),
-                      chromosomeAnnotation=chromosomeAnnotation(from))
-        object
-      })
-
 setMethod("plotSnp", "AnnotatedSnpSet",
           function(object,
                    chromosomes,
@@ -410,7 +396,7 @@ setMethod("plotSnp", "AnnotatedSnpSet",
 ##Courtesy of Jason Ting
 setMethod("plotCytoband", "AnnotatedSnpSet",
           function(object, cytoBand=NULL, xlim=NULL, cex.axis=0.8, xaxs="r",
-                   chromosome=NULL, main="", ...){
+                   chromosome=NULL, main="", outer=TRUE, cytobandAxis=TRUE, ...){
             if(is.null(cytoBand)) {data(cytoband); cytoBand <- cytoband}
             if(is.null(chromosome))  chrom <- unique(chromosome(object))  else chrom <- as.character(chromosome)[1]
 
@@ -484,9 +470,11 @@ setMethod("plotCytoband", "AnnotatedSnpSet",
                         c(0, 0, 2, 2), col=color)
               }
             }
-            my.x <- (cytoBand_chr$chromStart+cytoBand_chr$chromEnd)/2            
-            axis(1, at=my.x, labels=as.character(cytoBand_chr$name), outer=TRUE, cex.axis=cex.axis,
-                 line=1, las=3)
+            my.x <- (cytoBand_chr$chromStart+cytoBand_chr$chromEnd)/2
+            if(cytobandAxis){
+              axis(1, at=my.x, labels=as.character(cytoBand_chr$name), outer=outer, cex.axis=cex.axis,
+                   line=1, las=3)
+            }
           })
 
 #create object of class snpscan with smoothed copynumbers and smoothed loh calls

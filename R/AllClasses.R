@@ -21,6 +21,18 @@ setValidity("AnnotatedSnpCopyNumberSet", function(object){
   assayDataValidMembers(assayData(object), c("copyNumber", "cnConfidence"))
 })
 
+setAs("AnnotatedSnpSet", "AnnotatedSnpCopyNumberSet",
+      function(from){
+        object <- new("AnnotatedSnpCopyNumberSet",
+                      copyNumber=copyNumber(from),
+                      cnConfidence=cnConfidence(from),
+                      phenoData=phenoData(from),
+                      featureData=featureData(from),
+                      annotation=annotation(from),
+                      chromosomeAnnotation=chromosomeAnnotation(from))
+        object
+      })
+
 
 
 
