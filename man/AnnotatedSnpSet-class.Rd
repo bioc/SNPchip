@@ -7,6 +7,10 @@
 \alias{chromosome,AnnotatedSnpSet-method}
 \alias{chromosomeAnnotation,AnnotatedSnpSet-method}
 \alias{chromosomeAnnotation<-,AnnotatedSnpSet,data.frame-method}
+%\alias{copyNumber,AnnotatedSnpSet-method}
+%\alias{copyNumber<-,AnnotatedSnpSet-method}
+%\alias{cnConfidence,AnnotatedSnpSet-method}
+%\alias{cnConfidence<-,AnnotatedSnpSet-method}
 \alias{dbSnpId,AnnotatedSnpSet-method}
 \alias{enzyme,AnnotatedSnpSet-method}
 \alias{fragmentLength,AnnotatedSnpSet-method}

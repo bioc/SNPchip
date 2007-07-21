@@ -15,7 +15,6 @@
 \alias{plotSnp,AnnotatedSnpCopyNumberSet-method}
 \alias{position,AnnotatedSnpCopyNumberSet-method}
 
-
 \title{Class "AnnotatedSnpCopyNumberSet"}
 \description{Container for copy number data}
 \section{Objects from the Class}{

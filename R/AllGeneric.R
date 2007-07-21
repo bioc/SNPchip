@@ -9,5 +9,5 @@ setGeneric("fragmentLength", function(object) standardGeneric("fragmentLength"))
 setGeneric("plotCytoband",        function(object, ...) standardGeneric("plotCytoband"))
 setGeneric("smoothSnp", function(object, ...) standardGeneric("smoothSnp"))
 setGeneric("plotSnp",   function(object, ...) standardGeneric("plotSnp"))
-
+setGeneric("selectSomeIndex",   function(object, ...) standardGeneric("selectSomeIndex"))##Generic defined, but not exported in Biobase
 

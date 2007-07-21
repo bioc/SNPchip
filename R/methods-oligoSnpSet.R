@@ -7,6 +7,7 @@ setAs("oligoSnpSet", "AnnotatedSnpSet", function(from){
              annotation = annotation(from),
              chromosomeAnnotation = data.frame())
 })
+
 setMethod("alleleA", "oligoSnpSet", function(object) alleleA(featureData(object)))
 setMethod("alleleB", "oligoSnpSet", function(object) alleleB(featureData(object)))
 setMethod("chromosome", "oligoSnpSet", function(object) chromosome(featureData(object)))
@@ -14,7 +15,6 @@ setMethod("dbSnpId", "oligoSnpSet", function(object) dbSnpId(featureData(object)
 setMethod("enzyme", "oligoSnpSet", function(object) enzyme(featureData(object)))
 setMethod("position", "oligoSnpSet", function(object) position(featureData(object)))
 ##setMethod("probeSetId", "oligoSnpSet", function(object) probeSetId(featureData(object)))
-
 setMethod("initialize", "oligoSnpSet",
           function(.Object,
                    phenoData = new("AnnotatedDataFrame"),

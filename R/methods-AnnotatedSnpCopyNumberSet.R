@@ -3,17 +3,22 @@ setReplaceMethod("chromosomeAnnotation", c("AnnotatedSnpCopyNumberSet", "data.fr
   object@chromosomeAnnotation <- value
   object
 })
+
 setMethod("initialize", "AnnotatedSnpCopyNumberSet",
           function(.Object,
-                   phenoData = new("AnnotatedDataFrame"),
-                   featureData = new("AnnotatedDataFrame"),
-                   experimentData = new("MIAME"),
-                   annotation = character(),
-                   copyNumber = new("matrix"),
-                   cnConfidence = new("matrix"),
-                   chromosomeAnnotation = data.frame())
-          {
-            .Object@assayData <- assayDataNew(copyNumber = copyNumber, cnConfidence = cnConfidence)
+                   assayData = assayDataNew(
+                     copyNumber=copyNumber,
+                     cnConfidence = cnConfidence),
+                   phenoData=annotatedDataFrameFrom(assayData, byrow=FALSE),
+                   featureData=annotatedDataFrameFrom(assayData, byrow=TRUE),
+                   experimentData=new("MIAME"),
+                   annotation=character(),
+                   copyNumber=new("matrix"),
+                   cnConfidence=matrix(numeric(), nrow=nrow(copyNumber),
+                     ncol=ncol(copyNumber),
+                     dimnames=dimnames(copyNumber)),
+                 chromosomeAnnotation = data.frame()){
+            .Object@assayData <- assayData
             .Object@phenoData <- phenoData
             .Object@annotation <- annotation
             .Object@featureData <- featureData
@@ -28,8 +33,6 @@ setMethod("dbSnpId", "AnnotatedSnpCopyNumberSet", function(object) dbSnpId(featu
 setMethod("enzyme", "AnnotatedSnpCopyNumberSet", function(object) enzyme(featureData(object)))
 setMethod("fragmentLength", "AnnotatedSnpCopyNumberSet", function(object) fragmentLength(fData(object)))
 setMethod("position", "AnnotatedSnpCopyNumberSet", function(object) position(featureData(object)))
-##setMethod("probeSetId", "AnnotatedSnpCopyNumberSet", function(object) probeSetId(featureData(object)))
-##setMethod("fData", "AnnotatedSnpCopyNumberSet", function(object) pData(featureData(object)))
 
 setMethod("plotSnp", "AnnotatedSnpCopyNumberSet",
           function(object,
@@ -140,6 +143,43 @@ setAs("AnnotatedSnpCopyNumberSet", "AnnotatedSnpSet",
                       annotation=annotation(from))
         object
       })
+
+setMethod("show", "AnnotatedSnpCopyNumberSet", function(object) {
+  cat(class( object ), " (storageMode: ", storageMode(object), ")\n", sep="")
+  adim <- dim(object)
+  if (length(adim)>1)
+    cat("assayData:",
+        if (length(adim)>1)
+        paste(adim[[1]], "features,",
+              adim[[2]], "samples") else NULL,
+        "\n")
+  cat("  element names:",
+      paste(assayDataElementNames(object), collapse=", "), "\n")
+  cat("experimentData: use 'experimentData(object)'\n")
+  pmids <- pubMedIds(object)
+  if (length(pmids) > 0 && all(pmids != ""))
+    cat("  pubMedIds:", paste(pmids, sep=", "), "\n")
+  cat("Annotation:", annotation(object), "\n")
+  cat("phenoData\n")
+  if(length(adim) > 1) show(phenoData(object))
+  cat("featureData\n")      
+  if(length(adim) > 1) show(featureData(object))
+  cat("Annotation ")
+  show(annotation(object))
+  cat("\nchromosomeAnnotation\n")
+  adim <- nrow(chromosomeAnnotation(object))
+  if(adim > 1){
+    idx <- selectSomeIndex(chromosomeAnnotation(object), maxToShow=4)
+    pData <- chromosomeAnnotation(object)[c(idx[[1]], idx[[3]]), , drop=FALSE]
+    rnms <- rownames(pData)
+    nms <- c(rnms[idx[[1]]], idx[[2]],
+             if (!is.null(idx[[1]])) rnms[-idx[[1]]] else NULL)
+    pData <- pData[nms,]
+    pData[nms=="...", ] <- rep("...", ncol(pData))
+    rownames(pData)[nms=="..."] <- "..."
+    print(pData)
+  }
+})
 
 
 #setMethod("plotCytoband", "AnnotatedSnpCopyNumberSet",

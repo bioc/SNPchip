@@ -14,7 +14,6 @@ setMethod("fragmentLength", "AnnotatedSnpSet", function(object) fragmentLength(f
 setMethod("position", "AnnotatedSnpSet", function(object) position(featureData(object)))
 ##setMethod("probeSetId", "AnnotatedSnpSet", function(object) probeSetId(featureData(object)))
 
-
 setMethod("initialize", "AnnotatedSnpSet",
           function(.Object,
                    assayData = assayDataNew(
@@ -49,26 +48,64 @@ setMethod("initialize", "AnnotatedSnpSet",
           })
 
 
+setMethod("initialize", "SnpSet",
+          function(.Object,
+                   assayData = assayDataNew(
+                     call = call,
+                     callProbability = callProbability, ...),
+                   phenoData = annotatedDataFrameFrom(assayData, byrow=FALSE),
+                   featureData = annotatedDataFrameFrom(assayData, byrow=TRUE),
+                   experimentData = new("MIAME"),
+                   annotation = character(),
+                   call = new("matrix"),
+                   callProbability = matrix(
+                     numeric(), nrow=nrow(call), ncol=ncol(call),
+                     dimnames=dimnames(call)),
+                   ... ) {
+            callNextMethod(.Object,
+                           assayData = assayData,
+                           phenoData = phenoData,
+                           featureData = featureData,
+                           experimentData = experimentData,
+                           annotation = annotation)
+          })
+
+
 setMethod("show", "AnnotatedSnpSet", function(object) {
   cat(class( object ), " (storageMode: ", storageMode(object), ")\n", sep="")
   adim <- dim(object)
   if (length(adim)>1)
-  cat("assayData:",
-      if (length(adim)>1) paste(adim[[1]], "features,", adim[[2]], "samples") else NULL,
-      "\n")
-  cat("  element names:", paste(assayDataElementNames(object), collapse=", "), "\n")
-  cat("phenoData\n")
-  show(phenoData(object))
-  cat("featureData\n")
-  show(featureData(object))
+    cat("assayData:",
+        if (length(adim)>1)
+        paste(adim[[1]], "features,",
+              adim[[2]], "samples") else NULL,
+        "\n")
+  cat("  element names:",
+      paste(assayDataElementNames(object), collapse=", "), "\n")
   cat("experimentData: use 'experimentData(object)'\n")
   pmids <- pubMedIds(object)
   if (length(pmids) > 0 && all(pmids != ""))
-      cat("  pubMedIds:", paste(pmids, sep=", "), "\n")
+    cat("  pubMedIds:", paste(pmids, sep=", "), "\n")
+  cat("Annotation:", annotation(object), "\n")
+  cat("phenoData\n")
+  if(length(adim) > 1) show(phenoData(object))
+  cat("featureData\n")      
+  if(length(adim) > 1) show(featureData(object))
   cat("Annotation ")
   show(annotation(object))
   cat("\nchromosomeAnnotation\n")
-  print(chromosomeAnnotation(object))
+  adim <- nrow(chromosomeAnnotation(object))
+  if(adim > 1){
+    idx <- selectSomeIndex(chromosomeAnnotation(object), maxToShow=4)
+    pData <- chromosomeAnnotation(object)[c(idx[[1]], idx[[3]]), , drop=FALSE]
+    rnms <- rownames(pData)
+    nms <- c(rnms[idx[[1]]], idx[[2]],
+             if (!is.null(idx[[1]])) rnms[-idx[[1]]] else NULL)
+    pData <- pData[nms,]
+    pData[nms=="...", ] <- rep("...", ncol(pData))
+    rownames(pData)[nms=="..."] <- "..."
+    print(pData)
+  }
 })
 
 setMethod("summary", "AnnotatedSnpSet", function(object, digits=3, ...){

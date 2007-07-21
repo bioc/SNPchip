@@ -1,9 +1,13 @@
 setClass("AnnotatedSnpCallSet",
          representation(chromosomeAnnotation="data.frame"),
+         prototype=list(
+           chromosomeAnnotation=data.frame()),
          contains="SnpCallSet")
 
 setClass("AnnotatedSnpCopyNumberSet",
          representation(chromosomeAnnotation="data.frame"),
+         prototype=list(
+           chromosomeAnnotation=data.frame()),         
          contains="SnpCopyNumberSet")
 
 setClass("AnnotatedSnpSet",

@@ -34,3 +34,21 @@
 
 	- added argument cytobandAxis=TRUE to plotCytoband. When FALSE,
 	the cytoband axis is not drawn and only the cytoband is displayed
+
+1.1.12  
+	- moved a few packges from Depends to Suggests. Tried to move
+	oligo to suggests, but this didn't work
+
+	- updated show method for AnnotatedSnpSet. To do this, I copied
+	the selectSomeIndex method from Biobase (a method for data.frames)
+
+	- added show methods for AnnotatedSnpCallSet and AnnotatedSnpCopyNumberSet
+
+	- tinkered with the initialization methods for these classes...
+
+	- Not sure what is causing this problem:
+		* checking R code for possible problems ... NOTE
+        	Error in expMethods[[i]] <- allMethodLists[ii] : 
+	        more elements supplied than there are to replace
+
+	

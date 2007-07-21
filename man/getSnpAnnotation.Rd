@@ -41,15 +41,21 @@ getSnpAnnotation(object, ...)
      SNPs in the object derivied from \code{eSet}.
 }
   
-\value{ An object of class \code{AnnotatedDataFrame} } \references{}
-  \author{Robert Scharpf} \seealso{\code{\link[oligo]{oligoSnpSet}},
+\value{ An object of class \code{AnnotatedDataFrame}
+
+}
+
+\references{}
+
+\author{Robert Scharpf}
+
+\seealso{\code{\link[oligo]{oligoSnpSet}},
   \code{\link[Biobase]{AnnotatedDataFrame}},
   \code{\link[Biobase]{annotation}}}
 
 \examples{
 
 ##Default method for adding SNP-level annotation
-
   data(annSnpset)
   obj <- new("AnnotatedSnpCopyNumberSet",
              copyNumber=copyNumber(annSnpset)[1:50,],
@@ -69,6 +75,7 @@ getSnpAnnotation(object, ...)
 
 ##Using NetAffx annotation (already saved as a data.frame)
 \dontrun{
+  
   try(load(url("http://biostat.jhsph.edu/~iruczins/publications/sm/2006.scharpf.bioinfo/mapping/mapping50kXba240.rda")))
   reorderRows <- match(featureNames(obj), as.character(mapping50kXba240$Probe.Set.ID))
   netaffx.annotation <- mapping50kXba240[reorderRows, ]
@@ -76,6 +83,7 @@ getSnpAnnotation(object, ...)
   featureData(obj) <- fD
   varLabels(featureData(obj))
   validObject(obj)
+  
 }
 }
 

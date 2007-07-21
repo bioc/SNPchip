@@ -1,5 +1,5 @@
-import(Biobase, geneplotter, oligo) 
-exportPattern("^[^\\.]")
+import(Biobase, oligo)
+##exportPattern("^[^\\.]")
 exportClasses(AnnotatedSnpSet,
               AnnotatedSnpCallSet,
               AnnotatedSnpCopyNumberSet)
@@ -9,14 +9,16 @@ exportMethods(getSnpAnnotation,
               chromosome,
               chromosomeAnnotation, 
               "chromosomeAnnotation<-",
-              coerce,              
+              coerce,
               copyNumber,
               dbSnpId,
               enzyme,
               fragmentLength,
               initialize,
+              plotCytoband,
               plotSnp,
-              position,              
+              position,
+              selectSomeIndex,
               show,              
               smoothSnp,
               summary)

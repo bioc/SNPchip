@@ -6,7 +6,6 @@
 \alias{chromosomeAnnotation,AnnotatedSnpCallSet-method}
 \alias{chromosomeAnnotation<-,AnnotatedSnpCallSet,data.frame-method}
 
-
 \title{Class "AnnotatedSnpCallSet"}
 \description{Container for genotype call data accompanied by SNP annotation}
 \section{Objects from the Class}{

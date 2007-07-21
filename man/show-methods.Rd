@@ -2,6 +2,8 @@
 \docType{methods}
 \alias{show-methods}
 \alias{show,AnnotatedSnpSet-method}
+\alias{show,AnnotatedSnpCallSet-method}
+\alias{show,AnnotatedSnpCopyNumberSet-method}
 \title{show methods}
 \description{
 Show methods
