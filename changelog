@@ -51,4 +51,6 @@
         	Error in expMethods[[i]] <- allMethodLists[ii] : 
 	        more elements supplied than there are to replace
 
+1.1.13  - renamed copyNumber method for SnpQSet calculateCopyNumber...moved corresponding man pages (need to add/del)
+
 	

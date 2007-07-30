@@ -10,7 +10,7 @@ exportMethods(getSnpAnnotation,
               chromosomeAnnotation, 
               "chromosomeAnnotation<-",
               coerce,
-              copyNumber,
+              calculateCopyNumber,
               dbSnpId,
               enzyme,
               fragmentLength,
@@ -18,8 +18,27 @@ exportMethods(getSnpAnnotation,
               plotCytoband,
               plotSnp,
               position,
-              selectSomeIndex,
+              selectSomeIndex,  
               show,              
               smoothSnp,
               summary)
-export("showSummary", "centromere", "chromosomeSize", "unsplitS4")              
+export("showSummary", "centromere", "chromosomeSize", "unsplitS4")
+
+##Export classes from oligo
+#exportClasses(oligoSnpSet,
+#              SnpQSet,
+#              SnpCallSet,
+#              SnpCopyNumberSet)
+###Export methods from oligo
+#exportMethods(position,
+#              chromosome,
+#              copyNumber,
+#              "copyNumber<-",
+#              calls,
+#              "calls<-",
+#              cnConfidence,
+#              "cnConfidence<-",
+#              callsConfidence,
+#              "callsConfidence<-")
+
+              

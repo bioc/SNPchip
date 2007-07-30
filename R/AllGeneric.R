@@ -1,6 +1,7 @@
 setGeneric("getSnpAnnotation",             function(object, ...) standardGeneric("getSnpAnnotation"))
 setGeneric("alleleA", function(object) standardGeneric("alleleA"))
 setGeneric("alleleB", function(object) standardGeneric("alleleB"))
+setGeneric("calculateCopyNumber", function(object) standardGeneric("calculateCopyNumber"))
 setGeneric("chromosomeAnnotation", function(object) standardGeneric("chromosomeAnnotation"))
 setGeneric("chromosomeAnnotation<-", function(object, value) standardGeneric("chromosomeAnnotation<-"))
 setGeneric("dbSnpId", function(object) standardGeneric("dbSnpId"))

@@ -489,7 +489,7 @@ setMethod("plotCytoband", "AnnotatedSnpSet",
                 color <- "white"
               }
               if (is.na(cut.left[i]) & is.na(cut.right[i])) {
-                ## this is a "stalk", do not drow box. Drow two vertival lines instead
+                ## this is a "stalk", do not draw box. Draw two vertival lines instead
                 delta <- (end-start)/3
                 lines(c(start+delta,start+delta),c(0,2),col=color)
                 lines(c(end-delta,end-delta),c(0,2),col=color)
