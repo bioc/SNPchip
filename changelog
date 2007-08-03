@@ -53,4 +53,5 @@
 
 1.1.13  - renamed copyNumber method for SnpQSet calculateCopyNumber...moved corresponding man pages (need to add/del)
 
+1.1.14  - SNPchip now depends on R-2.6.0 and oligo version >= 1.1.5
 	
