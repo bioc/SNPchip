@@ -1,4 +1,4 @@
-import(Biobase, oligo)
+import(Biobase, oligo, methods)
 ##exportPattern("^[^\\.]")
 exportClasses(AnnotatedSnpSet,
               AnnotatedSnpCallSet,
@@ -24,21 +24,35 @@ exportMethods(getSnpAnnotation,
               summary)
 export("showSummary", "centromere", "chromosomeSize", "unsplitS4")
 
+
 ##Export classes from oligo
-#exportClasses(oligoSnpSet,
-#              SnpQSet,
-#              SnpCallSet,
-#              SnpCopyNumberSet)
-###Export methods from oligo
-#exportMethods(position,
-#              chromosome,
-#              copyNumber,
-#              "copyNumber<-",
-#              calls,
-#              "calls<-",
-#              cnConfidence,
-#              "cnConfidence<-",
-#              callsConfidence,
-#              "callsConfidence<-")
+exportClasses(oligoSnpSet,
+              SnpQSet,
+              SnpCallSet,
+              SnpCopyNumberSet)
+
+##Export methods from oligo
+exportMethods(position,
+              copyNumber,
+              "copyNumber<-",
+              calls,
+              "calls<-",
+              cnConfidence,
+              "cnConfidence<-",
+              callsConfidence,
+              "callsConfidence<-")
+
+##export functions defined in functions.R so that the oligo methods
+##will be available for external use
+export(chromosome,
+       copyNumber,
+       "copyNumber<-",
+       cnConfidence,
+       "cnConfidence<-",
+       calls,
+       "calls<-",
+       callsConfidence,
+       "callsConfidence<-",
+       position)
 
               

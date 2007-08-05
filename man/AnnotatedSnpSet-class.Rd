@@ -1,16 +1,19 @@
 \name{AnnotatedSnpSet-class}
 \docType{class}
 \alias{AnnotatedSnpSet-class}
+
+%classes from oligo
+\alias{oligoSnpSet-class}
+\alias{SnpQSet-class}
+\alias{SnpCallSet-class}
+\alias{SnpCopyNumberSet-class}
+
 \alias{alleleA,AnnotatedSnpSet-method}
 \alias{alleleB,AnnotatedSnpSet-method}
 \alias{coerce,AnnotatedSnpSet,AnnotatedSnpCopyNumberSet-method}
 \alias{chromosome,AnnotatedSnpSet-method}
 \alias{chromosomeAnnotation,AnnotatedSnpSet-method}
 \alias{chromosomeAnnotation<-,AnnotatedSnpSet,data.frame-method}
-%\alias{copyNumber,AnnotatedSnpSet-method}
-%\alias{copyNumber<-,AnnotatedSnpSet-method}
-%\alias{cnConfidence,AnnotatedSnpSet-method}
-%\alias{cnConfidence<-,AnnotatedSnpSet-method}
 \alias{dbSnpId,AnnotatedSnpSet-method}
 \alias{enzyme,AnnotatedSnpSet-method}
 \alias{fragmentLength,AnnotatedSnpSet-method}
@@ -18,6 +21,7 @@
 \alias{plotSnp,AnnotatedSnpSet-method}
 \alias{position,AnnotatedSnpSet-method}
 \alias{smoothSnp,AnnotatedSnpSet-method}
+
 
 \title{Class "AnnotatedSnpSet" }
 \description{Container for genotype and copy number data from SNP chips,

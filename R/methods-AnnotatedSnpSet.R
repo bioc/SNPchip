@@ -548,3 +548,4 @@ setMethod("smoothSnp", "AnnotatedSnpSet",
           })
 
 
+

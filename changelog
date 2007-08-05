@@ -46,12 +46,16 @@
 
 	- tinkered with the initialization methods for these classes...
 
-	- Not sure what is causing this problem:
-		* checking R code for possible problems ... NOTE
-        	Error in expMethods[[i]] <- allMethodLists[ii] : 
-	        more elements supplied than there are to replace
+	- Not sure what is causing this problem: * checking R code for
+		possible problems ... NOTE Error in expMethods[[i]] <-
+		allMethodLists[ii] : more elements supplied than there are
+		to replace
 
 1.1.13  - renamed copyNumber method for SnpQSet calculateCopyNumber...moved corresponding man pages (need to add/del)
 
 1.1.14  - SNPchip now depends on R-2.6.0 and oligo version >= 1.1.5
+
+1.1.15  Removed dependency of SNPchip on oligo.  Functions for copyNumber,
+	calls, etc in functions.R are temporary until these class
+	definitions are ported to Biobase.
 	
