@@ -4,6 +4,11 @@ exportClasses(ParESet,
               ParSnpCallSet,
               ParSnpSet)
 
+##DEPRECATED CLASSES
+exportClasses(AnnotatedSnpSet,
+              AnnotatedSnpCopyNumberSet,
+              AnnotatedSnpCallSet)
+
 exportMethods(getSnpAnnotation,
               alleleA,
               alleleB,

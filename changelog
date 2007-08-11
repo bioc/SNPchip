@@ -79,6 +79,9 @@
 
 	- get rid of getSnpAnnotation.  use rsqlite
 
+1.1.17  provide coercion methods for deprecated classes
+	
+
 
 ##To do:  define a VIRTUAL class that extends eSet directly.  All the Snp-level sets extend
 ## this virtual class.
