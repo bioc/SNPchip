@@ -9,7 +9,7 @@ showSummary(object, where, bty, legend.panel, cex, col, digits)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{object}{Object of class \code{AnnotatedSnpSet}}
+  \item{object}{Object of class \code{oligoSnpSet}}
   \item{where}{Character string indicating where to put the legend.  See
   \code{legend}}
   \item{bty}{See \code{bty}}

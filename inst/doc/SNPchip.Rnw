@@ -1,0 +1,271 @@
+% NOTE -- ONLY EDIT THE .Rnw FILE!!!  The .tex file is
+% likely to be overwritten.
+% \VignetteIndexEntry{SNPchip Vignette}
+% \VignetteKeywords{copy number, genotype, SNP}
+%\VignettePackage{SNPchip}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[]{article}
+
+\usepackage{amsmath,pstricks,fullpage}
+\usepackage[authoryear,round]{natbib}
+\usepackage{hyperref}
+\usepackage{setspace}
+\parindent 0in  % Left justify
+\newcommand{\scscst}{\scriptscriptstyle}
+\newcommand{\scst}{\scriptstyle}
+
+\newcommand{\Rpackage}[1]{\textit{#1}}
+\newcommand{\Rfunction}[1]{\texttt{#1}}
+\newcommand{\Robject}[1]{\texttt{#1}}
+
+\textwidth=6.2in
+\textheight=8.5in
+%\parskip=.3cm
+\oddsidemargin=.1in
+\evensidemargin=.1in
+\headheight=-.3in
+
+
+\title{Tools for high throughput SNP chip data}
+\author{Robert Scharpf, Jonathan Pevsner, Jason Ting, and Ingo Ruczinski}
+
+\begin{document}
+
+<<options, echo=FALSE, hide=TRUE>>=
+options(width=60)
+@ 
+
+\maketitle
+
+\section*{Introduction}
+
+\Rpackage{SNPchip} defines classes and methods useful for organizing
+high throughput genomic data.  The classes defined here extend the
+\Robject{eSet} class in \Rpackage{Biobase}, utilizing the existing
+Bioconductor infrastructure for organizing high dimensional genomic
+data.  This provides a foundation upon which statistical and
+visualization tools can be further developed.
+
+\section{Simple Usage}
+
+<<package, hide=TRUE>>=
+library(SNPchip)
+@ 
+
+<<exampledata>>=
+data(sample.snpset)
+sample.snpset
+@ 
+
+Plot the first few chromosomes for samples 1-4:
+<<plot1, fig=TRUE, width=8, height=6>>=
+plotSnp(sample.snpset[chromosome(sample.snpset) %in% as.character(1:3), 1:4],
+        label.cytoband=FALSE,
+        cex=5,
+        line.ylab=3,
+        use.chromosome.size=TRUE)
+@ 
+
+The samples are plotted by row. For each sample, the copy number
+(vertical axis) is plotted against the physical position of the SNP in
+the chromosome.  Here, the chromosome labels are plotted beneath the
+cytobands.
+
+\section{Examples}
+
+\subsection{Genome-wide plots for multiple samples}
+A genome-wide view of copy number and genotype calls versus physical
+position can be made using \Rfunction{plotSnp}.  Here, we plot
+chromosomes 1-22 and X of samples 1 - 4 in the object
+\Robject{sample.snpset}:
+
+<<plot2, fig=TRUE, width=8, height=4>>=
+plotSnp(sample.snpset[, 1:4], cex=2, use.chromosome.size=TRUE, 
+        mar=rep(0.1, 4), add.cytoband=FALSE)
+@ 
+
+Note that we suppress the cytobands in the above plot (the resolution
+is too poor at this level) by the argument \Robject{add.cytoband}. The
+default plot layout generally works well, but can be adjusted through
+additional arguments to par and layout.
+
+\subsection{Subsetting for more-focused plots}
+
+A more focused view of chromosomes 1, 7, 16, 19, and X of sample 2
+could be obtained by
+
+<<plotSnpChromosomes, fig=TRUE, width=8, height=4>>=
+plotSnp(sample.snpset[chromosome(sample.snpset) %in% c(1, 7, 16, 19, "X"), 2],
+        cex=0.8,
+        mar=rep(0.5, 4),
+        pch=c(20, 21, 20), 
+        bty="o", 
+        cex.axis=1.2, 
+        cex.lab=1.5, 
+        xaxs="r",
+        use.chromosome.size=TRUE)
+@ 
+
+A plot of just the p-arm in sample 2 of chromosome 1:
+
+<<parm>>=
+data(chromosomeAnnotation)
+parm <- chromosomeAnnotation["1", "centromereStart"]
+@ 
+
+<<plotP, fig=TRUE, width=8, height=7>>=
+plotSnp(sample.snpset[chromosome(sample.snpset) == "1" & position(sample.snpset) < parm, 2],
+        cex=0.8, pch=20, bg=c("royalblue", "red", "royalblue"),
+        oma=c(4, 4, 2, 3),
+        bty="o", 
+        cex.axis=1.2, 
+        cex.lab=1.5) 
+@ 
+
+Note that the cytoband is automatically subsetted appropriately. Had
+we instead specified \texttt{use.chromosome.size=TRUE}, the x-axis
+limits would include the entire chromosome (and cytoband) though only
+the SNPs on the p-arm would be plotted.
+
+\subsection{Plotting cytoband}
+
+To plot the cytoband of chromosome 1,
+
+<<cytoband, fig=TRUE, width=8, height=2>>=
+plotCytoband("1")
+@ 
+
+\subsection{Smoothing example}
+
+Here we discuss a quick method for smoothing copy number estimates for
+each chromosome.  Better smoothing of the copy number estimates can be
+acheived by hidden Markov models.  The following code chunk first
+assigns heterozygous calls to the integer 1 and homozygous calls to
+the integer zero.  It follows that regions of deletions will have
+homozygous calls of zero. We simulated a deletion of 50 consecutive
+SNPs and then converted the \Robject{sample.snpset} to a list where
+each element in the list is an \Robject{oligoSnpSet} object for one
+chromosome.
+
+<<smoothingExample>>=
+sim1 <- sample.snpset[chromosome(sample.snpset) %in% 1:5, 1]
+sim1 <- sim1[chromosome(sim1) == "1", ]
+sim1 <- sim1[order(position(sim1)), ]
+copyNumber(sim1)[101:150, 1] <- copyNumber(sim1)[101:150, 1] - 1
+calls(sim1)[101:150, 1] <- 1
+smoothSet <- smoothSnp(sim1, 1:5, 1:3, span=1/10)
+highlight <- calls(smoothSet)[, 1] <= 0.1 & copyNumber(smoothSet)[, 1] <= 1.5
+@ 
+
+A plot of the smoothed calls versus copynumber can be used to
+visualize the deletion:
+<<plotSmooth,fig=TRUE, height=4, width=9>>=
+op <- par(las=1, mfrow=c(1, 1), mar=c(5, 4, 0.5, 0.5), oma=rep(0, 4))
+plot(calls(smoothSet)[, 1], copyNumber(smoothSet)[, 1], 
+     ylim=range(copyNumber(smoothSet)), pch=".", cex=3,
+     xlab="% heterozygous calls",
+     ylab="smooth copy number", xaxt="n", xlim=c(-0.05, 30/70+.2))
+axis(1, at=pretty(calls(smoothSet)), labels=pretty(calls(smoothSet)))
+points(calls(smoothSet)[highlight, 1], copyNumber(smoothSet)[highlight, 1],
+       pch=20, col="royalblue", bg="white")
+par(op)
+@ 
+
+<<plot3, fig=TRUE, width=8, height=5>>=
+plotSnp(sim1, cex=1, pch=20, use.chromosome.size=TRUE, main="Chromosome 1")
+@ 
+
+\subsection{Descriptive and statistical summaries}
+
+Descriptive statistics for copy number and genotype calls are provided
+with the \Rfunction{summary} method. For each chromosome in the
+\Robject{oligoSnpSet}, \Rfunction{summary} calculates the average
+and standard deviation of the copy number estimates, as well as the \%
+homozygous and heterozygous calls.  In addition, summary calculates
+the average copy number, standard deviation, \% homozygous and
+heterozygous across all autosomes in the \Robject{oligoSnpSet}.
+The dimensions of the four matrices are S x C + 1, where S is the
+number of samples and C is the number of chromosomes in the
+\Robject{oligoSnpSet}.
+
+<<summary>>=
+x <- summary(sample.snpset, digits=1)
+str(x)
+@ 
+
+Boxplot by chromosome:
+<<summaryPlot, fig=TRUE, width=8, height=4>>=
+op <- par(mfrow=c(1,1), mar=c(4, 4, 3, 1), las=1)
+boxplot(split(copyNumber(sample.snpset[, 1]), chromosome(sample.snpset)), 
+        ylab="copy number", main=sampleNames(sample.snpset)[1])
+par(op)
+@ 
+
+\section{Annotation}
+
+\subsection{Chromosome-level}
+The chromosome-level annotation used in the plotting methods can be
+accessed by \Robject{data()} calls:
+
+<<chromosomeAnnotation, echo=TRUE>>=
+data(chromosomeAnnotation)
+chromosomeAnnotation[1:5, ]
+
+data(cytoband)
+cytoband[1:5, ]
+@ 
+
+\subsection{Feature-level}
+
+<<annotationSlot, eval=FALSE, echo=FALSE>>=
+annotation(sample.snpset)
+library("pd.mapping50k.xba240")
+@ 
+
+For ease of subsetting with the plotting routines, we currently store
+the feature-level annotation in the \Robject{featureData} slot.  This
+can be acheived by 
+
+<<getSnpAnnotation, eval=FALSE, echo=FALSE>>=
+featureData(sample.snpset) <- getSnpAnnotation(sample.snpset)
+fvarLabels(sample.snpset)
+@ 
+
+Alternatively, one may obtain the NetAffx annotation saved as an R
+object here:
+<<netAffxAnnotation, eval=FALSE>>=
+path <- "http://biostat.jhsph.edu/~iruczins/publications/sm/2006.scharpf.bioinfo"
+try(load(url(paste(path, "/mapping/mapping10k.rda", sep=""))))
+colnames(mapping10k$annotation)
+@ 
+
+\section{Integration with other Bioconductor packages}
+
+\subsection{\Rpackage{oligo}}
+For generating \Robject{SnpCallSets} from .CEL files, see the R
+package \Rpackage{oligo}.  In particular, the function \Robject{crlmm}
+in \Rpackage{oligo} creates an instance of the class
+\Robject{SnpCallSet}.  A \Robject{oligoSnpSet} can be created if the
+the copy number estimates are obtained by some other means.
+
+\subsection{\Rpackage{RSNPper}}
+
+To retreive additional annotation on the known SNP's in the region of
+this simulated deletion, we could use the \Rpackage{RSNPper}.
+
+<<nsnpsInRegion, eval=FALSE>>=
+library(RSNPper)
+(dbId <- dbSnpId(annSnpset)[snps[2] == featureNames(annSnpset)])
+dbId <- strsplit(dbId, "rs")[[1]][2]
+print(SNPinfo(dbId))
+@ 
+
+\section{Session Information}
+The version number of R and packages loaded for generating the vignette were:
+
+<<echo=FALSE, results=tex>>=
+toLatex(sessionInfo())
+@ 
+
+\end{document}

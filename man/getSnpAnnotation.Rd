@@ -14,7 +14,7 @@ getSnpAnnotation(object, ...)
   \item{\dots}{Additional arguments}
 }
 
-\details{ Currently, this function supports only Affymetrix 100k and
+\details{ Currently, this function supports only the Affymetrix 100k and
   500k SNP chips.  The \code{featureNames} in the \code{eSet} object
   must be valid Affymetrix identifiers.  Two options exist for adding
   SNP-level annotation to an object:
@@ -56,34 +56,26 @@ getSnpAnnotation(object, ...)
 \examples{
 
 ##Default method for adding SNP-level annotation
-  data(annSnpset)
-  obj <- new("AnnotatedSnpCopyNumberSet",
-             copyNumber=copyNumber(annSnpset)[1:50,],
-             cnConfidence=cnConfidence(annSnpset)[1:50,],
-             phenoData=phenoData(annSnpset), annotation=annotation(annSnpset))
-  obj
+  data(sample.snpset)
 \dontrun{
 ##Requires pd.mapping50k.xba240 annotation package
-  snp.annotation <- getSnpAnnotation(obj)
+  snp.annotation <- getSnpAnnotation(sample.snpset)
   snp.annotation
   class(snp.annotation)
   identical(featureNames(obj), featureNames(snp.annotation))
-  featureData(obj) <- snp.annotation
-  validObject(obj)
-  varLabels(featureData(obj))
+  featureData(sample.snpset) <- snp.annotation
+  fvarLabels(sample.snpset)
 }
 
 ##Using NetAffx annotation (already saved as a data.frame)
 \dontrun{
   
   try(load(url("http://biostat.jhsph.edu/~iruczins/publications/sm/2006.scharpf.bioinfo/mapping/mapping50kXba240.rda")))
-  reorderRows <- match(featureNames(obj), as.character(mapping50kXba240$Probe.Set.ID))
+  reorderRows <- match(featureNames(sample.snpset), as.character(mapping50kXba240$Probe.Set.ID))
   netaffx.annotation <- mapping50kXba240[reorderRows, ]
   fD <- as(netaffx.annotation, "AnnotatedDataFrame")
-  featureData(obj) <- fD
-  varLabels(featureData(obj))
-  validObject(obj)
-  
+  featureData(sample.snpset) <- fD
+  varLabels(featureData(sample.snpset))
 }
 }
 

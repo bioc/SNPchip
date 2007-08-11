@@ -4,6 +4,7 @@
 \alias{summary,ANY-method}
 \alias{summary,SnpCallSet-method}
 \alias{summary,AnnotatedSnpSet-method}
+\alias{summary,oligoSnpSet-method}
 \title{Methods for Function summary}
 \description{
 Methods for function \code{summary} 

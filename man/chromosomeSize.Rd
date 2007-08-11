@@ -5,13 +5,12 @@
   Size of chromosome in base pairs.
 }
 \usage{
-chromosomeSize(annotation, chromosome)
+chromosomeSize(chromosome)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{annotation}{ data.frame contiaining chromosome-level
-    annotation.}
-  \item{chromosome}{Vector of character strings.}
+  \item{chromosome}{character string for the chromosome, e.g., "1", ...,
+    "22", "X", or "Y"}
 }
 \details{
 }
@@ -24,8 +23,7 @@ chromosomeSize(annotation, chromosome)
 }
 \seealso{}
 \examples{
-data(chromosomeAnnotation)
-chromosomeSize(chromosomeAnnotation, c(1:22, "X", "Y"))
+chromosomeSize("1")
 }
 \keyword{manip}
 

@@ -1,30 +1,40 @@
 import(Biobase, oligo, methods)
-##exportPattern("^[^\\.]")
-exportClasses(AnnotatedSnpSet,
-              AnnotatedSnpCallSet,
-              AnnotatedSnpCopyNumberSet)
+exportClasses(ParESet,
+              ParSnpCopyNumberSet,
+              ParSnpCallSet,
+              ParSnpSet)
+
 exportMethods(getSnpAnnotation,
               alleleA,
               alleleB,
+              calculateCopyNumber,              
               chromosome,
-              chromosomeAnnotation, 
-              "chromosomeAnnotation<-",
               coerce,
-              calculateCopyNumber,
               dbSnpId,
               enzyme,
               fragmentLength,
               initialize,
-              plotCytoband,
-              plotSnp,
               position,
               selectSomeIndex,  
-              show,              
+              show,
               smoothSnp,
               summary)
-export("showSummary", "centromere", "chromosomeSize", "unsplitS4")
 
+export(centromere,
+       chromosomeSize,
+       showSummary,
+       unsplitS4)
 
+##par class methods
+exportMethods("$",
+              "$<-",
+              allPlots,
+              getPar,
+              plotSnp,              
+              snpPar,
+              "snpPar<-")              
+export(plotCytoband)
+              
 ##Export classes from oligo
 exportClasses(oligoSnpSet,
               SnpQSet,

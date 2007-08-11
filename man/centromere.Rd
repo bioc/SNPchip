@@ -2,30 +2,26 @@
 \alias{centromere}
 \title{Coordinates of centromere}
 \description{
-  Extracts coordinates of centromere.
+  Extracts coordinates of centromere for a particular chromosome
 }
 \usage{
-centromere(annotation, chromosome)
+centromere(chromosome)
 }
 \arguments{
-  \item{annotation}{ data.frame of chromosome annotation supplied by this package}
-  \item{chromosome}{ character vector indicating which chromosomes to
-    obtain centromere coordinates}
+  \item{chromosome}{character string: "1", ..., "22", "X", or "Y"}
 }
 \details{
 }
 \value{
-  A data.frame containing start and stop sites of the centromere for all
-  chromosomes in argument chromosome.
+  integer: stat and stop coordinates of centromere in basepairs
 }
 \references{}
 \author{Robert Scharpf}
-\note{ This is a static table.  
+\note{ 
 }
 \seealso{}
 \examples{
-data(annSnpset)
-centromere(chromosomeAnnotation(annSnpset), c(1:5, "X"))
+centromere("1")
 }
 \keyword{manip}
 

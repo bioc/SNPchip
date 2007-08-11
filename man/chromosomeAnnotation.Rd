@@ -1,6 +1,5 @@
 \name{chromosomeAnnotation}
 \alias{chromosomeAnnotation}
-\alias{chromosomeAnnotation<-}
 \docType{data}
 \title{chromosome annotation}
 \description{

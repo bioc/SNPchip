@@ -1,5 +1,6 @@
 \name{smoothSnp}
 \alias{smoothSnp}
+\alias{smoothSnp,oligoSnpSet-method}
 \title{A simple nonparametric smoother for genotype and copy number}
 \description{
   A loess smoother for finding regions of reduced copy number and loss

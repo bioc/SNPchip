@@ -1,28 +1,18 @@
-setMethod("initialize", "SnpCallSet",
-          function(.Object,
-                   phenoData = new("AnnotatedDataFrame"),
-                   experimentData = new("MIAME"),
-                   featureData = new("AnnotatedDataFrame"),
-                   annotation = character(),
-                   calls = new("matrix"),
-                   callsConfidence = new("matrix")) {
-            callNextMethod(.Object,
-                           assayData = assayDataNew(
-                             calls = calls,
-                             callsConfidence = callsConfidence),
-                           featureData = featureData,
-                           phenoData = phenoData,
-                           experimentData = experimentData,
-                           annotation = annotation)
+setMethod(".combineChips", c("SnpCallSet", "SnpCallSet"),
+          function(x, y, ...){
+            fData <- rbind(fData(x), fData(y))
+            featureData <- new("AnnotatedDataFrame",
+                               data=fData,
+                               varMetadata=fvarMetadata(x))
+            warning("only using phenoData in first argument")
+            new("SnpCallSet",
+                featureData=featureData,
+                phenoData=phenoData(x),
+                calls=rbind(calls(x), calls(y)),
+                callsConfidence=rbind(callsConfidence(x), callsConfidence(y)),
+                experimentData=experimentData(x),
+                annotation="mapping100k")
           })
-setMethod("alleleA", "SnpCallSet", function(object) alleleA(featureData(object)))
-setMethod("alleleB", "SnpCallSet", function(object) alleleB(featureData(object)))
-setMethod("chromosome", "SnpCallSet", function(object) chromosome(featureData(object)))
-setMethod("dbSnpId", "SnpCallSet", function(object) dbSnpId(featureData(object)))
-setMethod("enzyme", "SnpCallSet", function(object) enzyme(featureData(object)))
-setMethod("position", "SnpCallSet", function(object) position(featureData(object)))
-##setMethod("probeSetId", "SnpCallSet", function(object) probeSetId(featureData(object)))
-
 setMethod("summary", signature(object = "SnpCallSet"),
           function(object, digits = 3, noCalls = FALSE, ...){
             het <- colMeans(ifelse(calls(object) == 2, 1, 0))

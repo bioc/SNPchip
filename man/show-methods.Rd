@@ -1,15 +1,13 @@
 \name{show-methods}
 \docType{methods}
 \alias{show-methods}
-\alias{show,AnnotatedSnpSet-method}
-\alias{show,AnnotatedSnpCallSet-method}
-\alias{show,AnnotatedSnpCopyNumberSet-method}
+\alias{show,oligoSnpSet-method}
 \title{show methods}
 \description{
 Show methods
 }
 \section{Methods}{
 \describe{
-\item{object = "AnnotatedSnpSet"}{ show method for AnnotatedSnpSet}
+\item{object = "oligoSnpSet"}{ show method for AnnotatedSnpSet}
 }}
 \keyword{methods}

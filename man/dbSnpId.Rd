@@ -1,10 +1,8 @@
 \name{dbSnpId}
 \alias{dbSnpId}
-\alias{dbSnpId,SnpCallSet-method}
-\alias{dbSnpId,SnpCopyNumberSet-method}
 \alias{dbSnpId,AnnotatedDataFrame-method}
-\alias{dbSnpId,oligoSnpSet-method}
-\title{The dbSNP identifier. }
+\alias{dbSnpId,eSet-method}
+\title{The dbSNP identifier }
 \description{
   Unique identifier for each SNP assigned by NIH
 }
@@ -12,7 +10,7 @@
 dbSnpId(object)
 }
 \arguments{
-  \item{object}{Object possibly derived from \code{AnnotatedSnpSet} or
+  \item{object}{Object possibly derived from \code{eSet} or
     \code{AnnotatedDataFrame} class.}
 }
 \details{
@@ -23,12 +21,13 @@ dbSnpId(object)
 \author{Robert Scharpf}
 \note{
 }
-\seealso{\code{\link[SNPchip]{AnnotatedSnpSet}},
-  \code{\link[Biobase]{featureData}}, \code{\link[Biobase]{AnnotatedDataFrame}}
+\seealso{
+  
 }
+
 \examples{
-data(annSnpset)
-dbSnpId(annSnpset)[1:5]
+data(sample.snpset)
+dbSnpId(sample.snpset)[1:5]
 }
 \keyword{manip}
 

@@ -1,10 +1,8 @@
 \name{position-methods}
 \docType{methods}
 \alias{position}
-\alias{position,SnpCallSet-method}
-\alias{position,SnpCopyNumberSet-method}
 \alias{position,AnnotatedDataFrame-method}
-\alias{position,oligoSnpSet-method}
+\alias{position,eSet-method}
 
 \title{Physical position of SNP on chromosome}
 \description{

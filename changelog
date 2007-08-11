@@ -58,4 +58,33 @@
 1.1.15  Removed dependency of SNPchip on oligo.  Functions for copyNumber,
 	calls, etc in functions.R are temporary until these class
 	definitions are ported to Biobase.
+
+1.1.16  
+	- removed Annotated* class definitions.  load chromosomeAnnotation when needed
+
+	- remove annSnpset.  Replace with oligoSnpSet
+	
+	- a few improvments to plotCytoband
+	
+	- added method combineChips for SnpCallSets (need to add error
+	checking).  Removed initialize method for SnpCallSet (defined in
+	oligo -- need to verify that SNPchip can see this without oligo)
+	
+	- get rid of chromosome annotation as a slot...just load the data
+	in the functions.  use b's classes directly
+
+	- change plotSnps function (remove chromosome and samples
+	arguments)...think about how to structure with the other plotting
+	functions...SnpCopyNumberSet, SnpSet, HmmSnpSet, ...
+
+	- get rid of getSnpAnnotation.  use rsqlite
+
+
+##To do:  define a VIRTUAL class that extends eSet directly.  All the Snp-level sets extend
+## this virtual class.
+## - rewrite vignette
+
+
+
+	
 	

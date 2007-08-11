@@ -8,28 +8,30 @@
 \usage{
 unsplitS4(value, featureData)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{value}{Object of class \code{AnnotatedSnpSet}}
-  \item{featureData}{Object of class \code{AnnotatedDataFrame}}
+  \item{value}{A \code{list}. Each element in the must be of class \code{oligoSnpSet}}
+  \item{featureData}{Object of class \code{AnnotatedDataFrame} that
+    contains the \code{featureData} prior to splitting.  See the example.}
 }
 \details{
 }
 \value{
-  \item{\code{AnnotatedSnpSet}}{An object of class \code{AnnoatedSnpSet}}
+  \code{oligoSnpSet}
   ...
 }
 \references{}
 \author{Robert Scharpf}
 \note{
 }
-\seealso{\code{\link[base]{split}}, \code{\link[SNPchip]{AnnotatedSnpSet}}}
+\seealso{
+  \code{\link[base]{split}}
+  }
 \examples{
-data(annSnpset)
-x <- split(annSnpset, chromosome(annSnpset))
+data(sample.snpset)
+x <- split(sample.snpset, chromosome(sample.snpset))
 class(x)
 length(x)
-xx <- unsplitS4(x, featureData(annSnpset))
+xx <- unsplitS4(x, featureData(sample.snpset))
 class(xx)
 }
 \keyword{manip}

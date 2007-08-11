@@ -1,8 +1,7 @@
 \name{alleleA}
 \alias{alleleA}
 \alias{alleleA,AnnotatedDataFrame-method}
-\alias{alleleA,oligoSnpSet-method}
-\alias{alleleA,SnpCallSet-method}
+\alias{alleleA,eSet-method}
 \title{Accessor for the A allele}
 \description{
 }

@@ -2,9 +2,7 @@
 \docType{methods}
 \alias{chromosome}
 \alias{chromosome-methods}
-\alias{chromosome,oligoSnpSet-method}
-\alias{chromosome,SnpCallSet-method}
-\alias{chromosome,SnpCopyNumberSet-method}
+\alias{chromosome,eSet-method}
 \alias{chromosome,AnnotatedDataFrame-method}
 
 \title{Accessor for chromosome SNP annotation}
