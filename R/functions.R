@@ -9,7 +9,10 @@
     }
   } else{
     ##ylimits for genotypes??
-    browser()
+    y <- .getY(object)
+    ##jitter the genotype calls
+    y <- jitter(y, amount=0.05)
+    ylim <- range(y)
   }
   ylim
 }
@@ -56,6 +59,20 @@ chromosomeSize <- function(chromosome){
     if(op$label.chromosome)
       mtext(unique(chromosome(object)), side=3, outer=FALSE, line=op$line.label.chromosome, cex=op$cex.lab)
   }              
+}
+
+.drawYaxis <- function(object, op, j){
+  if(unique(chromosome(object)) != op$firstChromosome) return()
+  if(op$yaxt == "n") return()
+  if("copyNumber" %in% ls(assayData(object))){
+    ##Draw default y-axis
+    at <- pretty(op$ylim)
+    labels <- at
+  }  else {
+    at <- c(0, 1)
+    labels <- c("AA/BB", "AB")
+  }
+  axis(side=2, at=at, labels=at, las=1, cex.axis=op$cex.axis)  
 }
 
 .drawXaxis <- function(object, op, j){
@@ -111,22 +128,26 @@ chromosomeSize <- function(chromosome){
   x <- .getX(object)##position
   y <- .getY(object, op)##calls or copy number
 
+  if(!op$outer.ylab) ylab <- op$ylab else ylab <- ""
+
   ##Option to recycle graphical parameters by genotype call (when available)
   col <- .recycle(op$col, object)
   cex <- .recycle(op$cex, object)
   pch <- .recycle(op$pch, object)
   bg <- .recycle(op$bg, object)
-    plot(x=x, y=y,
-         xlim=op$xlim,
-         ylim=op$ylim,
-         col=col,
-         cex=cex,
-         pch=pch,
-         bg=bg,
-         xaxt="n",
-         xaxs=op$xaxs,
-         main=op$main,
-         ...)
+  plot(x=x, y=y,
+       xlim=op$xlim,
+       ylim=op$ylim,
+       col=col,
+       cex=cex,
+       pch=pch,
+       bg=bg,
+       xaxt="n",
+       xaxs=op$xaxs,
+       main=op$main,
+       ylab=ylab,
+       yaxt="n",
+       ...)
 }
 
 plotCytoband <- function(chromosome,
@@ -239,8 +260,7 @@ plotCytoband <- function(chromosome,
 }
 
 .orderByGenotype <- function(object){
-  if(!("calls" %in% ls(assayData(object)))) return()
-
+  if(!("calls" %in% ls(assayData(object)))) return(object)
   gt <- as.vector(calls(object))
   gt[gt == 3] <- 1
   object[order(gt, decreasing=FALSE), ]
@@ -294,16 +314,9 @@ showSummary <- function(object, where, bty, legend.panel, cex, col, digits){
         legend.panel=legend.panel, cex=cex, col=col)
 }
 
-unsplitS4 <- function(value, featureData){
-  ##Must be a better way
-  obj <- new(class(value[[1]]),
-             copyNumber=do.call("rbind", lapply(value, copyNumber)),
-             cnConfidence=do.call("rbind", lapply(value, cnConfidence)),
-             calls=do.call("rbind", lapply(value, calls)),
-             callsConfidence=do.call("rbind", lapply(value, calls)),
-             phenoData=phenoData(value[[1]]),
-             annotation=annotation(value[[1]]))
-  featureData(obj) <- featureData[match(featureNames(obj), featureNames(featureData)), ]
-  stopifnot(identical(rownames(copyNumber(obj)), rownames(fData(obj))))
-  obj
-}
+
+
+
+
+
+

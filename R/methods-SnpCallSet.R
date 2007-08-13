@@ -13,6 +13,10 @@ setMethod(".combineChips", c("SnpCallSet", "SnpCallSet"),
                 experimentData=experimentData(x),
                 annotation="mapping100k")
           })
+
+
+
+
 setMethod("summary", signature(object = "SnpCallSet"),
           function(object, digits = 3, noCalls = FALSE, ...){
             het <- colMeans(ifelse(calls(object) == 2, 1, 0))
@@ -20,3 +24,16 @@ setMethod("summary", signature(object = "SnpCallSet"),
             mat <- rbind(het, hom)
             mat
           })
+
+##setMethod("unsplitS4", c("SnpCallSet", "AnnotatedDataFrame"),
+##          function(object, featureData){
+##            obj <- new(class(object[[1]]),
+##                       calls=do.call("rbind", lapply(object, calls)),
+##                       callsConfidence=do.call("rbind", lapply(object, calls)),
+##                       experimentData=experimentData(object[[1]]),
+##                       phenoData=phenoData(object[[1]]),
+##                       annotation=annotation(object[[1]]))
+##            featureData(obj) <- featureData[match(featureNames(obj), featureNames(featureData)), ]
+##            stopifnot(identical(rownames(copyNumber(obj)), rownames(fData(obj))))
+##            obj
+##          })

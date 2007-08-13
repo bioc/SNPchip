@@ -10,10 +10,10 @@ setGeneric("getPar", function(object, ...) standardGeneric("getPar"))
 setGeneric(".getX", function(object, ...) standardGeneric(".getX"))
 setGeneric(".getY", function(object, ...) standardGeneric(".getY"))
 setGeneric(".plotChromosome",   function(object, ...) standardGeneric(".plotChromosome"))
-setGeneric("plotCytoband",        function(object, ...) standardGeneric("plotCytoband"))
 setGeneric("plotSnp",   function(object, ...) standardGeneric("plotSnp"))
 setGeneric("selectSomeIndex",   function(object, ...) standardGeneric("selectSomeIndex"))##Generic defined, but not exported in Biobase
 setGeneric("smoothSnp", function(object, ...) standardGeneric("smoothSnp"))
+setGeneric("unsplitSnpSet", function(from, annotatedDataFrame, ...) standardGeneric("unsplitSnpSet"))
 
 setGeneric("allPlots",   function(object) standardGeneric("allPlots"))
 setGeneric("plotSpecific",   function(object) standardGeneric("plotSpecific"))

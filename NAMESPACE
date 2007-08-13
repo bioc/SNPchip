@@ -23,12 +23,13 @@ exportMethods(getSnpAnnotation,
               selectSomeIndex,  
               show,
               smoothSnp,
-              summary)
+              summary,
+              unsplitSnpSet)
 
 export(centromere,
        chromosomeSize,
-       showSummary,
-       unsplitS4)
+       showSummary)
+
 
 ##par class methods
 exportMethods("$",
@@ -38,7 +39,7 @@ exportMethods("$",
               plotSnp,              
               snpPar,
               "snpPar<-")              
-export(plotCytoband)
+export(plotCytoband, .calculateYlim)
               
 ##Export classes from oligo
 exportClasses(oligoSnpSet,

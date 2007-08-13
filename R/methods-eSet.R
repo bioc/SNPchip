@@ -15,9 +15,15 @@ setMethod("getPar", "eSet", function(object, add.cytoband, ...){
   object <- object[!is.na(chromosome(object)), ]
 
   ##layout
+  chromosomeNames <- unique(chromosome(object))
+  chromosomeNames[chromosomeNames == "X"] <- 23
+  chromosomeNames[chromosomeNames == "Y"] <- 24
+  chromosomeNames <- chromosomeNames[order(as.numeric(chromosomeNames))]
+  chromosomeNames[chromosomeNames == "23"] <- "X"
+  chromosomeNames[chromosomeNames == "24"] <- "Y"  
+  N <- length(chromosomeNames)
+  S <- ncol(object)  
   data(chromosomeAnnotation, package="SNPchip", envir=environment())
-  N <- length(unique(chromosome(object)))
-  S <- ncol(object)
   op$heights <- rep(1, ncol(object))
   if(!missing(add.cytoband)) op$add.cytoband <- add.cytoband
   if(op$add.cytoband){
@@ -31,17 +37,16 @@ setMethod("getPar", "eSet", function(object, add.cytoband, ...){
       }
     } 
   }
-
-  if(length(unique(chromosome(object))) > 10){
+  if(N > 10){
     op$alternate.xaxis.side <- TRUE
-    side <- c(1, 3)[rep(1:2, (length(unique(chromosome(object)))/2) + 1)]
-    side <- side[1:length(unique(chromosome(object)))]
+    side <- c(1, 3)[rep(1:2, N/2 + 1)]
+    side <- side[1:N]
     options(warn=-1)
-    names(side) <- unique(chromosome(object))[order(as.numeric(unique(chromosome(object))))]
+    names(side) <- chromosomeNames
     op$xaxis.side <- side
   }
   m <- matrix(1:(S*N), nc=N, byrow=FALSE)
-  w <- chromosomeAnnotation[unique(chromosome(object)), "chromosomeSize"]
+  w <- chromosomeAnnotation[chromosomeNames, "chromosomeSize"]
   op$widths <- w/min(w)
   op$mat <- m
 
@@ -55,11 +60,30 @@ setMethod("getPar", "eSet", function(object, add.cytoband, ...){
     ##something to that effect) and calculating ylim in .plot()
     op$ylim <- .calculateYlim(object, op)
   }
+  def.op <- options(warn=-1)
+  op$firstChromosome <- chromosomeNames[1]
+  options(def.op)
   op
   ##set up defaults according to number of samples, chromosomes, position, etc.
 })
 
 setMethod(".getX", "eSet", function(object, ...) position(object))
+
+setMethod(".getY", "eSet", function(object, op, ...){
+  if("copyNumber" %in% ls(assayData(object))){
+    y <- copyNumber(object)
+    y[y < op$ylim[1]] <- op$ylim[1]
+    y[y > op$ylim[2]] <- op$ylim[2]
+  } else {
+    y <- calls(object)
+    ##homozygous are 0's
+    y[y == 3 | y == 1] <- 0
+    ##heterozygous are 1's
+    y[y == 2] <- 1
+    y <- jitter(y, amount=0.05)
+  }
+  y
+})
           
 setMethod("getSnpAnnotation", "eSet",
           function(object){
@@ -98,127 +122,12 @@ setMethod("getSnpAnnotation", "eSet",
             featureData
           })
 
-##Courtesy of Jason Ting
-##setMethod("plotCytoband", "eSet",
-##          function(object,
-##                   cytoBand=NULL,
-##                   xlim=NULL,
-##                   cex.axis=0.8,
-##                   xaxs="r",
-##                   chromosome=NULL,
-##                   main="",
-##                   outer=TRUE,
-##                   cytobandAxis=TRUE, ...){
-##            
-##            if(is.null(cytoBand)) {data(cytoband); cytoBand <- cytoband}
-##            if(is.null(chromosome))  chrom <- unique(chromosome(object))  else chrom <- as.character(chromosome)[1]
-##            cytoBand_chr <- cytoBand[as.character(cytoBand$chrom) == chrom,]
-##            cytoBand_chr_p <- cytoBand_chr[grep("^p",as.character(cytoBand_chr$name)),]
-##            cytoBand_chr_q <- cytoBand_chr[grep("^q",as.character(cytoBand_chr$name)),]
-##            p.bands <- length(cytoBand_chr_p$chromEnd)
-##            cut.left  <- c()
-##            cut.right <- c()
-##            ##  1st  band of arm or 1st  band after  "stalk"
-##            ##  last band of arm or last band before "stalk"
-##            for(band in 1:length(cytoBand_chr$chromEnd)) {
-##              if (band==1)                             { cut.left[band] <- TRUE; cut.right[band] <- FALSE} else
-##              if (band==p.bands)                       { cut.left[band] <- FALSE; cut.right[band] <- TRUE} else
-##              if (band==(p.bands+1))                   { cut.left[band] <- TRUE; cut.right[band] <- FALSE} else
-##              if (band==length(cytoBand_chr$chromEnd)) { cut.left[band] <- FALSE; cut.right[band] <- TRUE} else{
-##                cut.left[band] <- FALSE; cut.right[band] <- FALSE
-##              }
-##            }
-##            for(band in 1:length(cytoBand_chr$chromEnd)) {
-##              if (as.character(cytoBand_chr$gieStain[band])=="stalk") {
-##                cut.right[band-1] <- TRUE
-##                cut.left[band] <- NA
-##                cut.right[band] <- NA
-##                cut.left[band+1] <- TRUE
-##              }
-##            }
-##            ##When plotting subregions of a chromosome, this prevents the cytobands from extending beyond the subsetted object
-##            ##exclude cytobands that end before the minimum plotting limits
-##            include <- cytoBand_chr[, "chromEnd"] > xlim[1] & cytoBand_chr[, "chromStart"] < xlim[2]            
-##            cytoBand_chr <- cytoBand_chr[include, ]
-##            cut.left <- cut.left[include]
-##            cut.right <- cut.right[include]            
-##            plot(c(0, cytoBand_chr$chromEnd[length(cytoBand_chr$chromEnd)]),
-##                 c(0, 2),
-##                 xlim=xlim,
-##                 type="n",
-##                 xlab="",
-##                 ylab="",
-##                 axes=FALSE,
-##                 xaxs=xaxs,
-##                 main=main)
-##            for (i in 1:length(cytoBand_chr$chromEnd)) {
-##              start <- cytoBand_chr$chromStart[i]
-##              end   <- cytoBand_chr$chromEnd[i]
-##              delta = (end-start)/4
-##              getStain <- function(stain){
-##                switch(stain,
-##                       gneg="grey100",
-##                       gpos25="grey90",
-##                       gpos50="grey70",
-##                       gpos75="grey40",
-##                       gpos100="grey0",
-##                       gvar="grey100",
-##                       stalk="brown3",
-##                       acen="brown4")
-##              }
-##              color <- getStain(cytoBand_chr[i, "gieStain"])
-####              stain <- as.character(cytoBand_chr$gieStain[i])
-####              if (stain=="gneg") {
-####                color <- "grey100"
-####              } else if (stain=="gpos25") {
-####                color <- "grey90"
-####              } else if (stain=="gpos50") {
-####                color <- "grey70"
-####              } else if (stain=="gpos75") {
-####                color <- "grey40"
-####              } else if (stain=="gpos100") {
-####                color <- "grey0"
-####              } else if (stain=="gvar") {
-####                color <- "grey100"
-####              } else if (stain=="acen") {
-####                color <- "brown4"
-####              } else if (stain=="stalk") {
-####                color <- "brown3"
-####              } else {
-####                color <- "white"
-####              }
-##              if (is.na(cut.left[i]) & is.na(cut.right[i])) {
-##                ## this is a "stalk", do not draw box. Draw two vertival lines instead
-##                delta <- (end-start)/3
-##                lines(c(start+delta, start+delta), c(0,2), col=color)
-##                lines(c(end-delta, end-delta), c(0,2), col=color)
-##              } else if (cut.left[i] & cut.right[i]) {      # cut both ends
-##                polygon(c(start, start+delta, end-delta, end, end, end-delta, start+delta, start),
-##                        c(0.3, 0, 0, 0.3, 1.7, 2, 2, 1.7), col=color)
-##              } else if (cut.left[i]) {              # cut left end only
-##                polygon(c(start, start+delta, end, end, start+delta, start),
-##                        c(0.3, 0, 0, 2, 2, 1.7), col=color)
-##              } else if (cut.right[i]) {             # cut right end only
-##                polygon(c(start, end-delta, end, end, end-delta, start),
-##                        c(0, 0, 0.3, 1.7, 2, 2),col=color)
-##              } else {
-##                polygon(c(start, end, end, start),
-##                        c(0, 0, 2, 2), col=color)
-##              }
-##            }
-##            my.x <- (cytoBand_chr$chromStart+cytoBand_chr$chromEnd)/2
-##            if(cytobandAxis){
-##              axis(1, at=my.x, labels=as.character(cytoBand_chr$name), outer=outer, cex.axis=cex.axis,
-##                   line=1, las=3)
-##            }
-##          })
-
 ##Call par only in the outer layer
 ##plots 1 sample and 1 chromosome
 setMethod("plotSnp", "eSet",
-          function(object, op, ...){
+          function(object, op, on.exit=TRUE, ...){
             old.par <- par(no.readonly=TRUE)
-            on.exit(par(old.par))
+            if(on.exit)  on.exit(par(old.par))
             
             object=object[!is.na(chromosome(object)), ]            
             if(missing(op)){
@@ -231,9 +140,16 @@ setMethod("plotSnp", "eSet",
                      respect=op$respect)
             }
             objList <- split(object, chromosome(object))
-            options(warn=-1)
+            def.op <- options(warn=-1)
+
+            ##this removes user control of the ordering.  Could add
+            ##chromosomeOrder as an argument to ParESet
+            names(objList)[names(objList) == "X"] <- "23"
+            names(objList)[names(objList) == "Y"] <- "24"
             objList <- objList[order(as.numeric(names(objList)))]
-            options(warn=1)
+            names(objList)[names(objList) == "23"] <- "X"
+            names(objList)[names(objList) == "24"] <- "Y"            
+            options(def.op)
 
             ##set graphical parameters for all plots
             par(allPlots(op))
@@ -241,7 +157,7 @@ setMethod("plotSnp", "eSet",
               if(i == 1) par(yaxt="s") else par(yaxt="n")
               .plotChromosome(objList[[i]], op=op)
             }
-            mtext(op$ylab, side=op$side.ylab, outer=op$outer.ylab, las=3, cex=op$cex.ylab, line=op$line.ylab)
+            if(op$outer.ylab) mtext(op$ylab, side=op$side.ylab, outer=TRUE, las=3, cex=op$cex.ylab, line=op$line.ylab)
             mtext(op$xlab, side=op$side.xlab, outer=op$outer.xlab, cex=op$cex.xlab, line=op$line.xlab)            
           })
 
@@ -252,6 +168,7 @@ setMethod(".plotChromosome", "eSet",
             op$xlim <- .getXlim(object, op)
             for(j in 1:ncol(object)){
               .plot(object[, j], op=op)
+              .drawYaxis(object=object, op=op)
               .drawCentromere(object[, j], op)              
               .drawCytobandWrapper(S=ncol(object), cytoband=cytoband, op=op, j=j)
               .drawXaxis(object=object, op=op, j=j)

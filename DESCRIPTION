@@ -1,5 +1,5 @@
 Package: SNPchip
-Version: 1.1.17
+Version: 1.1.18
 Date: 2006-10-05
 Title: Classes and Methods for high throughput SNP chip data 
 Author: Robert Scharpf <rscharpf@jhsph.edu>, Jason Ting, Jonathan Pevsner, and Ingo Ruczinski <ingo@jhsph.edu>
@@ -21,6 +21,7 @@ Collate: AllClasses.R
 	 methods-SnpCopyNumberSet.R 
 	 methods-oligoSnpSet.R
 	 methods-SnpQSet.R 
+	 methods-list.R
 	 functions.R
 biocViews: DNACopyNumber, SNPsAndGeneticVariability, Visualization
 URL:http://www.biostat.jhsph.edu/~iruczins/software/snpchip.html

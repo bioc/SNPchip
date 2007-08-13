@@ -6,6 +6,10 @@ setClass("ParSnpSet", contains="ParSnpCopyNumberSet")
 setClass("AnnotatedSnpSet", contains="oligoSnpSet")
 setClass("AnnotatedSnpCallSet", contains="SnpCallSet")
 setClass("AnnotatedSnpCopyNumberSet", contains="SnpCopyNumberSet")
+
+
+
+
 setAs("AnnotatedSnpSet", "oligoSnpSet",
       function(from, to){
         warning("AnnotatedSnpSet DEPRECATED")

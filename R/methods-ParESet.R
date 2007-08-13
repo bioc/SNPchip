@@ -12,7 +12,7 @@ setMethod("initialize", "ParESet",
                    xaxs="r",
                    xaxt="s",
                    yaxs="r",
-                   yaxt="n",
+                   yaxt="s",
                    lab=c(2, 5, 7), ##see par
                    adj=0,
                    bty="n",
@@ -53,6 +53,7 @@ setMethod("initialize", "ParESet",
                    heights=1,
                    widths=1,
                    respect=FALSE,
+                   firstChromosome="1",
                    ...){
 ##            snpLayout(.Object) <- new("SnpLayout", ...)
             .Object@snpPar <- list(col.axis=col.axis,
@@ -71,6 +72,7 @@ setMethod("initialize", "ParESet",
                                    xaxs=xaxs,
                                    xaxt=xaxt,
                                    yaxt=yaxt,
+                                   yaxs=yaxs,
                                    lab=lab,
                                    adj=adj,
                                    log=log,
@@ -104,7 +106,8 @@ setMethod("initialize", "ParESet",
                                    mat=mat,
                                    heights=heights,
                                    widths=widths,
-                                   respect=respect)
+                                   respect=respect,
+                                   firstChromosome=firstChromosome)
             .Object
           })
 

@@ -82,7 +82,7 @@ chromosomes 1-22 and X of samples 1 - 4 in the object
 
 <<plot2, fig=TRUE, width=8, height=4>>=
 plotSnp(sample.snpset[, 1:4], cex=2, use.chromosome.size=TRUE, 
-        mar=rep(0.1, 4), add.cytoband=FALSE)
+        mar=rep(0.1, 4), oma=c(3, 4, 2, 1), add.cytoband=FALSE)
 @ 
 
 Note that we suppress the cytobands in the above plot (the resolution

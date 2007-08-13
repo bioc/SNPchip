@@ -33,13 +33,6 @@ setValidity("oligoSnpSet", function(object) {
     if (is.null(msg)) TRUE else msg
 })
 
-setMethod(".getY", "oligoSnpSet", function(object, op, ...){
-  y <- copyNumber(object)
-  y[y < op$ylim[1]] <- op$ylim[1]
-  y[y > op$ylim[2]] <- op$ylim[2]
-  y
-})
-
 setMethod("show", "oligoSnpSet", function(object) {
   cat(class( object ), " (storageMode: ", storageMode(object), ")\n", sep="")
   adim <- dim(object)
@@ -175,9 +168,33 @@ setMethod("smoothSnp", "oligoSnpSet",
             }
             object.list <- split(object, chromosome(object))
             smooth.list <- lapply(object.list, smoothChromosome, span=span)
-            smooth.set <- unsplitS4(smooth.list, featureData(object))
+            smooth.set <- unsplitSnpSet(smooth.list,
+                                        featureData(object),
+                                        copyNumber=do.call("rbind", lapply(smooth.list, copyNumber)),
+                                        cnConfidence=do.call("rbind", lapply(smooth.list, cnConfidence)),
+                                        calls=do.call("rbind", lapply(smooth.list, calls)),
+                                        callsConfidence=do.call("rbind", lapply(smooth.list, calls)),
+                                        phenoData=phenoData(smooth.list[[1]]),
+                                        annotation=annotation(smooth.list[[1]]),
+                                        experimentData=experimentData(smooth.list[[1]]))
             return(smooth.set)
           })
+
+##setMethod("unsplitS4", c("oligoSnpSet", "AnnotatedDataFrame"),
+##          function(object, featureData){
+##            obj <- new(class(object[[1]]),
+##                       copyNumber=do.call("rbind", lapply(object, copyNumber)),
+##                       cnConfidence=do.call("rbind", lapply(object, cnConfidence)),
+##                       calls=do.call("rbind", lapply(object, calls)),
+##                       callsConfidence=do.call("rbind", lapply(object, calls)),
+##                       phenoData=phenoData(object[[1]]),
+##                       annotation=annotation(object[[1]]),
+##                       experimentData=experimentData(object[[1]]))
+##            featureData(obj) <- featureData[match(featureNames(obj), featureNames(featureData)), ]
+##            stopifnot(identical(rownames(copyNumber(obj)), rownames(fData(obj))))
+##            obj
+##          })
+
 
 
 

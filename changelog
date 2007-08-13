@@ -80,6 +80,12 @@
 	- get rid of getSnpAnnotation.  use rsqlite
 
 1.1.17  provide coercion methods for deprecated classes
+
+1.1.18
+	removed generic for plotCytoband
+	fixed bug in .orderByGenotype
+	export function .calculateYlim
+	added .getY method for SnpCallSet that jitters the genotype calls
 	
 
 
