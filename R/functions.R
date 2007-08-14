@@ -72,7 +72,7 @@ chromosomeSize <- function(chromosome){
     at <- c(0, 1)
     labels <- c("AA/BB", "AB")
   }
-  axis(side=2, at=at, labels=at, las=1, cex.axis=op$cex.axis)  
+  axis(side=2, at=at, labels=labels, las=1, cex.axis=op$cex.axis)  
 }
 
 .drawXaxis <- function(object, op, j){
