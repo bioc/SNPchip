@@ -37,7 +37,6 @@ label.cytoband=TRUE, cex.axis=1, outer=FALSE, ...)
 \references{}
 \author{Robert Scharpf and Jason Ting}
 \examples{
-source("~/projects/software/SNPchip/R/functions.R")
 plotCytoband("1")
 }
 \seealso{\code{\link{plotSnp}}, \code{\link{cytoband}},

@@ -87,7 +87,8 @@
 	export function .calculateYlim
 	added .getY method for SnpCallSet that jitters the genotype calls
 	
-
+1.1.20 fixed bug in plotCytoband example
+       changed class definition of oligoSnpSet (temporary)
 
 ##To do:  define a VIRTUAL class that extends eSet directly.  All the Snp-level sets extend
 ## this virtual class.

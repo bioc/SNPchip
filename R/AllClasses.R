@@ -7,9 +7,8 @@ setClass("AnnotatedSnpSet", contains="oligoSnpSet")
 setClass("AnnotatedSnpCallSet", contains="SnpCallSet")
 setClass("AnnotatedSnpCopyNumberSet", contains="SnpCopyNumberSet")
 
-
-
-
+##no longer using oligo's definition of oligoSnpSet
+setClass("oligoSnpSet", contains="eSet")
 setAs("AnnotatedSnpSet", "oligoSnpSet",
       function(from, to){
         warning("AnnotatedSnpSet DEPRECATED")

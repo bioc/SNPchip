@@ -32,24 +32,17 @@ unsplitSnpSet(from, annotatedDataFrame, ...)
   \code{\link[base]{split}}
   }
 \examples{
-data(sample.snpset)
-x <- split(sample.snpset, chromosome(sample.snpset))
-class(x)
-length(x)
-xx <- unsplitSnpSet(x, featureData(sample.snpset),
-                    copyNumber=do.call("rbind", lapply(x, copyNumber)),
-                    calls=do.call("rbind", lapply(x, calls)),
-                    phenoData=phenoData(x[[1]]),
-                    annotation=annotation(x[[1]]),
-                    experimentData=experimentData(x[[1]]))
-class(xx)
-##is FALSE
-identical(featureNames(sample.snpset), featureNames(xx))
-
-##but
-sample.snpset <- sample.snpset[order(position(sample.snpset)), ]
-xx <- xx[order(position(xx)), ]
-identical(featureNames(sample.snpset), featureNames(xx))
+  data(sample.snpset)
+  x <- split(sample.snpset, chromosome(sample.snpset))
+  class(x)
+  length(x)
+  xx <- unsplitSnpSet(x,
+                      featureData(sample.snpset),
+                      copyNumber=do.call("rbind", lapply(x, copyNumber)),
+                      calls=do.call("rbind", lapply(x, calls)),
+                      cnConfidence=do.call("rbind", lapply(x, callsConfidence)),
+                      callsConfidence=do.call("rbind", lapply(x, callsConfidence)))
+  xx
 }
 \keyword{manip}
 

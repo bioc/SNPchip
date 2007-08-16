@@ -3,9 +3,14 @@ setMethod("unsplitSnpSet", c("list", "AnnotatedDataFrame"),
             object <- switch(class(from[[1]]),
                              oligoSnpSet=new("oligoSnpSet", ...),
                              SnpCallSet=new("SnpCallSet", ...),
-                             SnpCopyNumberSet=new("SnpCopyNumberSet", ...),
-                             NULL)
+                             SnpCopyNumberSet=new("SnpCopyNumberSet",  ...),
+                             stop("Not a defined class"))
             featureData(object) <- annotatedDataFrame[match(featureNames(object), featureNames(annotatedDataFrame)), ]
-            stopifnot(identical(rownames(copyNumber(object)), rownames(fData(object))))
+            phenoData(object) <- phenoData(from[[1]])
+            annotation(object) <- annotation(from[[1]])
+            experimentData(object) <- experimentData(from[[1]])
+            stopifnot(validObject(object))
             object
           })
+
+
