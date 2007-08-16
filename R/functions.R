@@ -159,6 +159,8 @@ plotCytoband <- function(chromosome,
                          cex.axis=1,
                          outer=FALSE,
                          ...){
+  def.par <- par(no.readonly=TRUE)
+  on.exit(def.par)
   if(missing(cytoband)) data(cytoband, package="SNPchip", envir=environment())
   if(missing(chromosome)){
     if(length(unique(cytoband[, "chrom"])) > 1) stop("Must specify chromosome")

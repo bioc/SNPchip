@@ -90,6 +90,8 @@
 1.1.20 fixed bug in plotCytoband example
        changed class definition of oligoSnpSet (temporary)
 
+1.1.21 restore default par settings after calling plotCytoband
+
 ##To do:  define a VIRTUAL class that extends eSet directly.  All the Snp-level sets extend
 ## this virtual class.
 ## - rewrite vignette
