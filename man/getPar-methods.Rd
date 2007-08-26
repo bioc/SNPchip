@@ -2,7 +2,7 @@
 \docType{methods}
 \alias{getPar}
 \alias{getPar-methods}
-\alias{getPar,eSet-method}
+\alias{getPar,SnpLevelSet-method}
 \title{Computes default graphical parameters }
 \description{
 Computes default graphical parameters for high throughput SNP

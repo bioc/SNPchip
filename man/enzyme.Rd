@@ -1,6 +1,6 @@
 \name{enzyme}
 \alias{enzyme}
-\alias{enzyme,eSet-method}
+\alias{enzyme,SnpLevelSet-method}
 \alias{enzyme,AnnotatedDataFrame-method}
 \title{Enzyme used to digest DNA}
 \description{When two chips have been combined (e.g., Xba and Hind),

@@ -1,13 +1,13 @@
 ##methods that I want to work for all the SNP Classes
-setMethod("alleleA", "eSet", function(object) alleleA(featureData(object)))
-setMethod("alleleB", "eSet", function(object) alleleB(featureData(object)))
-setMethod("chromosome", "eSet", function(object) as.character(chromosome(featureData(object))))
-setMethod("dbSnpId", "eSet", function(object) dbSnpId(featureData(object)))
+setMethod("alleleA", "SnpLevelSet", function(object) alleleA(featureData(object)))
+setMethod("alleleB", "SnpLevelSet", function(object) alleleB(featureData(object)))
+setMethod("chromosome", "SnpLevelSet", function(object) as.character(chromosome(featureData(object))))
+setMethod("dbSnpId", "SnpLevelSet", function(object) dbSnpId(featureData(object)))
 
-setMethod("enzyme", "eSet", function(object) enzyme(featureData(object)))
-setMethod("fragmentLength", "eSet", function(object) fragmentLength(fData(object)))
+setMethod("enzyme", "SnpLevelSet", function(object) enzyme(featureData(object)))
+setMethod("fragmentLength", "SnpLevelSet", function(object) fragmentLength(fData(object)))
 
-setMethod("getPar", "eSet", function(object, add.cytoband, ...){
+setMethod("getPar", "SnpLevelSet", function(object, add.cytoband, ...){
   op <- switch(class(object),
                oligoSnpSet=new("ParSnpSet", ...),
                SnpCallSet=new("ParSnpCallSet", ...),
@@ -67,9 +67,9 @@ setMethod("getPar", "eSet", function(object, add.cytoband, ...){
   ##set up defaults according to number of samples, chromosomes, position, etc.
 })
 
-setMethod(".getX", "eSet", function(object, ...) position(object))
+setMethod(".getX", "SnpLevelSet", function(object, ...) position(object))
 
-setMethod(".getY", "eSet", function(object, op, ...){
+setMethod(".getY", "SnpLevelSet", function(object, op, ...){
   if("copyNumber" %in% ls(assayData(object))){
     y <- copyNumber(object)
     y[y < op$ylim[1]] <- op$ylim[1]
@@ -85,7 +85,7 @@ setMethod(".getY", "eSet", function(object, op, ...){
   y
 })
           
-setMethod("getSnpAnnotation", "eSet",
+setMethod("getSnpAnnotation", "SnpLevelSet",
           function(object){
             if(sum(annotation(object) == "pd.mapping50k.hind240" |
                    annotation(object) == "pd.mapping50k.xba240" |

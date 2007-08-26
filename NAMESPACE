@@ -1,13 +1,8 @@
-import(Biobase, oligo, methods)
+import(Biobase, oligoClasses, methods)
 exportClasses(ParESet,
               ParSnpCopyNumberSet,
               ParSnpCallSet,
               ParSnpSet)
-
-##DEPRECATED CLASSES
-exportClasses(AnnotatedSnpSet,
-              AnnotatedSnpCopyNumberSet,
-              AnnotatedSnpCallSet)
 
 exportMethods(getSnpAnnotation,
               alleleA,
@@ -24,6 +19,7 @@ exportMethods(getSnpAnnotation,
               show,
               smoothSnp,
               summary,
+              updateObject,
               unsplitSnpSet)
 
 export(centromere,
@@ -40,35 +36,9 @@ exportMethods("$",
               snpPar,
               "snpPar<-")              
 export(plotCytoband, .calculateYlim)
-              
-##Export classes from oligo
-exportClasses(oligoSnpSet,
-              SnpQSet,
-              SnpCallSet,
-              SnpCopyNumberSet)
 
-##Export methods from oligo
-exportMethods(position,
-              copyNumber,
-              "copyNumber<-",
-              calls,
-              "calls<-",
-              cnConfidence,
-              "cnConfidence<-",
-              callsConfidence,
-              "callsConfidence<-")
-
-##export functions defined in functions.R so that the oligo methods
-##will be available for external use
-export(chromosome,
-       copyNumber,
-       "copyNumber<-",
-       cnConfidence,
-       "cnConfidence<-",
-       calls,
-       "calls<-",
-       callsConfidence,
-       "callsConfidence<-",
-       position)
-
+##DEPRECATED CLASSES
+exportClasses(AnnotatedSnpSet,
+              AnnotatedSnpCopyNumberSet,
+              AnnotatedSnpCallSet)
               

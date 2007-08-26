@@ -1,42 +1,3 @@
-setMethod("initialize", "oligoSnpSet",
-          function(.Object,
-                   calls=new("matrix"),
-                   callsConfidence=matrix(numeric(), nrow=nrow(calls),
-                     ncol=ncol(calls),
-                     dimnames=dimnames(calls)),
-                   copyNumber=matrix(numeric(), nrow=nrow(calls),
-                     ncol=ncol(calls),
-                     dimnames=dimnames(calls)),
-                   cnConfidence=matrix(numeric(), nrow=nrow(calls),
-                     ncol=ncol(calls),
-                     dimnames=dimnames(calls)), ... ){
-            callNextMethod(.Object, calls=calls, callsConfidence=callsConfidence,
-                           copyNumber=copyNumber, cnConfidence=cnConfidence, ...)
-          })
-
-setValidity("oligoSnpSet", function(object) {
-  assayDataValidMembers(assayData(object), c("calls", "callsConfidence", "copyNumber", "cnConfidence"))
-})
-
-##oligoSnpSet
-setMethod("calls", "oligoSnpSet", function(object) assayDataElement(object, "calls"))
-setReplaceMethod("calls", signature(object="oligoSnpSet", value="matrix"),
-                 function(object, value) assayDataElementReplace(object, "calls", value))
-
-setMethod("callsConfidence", "oligoSnpSet", function(object) assayDataElement(object, "callsConfidence"))
-setReplaceMethod("callsConfidence", signature(object="oligoSnpSet", value="matrix"),
-                 function(object, value) assayDataElementReplace(object, "callsConfidence", value))
-
-
-setMethod("copyNumber", "oligoSnpSet", function(object) assayDataElement(object, "copyNumber"))
-setReplaceMethod("copyNumber", signature(object="oligoSnpSet", value="matrix"),
-                 function(object, value) assayDataElementReplace(object, "copyNumber", value))
-
-setMethod("cnConfidence", "oligoSnpSet", function(object) assayDataElement(object, "cnConfidence"))
-setReplaceMethod("cnConfidence", signature(object="oligoSnpSet", value="matrix"),
-                 function(object, value) assayDataElementReplace(object, "cnConfidence", value))
-
-
 setMethod("show", "oligoSnpSet", function(object) {
   cat(class( object ), " (storageMode: ", storageMode(object), ")\n", sep="")
   adim <- dim(object)
@@ -60,6 +21,18 @@ setMethod("show", "oligoSnpSet", function(object) {
   cat("Annotation ")
   show(annotation(object))
 })
+
+setMethod("updateObject", "oligoSnpSet",
+          function(object, ..., verbose=FALSE){
+            new("oligoSnpSet",
+                calls=calls(object),
+                callsConfidence=callsConfidence(object),
+                copyNumber=copyNumber(object),
+                cnConfidence=cnConfidence(object),
+                experimentData=experimentData(object),
+                phenoData=phenoData(object),
+                featureData=featureData(object))
+          })
 
 
 

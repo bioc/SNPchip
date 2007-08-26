@@ -1,7 +1,7 @@
 \name{dbSnpId}
 \alias{dbSnpId}
 \alias{dbSnpId,AnnotatedDataFrame-method}
-\alias{dbSnpId,eSet-method}
+\alias{dbSnpId,SnpLevelSet-method}
 \title{The dbSNP identifier }
 \description{
   Unique identifier for each SNP assigned by NIH

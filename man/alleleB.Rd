@@ -1,6 +1,6 @@
 \name{alleleB}
 \alias{alleleB}
-\alias{alleleB,eSet-method}
+\alias{alleleB,SnpLevelSet-method}
 \alias{alleleB,AnnotatedDataFrame-method}
 \title{Accessor for the B allele}
 \description{

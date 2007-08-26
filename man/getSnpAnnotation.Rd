@@ -1,6 +1,6 @@
 \name{getSnpAnnotation}
 \alias{getSnpAnnotation}
-\alias{getSnpAnnotation,eSet-method}
+\alias{getSnpAnnotation,SnpLevelSet-method}
 \title{Retrieves SNP-level annotation}
 \description{
   SNP-level annotation currently includes the db SNP identifier,

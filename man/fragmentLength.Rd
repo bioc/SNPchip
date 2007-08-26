@@ -1,7 +1,7 @@
 \name{fragmentLength}
 \alias{fragmentLength}
 \alias{fragmentLength,AnnotatedDataFrame-method}
-\alias{fragmentLength,eSet-method}
+\alias{fragmentLength,SnpLevelSet-method}
 \title{Accessor for the fragment length}
 \description{
   Accessor for the length of the PCR fragment on which the SNP resides.
