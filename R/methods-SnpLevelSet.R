@@ -129,10 +129,10 @@ setMethod("plotSnp", "eSet",
             old.par <- par(no.readonly=TRUE)
             if(on.exit)  on.exit(par(old.par))
             
-            object=object[!is.na(chromosome(object)), ]            
-            if(missing(op)){
-              op <- getPar(object, ...)
-            }            
+            object=object[!is.na(chromosome(object)), ]
+            
+            if(missing(op))  op <- getPar(object, ...)
+            
             if(op$useLayout){
               layout(mat=op$mat,
                      widths=op$widths,

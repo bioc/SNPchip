@@ -1,11 +1,12 @@
 .calculateYlim <- function(object, op){
   if("copyNumber" %in% ls(assayData(object))){
+    print("one.ylim is FALSE. Calculating ylim based on the percentiles of the copy number distribution")    
     if(op$log == "y"){
       ylim <- range(copyNumber(object), na.rm=TRUE)
     } else{
       ##use 1 and 99 quantiles to avoid outliers
-      ylim <- c(quantile(copyNumber(object), prob=0.001),
-                quantile(copyNumber(object), prob=0.999))
+      ylim <- c(quantile(copyNumber(object), prob=0.001, na.rm=TRUE),
+                quantile(copyNumber(object), prob=0.999, na.rm=TRUE))
     }
   } else{
     ##ylimits for genotypes??
@@ -121,7 +122,10 @@ chromosomeSize <- function(chromosome){
   ##could use a switch in the following statement to generate a
   ##class-specific par object
   if(missing(op)) op <- new("ParESet")
-  if(!op$one.ylim) op$ylim <- .calculateYlim(object)
+  
+  if(!op$one.ylim){
+    op$ylim <- .calculateYlim(object)
+  }
 
   ##ensures homozygous genotypes are plotted first
   object <- .orderByGenotype(object)
@@ -279,7 +283,12 @@ plotCytoband <- function(chromosome,
       gt[is.na(gt)] <- 4
       ##assume that colors are to be recycled
       if(max(gt) > length(x)){
-        warning("length of x is less than the number of genotype calls")
+        warning("The length of the vector to be recycled is less than the number of genotype calls")
+        print("Adding 'grey40' as a color for missing genotype.  See getPar for changing the defaults colors.")
+        x <- c(x, "grey40")
+      }
+      if(max(gt) < length(x)){
+        x <- x[sort(unique(gt))]
       }
       x <- x[gt]
     }
