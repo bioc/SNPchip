@@ -2,7 +2,7 @@
 \docType{methods}
 \alias{position}
 \alias{position,AnnotatedDataFrame-method}
-\alias{position,eSet-method}
+\alias{position,SnpLevelSet-method}
 
 \title{Physical position of SNP on chromosome}
 \description{

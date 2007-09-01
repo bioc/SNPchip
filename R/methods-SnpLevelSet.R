@@ -124,7 +124,7 @@ setMethod("getSnpAnnotation", "SnpLevelSet",
 
 ##Call par only in the outer layer
 ##plots 1 sample and 1 chromosome
-setMethod("plotSnp", "eSet",
+setMethod("plotSnp", "SnpLevelSet",
           function(object, op, on.exit=TRUE, ...){
             old.par <- par(no.readonly=TRUE)
             if(on.exit)  on.exit(par(old.par))
@@ -162,7 +162,7 @@ setMethod("plotSnp", "eSet",
           })
 
 
-setMethod(".plotChromosome", "eSet",
+setMethod(".plotChromosome", "SnpLevelSet",
           function(object, op, ...){
             cytoband <- .getCytoband(object, op)
             op$xlim <- .getXlim(object, op)
@@ -176,5 +176,5 @@ setMethod(".plotChromosome", "eSet",
           })
 
 
-setMethod("position", "eSet", function(object) position(featureData(object)))
+setMethod("position", "SnpLevelSet", function(object) position(featureData(object)))
 

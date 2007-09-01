@@ -1,6 +1,6 @@
 \name{plotSnp}
 \alias{plotSnp}
-\alias{plotSnp,eSet-method}
+\alias{plotSnp,SnpLevelSet-method}
 \title{Plots copy number and genotype calls against physical position }
 \description{
 
@@ -34,6 +34,7 @@ plotSnp(object, ...)
 
 data(sample.snpset)
 plotSnp(sample.snpset[chromosome(sample.snpset) == "1", 1], use.chromosome.size=TRUE)
+
 }
 \keyword{hplot}
 
