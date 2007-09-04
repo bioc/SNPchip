@@ -1,6 +1,9 @@
 .calculateYlim <- function(object, op){
   if("copyNumber" %in% ls(assayData(object))){
-    print("one.ylim is FALSE. Calculating ylim based on the percentiles of the copy number distribution")    
+    ##only print this if there is more than one sample or more than 1 chromosome to plot
+    if(length(unique(chromosome(object))) > 1 || ncol(object) > 1){
+      print("one.ylim is FALSE. Calculating ylim based on the percentiles of the copy number distribution")
+    }
     if(op$log == "y"){
       ylim <- range(copyNumber(object), na.rm=TRUE)
     } else{
