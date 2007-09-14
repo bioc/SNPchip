@@ -29,7 +29,7 @@ centromere <- function(chromosome){
 
 chromosomeSize <- function(chromosome){
   if(!is.character(chromosome)) stop("argument to chromosomeSize must be one of the following character strings: 1, ..., 22, X, or Y")
-  if(!(chromosome %in% c(1:22, "X", "Y"))) stop("chromosome must be 1-22, X, or Y")  
+  if(any(!(chromosome %in% c(1:22, "X", "Y")))) stop("chromosome must be 1-22, X, or Y")  
   data(chromosomeAnnotation, package="SNPchip", envir=environment())
   chromosomeAnnotation[chromosome, "chromosomeSize"]
 }
@@ -43,19 +43,6 @@ chromosomeSize <- function(chromosome){
        xright=xright, ytop=op$ylim[2],
        col=op$col.centromere,
        border=op$border.centromere)  
-}
-
-
-
-.getXlim <- function(object, op){
-  if(op$use.chromosome.size){
-    data(chromosomeAnnotation, package="SNPchip", envir=environment())                          
-    chrAnn <- chromosomeAnnotation[rownames(chromosomeAnnotation) == unique(chromosome(object)), ]
-    xlim <- c(0, chrAnn[["chromosomeSize"]])
-  } else{
-    xlim <- range(position(object))
-  }
-  xlim
 }
 
 .labelChromosome <- function(object, op, j){
@@ -80,15 +67,16 @@ chromosomeSize <- function(chromosome){
 }
 
 .drawXaxis <- function(object, op, j){
+  chromosomeName <- unique(chromosome(object))
   if(op$xaxt == "n") return()
   if(op$alternate.xaxis.side){
     side <- op$xaxis.side[[unique(chromosome(object))]]
   } else side <- op$xaxis.side
   if(side == 1 & j == ncol(object) | side == 3 & j == 1){
     axis(side,
-         at=pretty(op$xlim, op$lab[2]),
+         at=pretty(op$xlim[chromosomeName, ], op$lab[2]),
          outer=op$outer.axis,
-         labels=pretty(op$xlim, op$lab[2])/1e6,
+         labels=pretty(op$xlim[chromosomeName, ], op$lab[2])/1e6,
          cex.axis=op$cex.axis,
          col=op$col.axis,
          col.axis=op$col.axis,
@@ -109,11 +97,13 @@ chromosomeSize <- function(chromosome){
   }  else NULL
 }
 
-.drawCytobandWrapper <- function(S, cytoband, op, j){
+.drawCytobandWrapper <- function(S, cytoband, op, j, chromosomeName){
   if(j == S){
     if(op$add.cytoband){
       if(nrow(cytoband) > 0)
-        plotCytoband(cytoband=cytoband, xlim=op$xlim, xaxs=op$xaxs,
+        plotCytoband(cytoband=cytoband,
+                     xlim=op$xlim[chromosomeName, ],
+                     xaxs=op$xaxs,
                      label.cytoband=op$label.cytoband,
                      cex.axis=op$cex.axis,
                      outer=op$outer.cytoband.axis)
@@ -125,6 +115,7 @@ chromosomeSize <- function(chromosome){
   ##could use a switch in the following statement to generate a
   ##class-specific par object
   if(missing(op)) op <- new("ParESet")
+  chromosomeName <- unique(chromosome(object))
   
   if(!op$one.ylim){
     op$ylim <- .calculateYlim(object)
@@ -143,7 +134,7 @@ chromosomeSize <- function(chromosome){
   pch <- .recycle(op$pch, object)
   bg <- .recycle(op$bg, object)
   plot(x=x, y=y,
-       xlim=op$xlim,
+       xlim=op$xlim[chromosomeName, ],
        ylim=op$ylim,
        col=col,
        cex=cex,

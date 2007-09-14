@@ -28,21 +28,26 @@ unsplitSnpSet(from, annotatedDataFrame, ...)
 \author{Robert Scharpf}
 \note{
 }
+
 \seealso{
   \code{\link[base]{split}}
-  }
+}
+
 \examples{
   data(sample.snpset)
   x <- split(sample.snpset, chromosome(sample.snpset))
   class(x)
   length(x)
-  xx <- unsplitSnpSet(x,
-                      featureData(sample.snpset),
-                      copyNumber=do.call("rbind", lapply(x, copyNumber)),
-                      calls=do.call("rbind", lapply(x, calls)),
-                      cnConfidence=do.call("rbind", lapply(x, callsConfidence)),
-                      callsConfidence=do.call("rbind", lapply(x, callsConfidence)))
-  xx
+
+  \dontrun{
+    xx <- unsplitSnpSet(x,
+                        featureData(sample.snpset),
+                        copyNumber=do.call("rbind", lapply(x, copyNumber)),
+                        calls=do.call("rbind", lapply(x, calls)),
+                        cnConfidence=do.call("rbind", lapply(x, callsConfidence)),
+                        callsConfidence=do.call("rbind", lapply(x, callsConfidence)))
+    xx
+  }
 }
 \keyword{manip}
 

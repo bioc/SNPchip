@@ -3,14 +3,14 @@
 \alias{ParSnpSet-class}
 \alias{initialize,ParSnpSet-method}
 
-\title{Graphical parameters for oligoSnpSet}
-\description{}
+\title{Class "ParSnpSet"}
+\description{Graphical parameters for \code{oligoSnpSet} objects}
 \section{Objects from the Class}{
 Objects can be created by calls of the form \code{new("ParSnpSet", ...)}.
 }
 \section{Slots}{
   \describe{
-    \item{\code{snpPar}:}{Object of class \code{"list"}  }
+    \item{\code{snpPar}:}{Object of class \code{"list"}}
   }
 }
 \section{Extends}{
@@ -19,7 +19,8 @@ Class \code{\linkS4class{ParESet}}, by class "ParSnpCopyNumberSet", distance 2.
 }
 \section{Methods}{
   \describe{
-    \item{initialize}{\code{signature(.Object = "ParSnpSet")}: ... }
+    \item{initialize}{\code{signature(.Object = "ParSnpSet")}}
+    \item{plotSnp}{\code{signature(object = "ParSnpSet", snpset = "oligoSnpSet")}}
   }
 }
 \references{}
@@ -27,7 +28,7 @@ Class \code{\linkS4class{ParESet}}, by class "ParSnpCopyNumberSet", distance 2.
 \note{}
 
 \seealso{
-  \code{\link[oligo]{oligoSnpSet-class}}, \code{\link{par}}, \code{\link[graphics]{layout}}
+  \code{\link[oligoClasses]{oligoSnpSet-class}}
 }
 \examples{
 showClass("ParSnpSet")

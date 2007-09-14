@@ -8,25 +8,24 @@
 \alias{snpPar,ParESet-method}
 \alias{snpPar<-,ParESet-method}
 
-\title{Class for organizing graphical parameters}
-\description{Arguments for plotting high throughput SNP data}
+\title{Class "ParESet"}
+\description{A class containing a list of graphical parameters for
+  plotting objects extending \code{SnpLevelSet}}
 \section{Objects from the Class}{
-Objects can be created by calls of the form \code{new("ParESet", layout, col.axis, cex.main, cex.axis, cex, cex.lab, pch, col, bg, xaxs, xaxt, yaxs, yaxt, lab, adj, bty, ann, useLayout, mar, oma, las, log, ylab, side.ylab, outer.ylab, line.ylab, cex.ylab, xlab, outer.xlab, side.xlab, cex.xlab, line.xlab, outer.axis, line.axis, main, col.centromere, border.centromere, xlim, ylim, one.ylim, add.cytoband, outer.cytoband, outer.cytoband.axis, label.cytoband, use.chromosome.size, label.chromosome, line.label.chromosome, xaxis.side, alternate.xaxis.side, ...)}.
+Objects can be created by calls of the form \code{new("ParESet", layout, col.axis, cex.main, cex.axis, cex.legend, cex, cex.lab, pch, col, bg, xaxs, xaxt, yaxs, yaxt, lab, adj, bty, ann, useLayout, mar, oma, las, log, ylab, side.ylab, outer.ylab, line.ylab, cex.ylab, xlab, outer.xlab, side.xlab, cex.xlab, line.xlab, outer.axis, line.axis, main, col.centromere, border.centromere, xlim, ylim, one.ylim, add.cytoband, outer.cytoband, outer.cytoband.axis, label.cytoband, use.chromosome.size, label.chromosome, line.label.chromosome, xaxis.side, alternate.xaxis.side, mat, heights, widths, respect, firstChromosome, ...)}.
 }
 \section{Slots}{
-  
-  \describe{
-    \item{\code{snpPar}:}{list containing arguments to \code{par} and \code{layout}}
+	 \describe{
+    \item{\code{snpPar}:}{Object of class \code{"list"}}
   }
 }
 \section{Methods}{
   \describe{
-%    \item{$}{\code{signature(x = "ParESet")}  }
-%    \item{$<-}{\code{signature(x = "ParESet")}  }
-    \item{allPlots}{\code{signature(object = "ParESet")}  }
-    \item{initialize}{\code{signature(.Object = "ParESet")}  }
-    \item{snpPar}{\code{signature(object = "ParESet")}  }
-    \item{snpPar<-}{\code{signature(object = "ParESet")} }
+    \item{allPlots}{\code{signature(object = "ParESet")}}
+    \item{initialize}{\code{signature(.Object = "ParESet")}}
+    \item{plotSnp}{\code{signature(object = "ParESet", snpset = "ANY")}}
+    \item{snpPar}{\code{signature(object = "ParESet")}}
+    \item{snpPar<-}{\code{signature(object = "ParESet")}}
   }
 }
 \references{}
@@ -34,7 +33,9 @@ Objects can be created by calls of the form \code{new("ParESet", layout, col.axi
 \note{}
 
 \seealso{
-  \code{\link{par}}, \code{\link[graphics]{layout}}
+  \code{\link{ParSnpCallSet-class}},
+  \code{\link{ParSnpCopyNumberSet-class}},
+  \code{\link{ParSnpSet-class}}  
 }
 \examples{
 showClass("ParESet")

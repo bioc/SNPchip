@@ -63,6 +63,17 @@ setMethod("getPar", "SnpLevelSet", function(object, add.cytoband, ...){
   def.op <- options(warn=-1)
   op$firstChromosome <- chromosomeNames[1]
   options(def.op)
+
+  if(op$use.chromosome.size){
+    op$xlim <- matrix(NA, nrow=length(chromosomeNames), ncol=2)    
+    op$xlim[, 1] <- rep(0, nrow(op$xlim))
+    op$xlim[, 2] <- chromosomeSize(chromosomeNames)
+    rownames(op$xlim) <- chromosomeNames    
+  } else{
+    objList <- split(object, chromosome(object))
+    objList <- objList[chromosomeNames]
+    op$xlim <- t(sapply(objList, function(object) range(position(object))))
+  }
   op
   ##set up defaults according to number of samples, chromosomes, position, etc.
 })
@@ -122,59 +133,18 @@ setMethod("getSnpAnnotation", "SnpLevelSet",
             featureData
           })
 
-##Call par only in the outer layer
-##plots 1 sample and 1 chromosome
-setMethod("plotSnp", "SnpLevelSet",
-          function(object, op, on.exit=TRUE, ...){
-            old.par <- par(no.readonly=TRUE)
-            if(on.exit)  on.exit(par(old.par))
-            
-            object=object[!is.na(chromosome(object)), ]
-            
-            if(missing(op))  op <- getPar(object, ...)
-            
-            if(op$useLayout){
-              layout(mat=op$mat,
-                     widths=op$widths,
-                     heights=op$heights,
-                     respect=op$respect)
-            }
-            objList <- split(object, chromosome(object))
-            def.op <- options(warn=-1)
-
-            ##this removes user control of the ordering.  Could add
-            ##chromosomeOrder as an argument to ParESet
-            names(objList)[names(objList) == "X"] <- "23"
-            names(objList)[names(objList) == "Y"] <- "24"
-            objList <- objList[order(as.numeric(names(objList)))]
-            names(objList)[names(objList) == "23"] <- "X"
-            names(objList)[names(objList) == "24"] <- "Y"            
-            options(def.op)
-
-            ##set graphical parameters for all plots
-            par(allPlots(op))
-            for(i in 1:length(objList)){
-              if(i == 1) par(yaxt="s") else par(yaxt="n")
-              .plotChromosome(objList[[i]], op=op)
-            }
-            if(op$outer.ylab) mtext(op$ylab, side=op$side.ylab, outer=TRUE, las=3, cex=op$cex.ylab, line=op$line.ylab)
-            mtext(op$xlab, side=op$side.xlab, outer=op$outer.xlab, cex=op$cex.xlab, line=op$line.xlab)            
-          })
-
 
 setMethod(".plotChromosome", "SnpLevelSet",
           function(object, op, ...){
             cytoband <- .getCytoband(object, op)
-            op$xlim <- .getXlim(object, op)
             for(j in 1:ncol(object)){
               .plot(object[, j], op=op)
               .drawYaxis(object=object, op=op)
               .drawCentromere(object[, j], op)              
-              .drawCytobandWrapper(S=ncol(object), cytoband=cytoband, op=op, j=j)
+              .drawCytobandWrapper(S=ncol(object), cytoband=cytoband, op=op, j=j, chromosomeName=unique(chromosome(object)))
               .drawXaxis(object=object, op=op, j=j)
             }
           })
-
 
 setMethod("position", "SnpLevelSet", function(object) position(featureData(object)))
 

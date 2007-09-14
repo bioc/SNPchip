@@ -3,14 +3,14 @@
 \alias{ParSnpCallSet-class}
 \alias{initialize,ParSnpCallSet-method}
 
-\title{Graphical parameters for SnpCopyNumberSet}
-\description{contains \code{layout} and \code{par} arguments for \code{SnpCallSet}}
+\title{Class "ParSnpCallSet"}
+\description{Graphical parameters for object of class \code{SnpCallSet}}
 \section{Objects from the Class}{
 Objects can be created by calls of the form \code{new("ParSnpCallSet", ...)}.
 }
 \section{Slots}{
   \describe{
-    \item{\code{snpPar}:}{Object of class \code{"list"}  }
+    \item{\code{snpPar}:}{Object of class \code{"list"} }
   }
 }
 \section{Extends}{
@@ -18,15 +18,18 @@ Objects can be created by calls of the form \code{new("ParSnpCallSet", ...)}.
 }
 \section{Methods}{
   \describe{
-    \item{initialize}{\code{signature(.Object = "ParSnpCallSet")}: }
+    \item{initialize}{\code{signature(.Object = "ParSnpCallSet")} }
+    \item{plotSnp}{\code{signature(object = "ParSnpCallSet", snpset = "SnpCallSet")}}
   }
 }
 \references{}
 \author{}
 \note{}
+
 \seealso{
-  \code{\link[oligo]{SnpCopyNumberSet-class}}, \code{\link{par}}, \code{\link[graphics]{layout}}
+  \code{\link[oligoClasses]{SnpCallSet-class}}
 }
+      
 \examples{
 showClass("ParSnpCallSet")
 }

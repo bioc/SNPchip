@@ -5,3 +5,10 @@ setMethod("initialize", "ParSnpCallSet",
             .Object$ylab <- "genotype call"
             .Object
           })
+
+setMethod("plotSnp", c("ParSnpCallSet", "SnpCallSet"),
+          function(object, snpset){
+            old.par <- par(no.readonly=TRUE)
+            on.exit(old.par)            
+            callNextMethod()
+          })

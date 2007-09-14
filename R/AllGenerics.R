@@ -11,7 +11,9 @@ setGeneric("getPar", function(object, ...) standardGeneric("getPar"))
 setGeneric(".getX", function(object, ...) standardGeneric(".getX"))
 setGeneric(".getY", function(object, ...) standardGeneric(".getY"))
 setGeneric(".plotChromosome",   function(object, ...) standardGeneric(".plotChromosome"))
-setGeneric("plotSnp",   function(object, ...) standardGeneric("plotSnp"))
+
+setGeneric("plotSnp",   function(object, snpset, ...) standardGeneric("plotSnp"))
+
 setGeneric("position", function(object) standardGeneric("position"))
 setGeneric("selectSomeIndex",   function(object, ...) standardGeneric("selectSomeIndex"))##Generic defined, but not exported in Biobase
 setGeneric("smoothSnp", function(object, ...) standardGeneric("smoothSnp"))

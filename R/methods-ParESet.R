@@ -113,7 +113,6 @@ setMethod("initialize", "ParESet",
           })
 
 
-
 setMethod("$", "ParESet", function(x, name){
   eval(substitute(snpPar(x)$NAME_ARG, list(NAME_ARG=name)))
 })
@@ -125,23 +124,11 @@ setReplaceMethod("$", "ParESet",
 })
 
 setMethod("snpPar", "ParESet", function(object) object@snpPar)
+
 setReplaceMethod("snpPar", "ParESet", function(object, value) {
   object@snpPar <- value
   object
 })
-
-
-##setMethod("plotSpecific", "ParESet", function(object){
-##  list(cex=object$cex,
-##       pch=object$pch,
-##       col=object$col,
-##       bg=object$bg,
-##       xaxs=object$xaxs,
-##       xaxt=object$xaxt,
-##       yaxt=object$yaxt,
-##       lab=object$lab,
-##       adj=object$adj)
-##})
 
 setMethod("allPlots", "ParESet", function(object){
   list(col.axis=object$col.axis,
@@ -154,4 +141,31 @@ setMethod("allPlots", "ParESet", function(object){
        las=object$las,
        lab=object$lab)  
   })
+
+setMethod("plotSnp", c("ParESet", "ANY"),
+          function(object, snpset){
+            snpset <- snpset[!is.na(chromosome(snpset)), ]
+
+            if(object$useLayout){
+              layout(mat=object$mat,
+                     widths=object$widths,
+                     heights=object$heights,
+                     respect=object$respect)
+            }
+            snpList <- split(snpset, chromosome(snpset))
+
+            names(snpList)[names(snpList) == "X"] <- "23"
+            names(snpList)[names(snpList) == "Y"] <- "24"
+            snpList <- snpList[order(as.numeric(names(snpList)))]
+            names(snpList)[names(snpList) == "23"] <- "X"
+            names(snpList)[names(snpList) == "24"] <- "Y"            
+
+            par(allPlots(object))
+            for(i in 1:length(snpList)){
+              if(i == 1) par(yaxt="s") else par(yaxt="n")
+              .plotChromosome(snpList[[i]], op=object)
+            }
+            if(object$outer.ylab) mtext(object$ylab, side=object$side.ylab, outer=TRUE, las=3, cex=object$cex.ylab, line=object$line.ylab)
+            mtext(object$xlab, side=object$side.xlab, outer=object$outer.xlab, cex=object$cex.xlab, line=object$line.xlab)
+          })
 

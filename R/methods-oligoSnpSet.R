@@ -102,20 +102,6 @@ setMethod("smoothSnp", "oligoSnpSet",
             return(smooth.set)
           })
 
-##setMethod("unsplitS4", c("oligoSnpSet", "AnnotatedDataFrame"),
-##          function(object, featureData){
-##            obj <- new(class(object[[1]]),
-##                       copyNumber=do.call("rbind", lapply(object, copyNumber)),
-##                       cnConfidence=do.call("rbind", lapply(object, cnConfidence)),
-##                       calls=do.call("rbind", lapply(object, calls)),
-##                       callsConfidence=do.call("rbind", lapply(object, calls)),
-##                       phenoData=phenoData(object[[1]]),
-##                       annotation=annotation(object[[1]]),
-##                       experimentData=experimentData(object[[1]]))
-##            featureData(obj) <- featureData[match(featureNames(obj), featureNames(featureData)), ]
-##            stopifnot(identical(rownames(copyNumber(obj)), rownames(fData(obj))))
-##            obj
-##          })
 
 
 
