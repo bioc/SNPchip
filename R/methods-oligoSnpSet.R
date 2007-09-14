@@ -1,3 +1,8 @@
+setMethod("getSnpAnnotation", "oligoSnpSet",
+          function(object){
+            callNextMethod()
+          })
+
 setMethod("show", "oligoSnpSet", function(object) {
   cat(class( object ), " (storageMode: ", storageMode(object), ")\n", sep="")
   adim <- dim(object)

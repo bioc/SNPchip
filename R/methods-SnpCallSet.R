@@ -14,6 +14,10 @@ setMethod(".combineChips", c("SnpCallSet", "SnpCallSet"),
                 annotation="mapping100k")
           })
 
+setMethod("getSnpAnnotation", "SnpCallSet",
+          function(object){
+            callNextMethod()
+          })
 
 
 
