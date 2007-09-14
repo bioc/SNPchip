@@ -1,6 +1,10 @@
 \name{getSnpAnnotation}
 \alias{getSnpAnnotation}
 \alias{getSnpAnnotation,SnpLevelSet-method}
+\alias{getSnpAnnotation,SnpCallSet-method}
+\alias{getSnpAnnotation,SnpCopyNumberSet-method}
+\alias{getSnpAnnotation,oligoSnpSet-method}
+
 \title{Retrieves SNP-level annotation}
 \description{
   SNP-level annotation currently includes the db SNP identifier,
