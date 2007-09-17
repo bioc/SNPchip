@@ -139,6 +139,7 @@ chromosomeSize <- function(chromosome){
        col=col,
        cex=cex,
        pch=pch,
+       log=op$log,
        bg=bg,
        xaxt="n",
        xaxs=op$xaxs,
