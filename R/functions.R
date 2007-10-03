@@ -129,10 +129,10 @@ chromosomeSize <- function(chromosome){
   if(!op$outer.ylab) ylab <- op$ylab else ylab <- ""
 
   ##Option to recycle graphical parameters by genotype call (when available)
-  col <- .recycle(op$col, object)
-  cex <- .recycle(op$cex, object)
-  pch <- .recycle(op$pch, object)
-  bg <- .recycle(op$bg, object)
+  col <- .recycle(op$col, object, missing="grey40")
+  cex <- .recycle(op$cex, object, missing=1)
+  pch <- .recycle(op$pch, object, missing=".")
+  bg <- .recycle(op$bg, object, missing="grey40")
   plot(x=x, y=y,
        xlim=op$xlim[chromosomeName, ],
        ylim=op$ylim,
@@ -269,20 +269,23 @@ plotCytoband <- function(chromosome,
      
   
 
-.recycle <- function(x, object){
+.recycle <- function(x, object, missing){
   if(length(x) == nrow(object)) return(x)
   ##assume using 2 colors for homozygous and hets
   if(length(x) > 1){
     if("calls" %in% ls(assayData(object))){
       gt <- as.vector(calls(object))
       gt[is.na(gt)] <- 4
+
+      if(sum(!(gt %in% 1:4)) > 0){
+        warning("Changing all genotypes that are not 1, 2, 3 to the value 4")
+        gt[!(gt %in% 1:4)] <- 4
+      }
       ##assume that colors are to be recycled
       if(max(gt) > length(x)){
-        warning("The length of the vector to be recycled is less than the number of genotype calls")
-        print("Adding 'grey40' as a color for missing genotype.  See getPar for changing the defaults colors.")
-        x <- c(x, "grey40")
+        x <- c(x, missing)
       }
-      if(max(gt) < length(x)){
+      if(max(gt) <= length(x)){
         x <- x[sort(unique(gt))]
       }
       x <- x[gt]
