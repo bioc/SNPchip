@@ -3,6 +3,7 @@
 \alias{allPlots}
 \title{Extracts graphical parameters to be used by all plotting devices}
 \description{
+  Extracts a list of graphical parameters to be used by all plotting devices
 }
 \section{Methods}{
 \describe{

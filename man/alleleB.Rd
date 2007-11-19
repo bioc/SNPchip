@@ -3,7 +3,7 @@
 \alias{alleleB,SnpLevelSet-method}
 \alias{alleleB,AnnotatedDataFrame-method}
 \title{Accessor for the B allele}
-\description{
+\description{Accessor for the B allele
 }
 \usage{
 alleleB(object)

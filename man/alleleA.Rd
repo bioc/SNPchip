@@ -4,6 +4,7 @@
 \alias{alleleA,SnpLevelSet-method}
 \title{Accessor for the A allele}
 \description{
+  Accessor for the A allele
 }
 \usage{
 alleleA(object)
