@@ -138,6 +138,7 @@ setMethod(".plotChromosome", "SnpLevelSet",
           function(object, op, ...){
             cytoband <- .getCytoband(object, op)
             for(j in 1:ncol(object)){
+              op$main <- op$main[j]
               .plot(object[, j], op=op)
               .drawYaxis(object=object, op=op)
               .drawCentromere(object[, j], op)              
