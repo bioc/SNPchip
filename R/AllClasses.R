@@ -10,8 +10,9 @@ setClass("AnnotatedSnpSet", contains="oligoSnpSet")
 setClass("AnnotatedSnpCallSet", contains="SnpCallSet")
 setClass("AnnotatedSnpCopyNumberSet", contains="SnpCopyNumberSet")
 
-##no longer using oligo's definition of oligoSnpSet
-##setClass("oligoSnpSet", contains="eSet")
+###########################################################################
+##Converting deprecated classes to current classes
+###########################################################################
 setAs("AnnotatedSnpSet", "oligoSnpSet",
       function(from, to){
         warning("AnnotatedSnpSet DEPRECATED")
@@ -25,7 +26,6 @@ setAs("AnnotatedSnpSet", "oligoSnpSet",
             phenoData=phenoData(from),
             annotation=annotation(from))
       })
-
 setAs("AnnotatedSnpCallSet", "SnpCallSet",
       function(from, to){
         warning("AnnotatedSnpCallSet DEPRECATED")
@@ -37,7 +37,6 @@ setAs("AnnotatedSnpCallSet", "SnpCallSet",
             phenoData=phenoData(from),
             annotation=annotation(from))
       })
-
 setAs("AnnotatedSnpCopyNumberSet", "SnpCopyNumberSet",
       function(from, to){
         warning("AnnotatedSnpCopyNumberSet DEPRECATED")

@@ -142,30 +142,5 @@ setMethod("allPlots", "ParESet", function(object){
        lab=object$lab)  
   })
 
-setMethod("plotSnp", c("ParESet", "ANY"),
-          function(object, snpset){
-            snpset <- snpset[!is.na(chromosome(snpset)), ]
 
-            if(object$useLayout){
-              layout(mat=object$mat,
-                     widths=object$widths,
-                     heights=object$heights,
-                     respect=object$respect)
-            }
-            snpList <- split(snpset, chromosome(snpset))
-
-            names(snpList)[names(snpList) == "X"] <- "23"
-            names(snpList)[names(snpList) == "Y"] <- "24"
-            snpList <- snpList[order(as.numeric(names(snpList)))]
-            names(snpList)[names(snpList) == "23"] <- "X"
-            names(snpList)[names(snpList) == "24"] <- "Y"            
-
-            par(allPlots(object))
-            for(i in 1:length(snpList)){
-              if(i == 1) par(yaxt="s") else par(yaxt="n")
-              .plotChromosome(snpList[[i]], op=object)
-            }
-            if(object$outer.ylab) mtext(object$ylab, side=object$side.ylab, outer=TRUE, las=3, cex=object$cex.ylab, line=object$line.ylab)
-            mtext(object$xlab, side=object$side.xlab, outer=object$outer.xlab, cex=object$cex.xlab, line=object$line.xlab)
-          })
 

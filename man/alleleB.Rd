@@ -16,10 +16,8 @@ alleleB(object)
 \value{
   Returns a vector of the B alleles 
 }
-\author{Robert Scharpf}
-\note{
-}
+\author{R. Scharpf}
+
 \seealso{\code{\link{alleleB}}}
-\examples{
-}
+
 \keyword{methods}

@@ -14,12 +14,6 @@ Contains  information on chromosomes 1-22, X and Y.
     \item{\code{chromosomeSize}}{a numeric vector}
   }
 }
-\details{
-}
-\source{
-}
-\references{
-}
 \examples{
 data(chromosomeAnnotation)
 }

@@ -9,11 +9,6 @@
   Extracts copy number estimates from thetas in \code{SnpQSet} objects.
 }
 
-\section{Methods}{
-\describe{
-
-
-}}
 \keyword{methods}
 \keyword{manip}
 

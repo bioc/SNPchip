@@ -49,7 +49,6 @@ getSnpAnnotation(object, ...)
 
 }
 
-\references{}
 
 \author{Robert Scharpf}
 

@@ -28,9 +28,7 @@ Objects can be created by calls of the form \code{new("ParESet", layout, col.axi
     \item{snpPar<-}{\code{signature(object = "ParESet")}}
   }
 }
-\references{}
-\author{}
-\note{}
+\author{R. Scharpf}
 
 \seealso{
   \code{\link{ParSnpCallSet-class}},

@@ -17,11 +17,9 @@ alleleA(object)
 \value{
   Returns a vector of the A alleles 
 }
-\author{Robert Scharpf}
-\note{
-}
+\author{R. Scharpf}
+
 \seealso{\code{\link{alleleA}}}
-\examples{
-}
+
 \keyword{methods}
 

@@ -1,7 +1,9 @@
 ##methods that I want to work for all the SNP Classes
 setMethod("alleleA", "SnpLevelSet", function(object) alleleA(featureData(object)))
 setMethod("alleleB", "SnpLevelSet", function(object) alleleB(featureData(object)))
-setMethod("chromosome", "SnpLevelSet", function(object) as.character(chromosome(featureData(object))))
+
+
+##setMethod("chromosome", "SnpLevelSet", function(object) as.character(chromosome(featureData(object))))
 setMethod("dbSnpId", "SnpLevelSet", function(object) dbSnpId(featureData(object)))
 
 setMethod("enzyme", "SnpLevelSet", function(object) enzyme(featureData(object)))
@@ -15,7 +17,7 @@ setMethod("getPar", "SnpLevelSet", function(object, add.cytoband, ...){
   object <- object[!is.na(chromosome(object)), ]
 
   ##layout
-  chromosomeNames <- unique(chromosome(object))
+  chromosomeNames <- as.character(unique(chromosome(object)))
   chromosomeNames[chromosomeNames == "X"] <- 23
   chromosomeNames[chromosomeNames == "Y"] <- 24
   chromosomeNames <- chromosomeNames[order(as.numeric(chromosomeNames))]
@@ -98,6 +100,7 @@ setMethod(".getY", "SnpLevelSet", function(object, op, ...){
           
 setMethod("getSnpAnnotation", "SnpLevelSet",
           function(object){
+            warning("This method will be deprecated in the next release.")
             if(sum(annotation(object) == "pd.mapping50k.hind240" |
                    annotation(object) == "pd.mapping50k.xba240" |
                    annotation(object) == "pd.mapping250k.nsp" |
@@ -134,18 +137,4 @@ setMethod("getSnpAnnotation", "SnpLevelSet",
           })
 
 
-setMethod(".plotChromosome", "SnpLevelSet",
-          function(object, op, ...){
-            cytoband <- .getCytoband(object, op)
-            for(j in 1:ncol(object)){
-              op$main <- op$main[j]
-              .plot(object[, j], op=op)
-              .drawYaxis(object=object, op=op)
-              .drawCentromere(object[, j], op)              
-              .drawCytobandWrapper(S=ncol(object), cytoband=cytoband, op=op, j=j, chromosomeName=unique(chromosome(object)))
-              .drawXaxis(object=object, op=op, j=j)
-            }
-          })
-
-setMethod("position", "SnpLevelSet", function(object) position(featureData(object)))
 

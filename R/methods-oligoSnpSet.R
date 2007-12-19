@@ -1,3 +1,57 @@
+setMethod("chromosome", "oligoSnpSet",
+          function(object){
+            if(!("chromosome" %in% fvarLabels(object))){
+
+              fs <- featureNames(object)
+              sql <- "SELECT man_fsetid, chrom FROM featureSet WHERE man_fsetid LIKE 'SNP%'"              
+              ##Check if two objects have been combined
+              pkgs <- strsplit(annotation(object), ",")[[1]]
+              if(length(pkgs) > 1){
+                object2 <- object1 <- object
+                annotation(object1) <- pkgs[1]
+                annotation(object2) <- pkgs[2]
+
+                tmp1 <- dbGetQuery(db(object1), sql)
+                tmp2 <- dbGetQuery(db(object2), sql)
+                tmp <- rbind(tmp1, tmp2)
+              } else {
+                tmp <- dbGetQuery(db(object), sql)
+              }
+              idx <- match(fs, tmp[["man_fsetid"]])
+              chr <- tmp[idx, "chrom"]
+            } else {
+              chr <- featureData(object)$chromosome
+            }
+            return(chr)
+          })
+
+setMethod("position", "oligoSnpSet",
+          function(object){
+            if(!("position" %in% fvarLabels(object))){
+
+              fs <- featureNames(object)
+              sql <- "SELECT man_fsetid, physical_pos FROM featureSet WHERE man_fsetid LIKE 'SNP%'"
+              pkgs <- strsplit(annotation(object), ",")[[1]]
+              if(length(pkgs) > 1){
+##                object2 <- object1 <- object
+##                annotation(object1) <- pkgs[1]
+##                annotation(object2) <- pkgs[2]                
+              
+                tmp1 <- dbGetQuery(db(object1), sql)
+                tmp2 <- dbGetQuery(db(object2), sql)
+                tmp <- rbind(tmp1, tmp2)
+              } else{
+                tmp <- dbGetQuery(db(object), sql)
+              }
+              idx <- match(fs, tmp[["man_fsetid"]])
+              pos <- tmp[idx, "physical_pos"]
+            } else {
+              pos <- featureData(object)$position
+            }
+            return(pos)
+          })
+            
+
 setMethod("getSnpAnnotation", "oligoSnpSet",
           function(object){
             callNextMethod()
@@ -107,6 +161,29 @@ setMethod("smoothSnp", "oligoSnpSet",
             return(smooth.set)
           })
 
+
+##Coerce to SnpCallSet
+setAs("oligoSnpSet", "SnpCallSet",
+      function(from, to){
+        new("SnpCallSet",
+            calls=calls(from),
+            callsConfidence=callsConfidence(from),
+            featureData=featureData(from),
+            experimentData=experimentData(from),
+            phenoData=phenoData(from),
+            annotation=annotation(from))
+      })
+
+setAs("oligoSnpSet", "SnpCopyNumberSet",
+      function(from, to){
+        new("SnpCopyNumberSet",
+            copyNumber=copyNumber(from),
+            cnConfidence=cnConfidence(from),
+            featureData=featureData(from),
+            experimentData=experimentData(from),
+            phenoData=phenoData(from),
+            annotation=annotation(from))
+      })
 
 
 

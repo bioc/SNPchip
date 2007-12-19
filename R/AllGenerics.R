@@ -2,7 +2,7 @@ setGeneric("getSnpAnnotation",             function(object, ...) standardGeneric
 setGeneric("alleleA", function(object) standardGeneric("alleleA"))
 setGeneric("alleleB", function(object) standardGeneric("alleleB"))
 setGeneric("calculateCopyNumber", function(object) standardGeneric("calculateCopyNumber"))
-setGeneric("chromosome", function(object) standardGeneric("chromosome"))
+
 setGeneric(".combineChips", function(x, y, ...) standardGeneric(".combineChips"))
 setGeneric("dbSnpId", function(object) standardGeneric("dbSnpId"))
 setGeneric("enzyme", function(object) standardGeneric("enzyme"))
@@ -14,7 +14,7 @@ setGeneric(".plotChromosome",   function(object, ...) standardGeneric(".plotChro
 
 setGeneric("plotSnp",   function(object, snpset, ...) standardGeneric("plotSnp"))
 
-setGeneric("position", function(object) standardGeneric("position"))
+
 setGeneric("selectSomeIndex",   function(object, ...) standardGeneric("selectSomeIndex"))##Generic defined, but not exported in Biobase
 setGeneric("smoothSnp", function(object, ...) standardGeneric("smoothSnp"))
 setGeneric("unsplitSnpSet", function(from, annotatedDataFrame, ...) standardGeneric("unsplitSnpSet"))
@@ -23,3 +23,5 @@ setGeneric("allPlots",   function(object) standardGeneric("allPlots"))
 setGeneric("plotSpecific",   function(object) standardGeneric("plotSpecific"))
 setGeneric("snpPar",   function(object) standardGeneric("snpPar"))
 setGeneric("snpPar<-",   function(object, value) standardGeneric("snpPar<-"))
+
+

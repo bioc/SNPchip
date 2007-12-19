@@ -7,9 +7,4 @@ setMethod("initialize", "ParSnpSet",
             .Object
           })
 
-setMethod("plotSnp", c("ParSnpSet", "oligoSnpSet"),
-          function(object, snpset){
-            old.par <- par(no.readonly=TRUE)
-            on.exit(old.par)            
-            callNextMethod()
-          })
+

@@ -14,15 +14,9 @@ enzyme(object)
 \arguments{
   \item{object}{one of the classes defined in \code{SNPchip}}
 }
-\details{
-}
+
 \value{
   Returns the enzyme for each indicated SNP.
 }
-\author{Robert Scharpf}
-\note{
-}
-\seealso{}
-\examples{
-}
+\author{R. Scharpf}
 \keyword{methods}

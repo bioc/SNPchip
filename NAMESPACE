@@ -7,7 +7,7 @@ exportClasses(ParESet,
 exportMethods(getSnpAnnotation,
               alleleA,
               alleleB,
-              calculateCopyNumber,              
+              calculateCopyNumber,
               chromosome,
               coerce,
               dbSnpId,
@@ -22,6 +22,8 @@ exportMethods(getSnpAnnotation,
               updateObject,
               unsplitSnpSet)
 
+exportMethods(chromosome, position)
+
 export(centromere,
        chromosomeSize,
        showSummary)
@@ -34,7 +36,8 @@ exportMethods("$",
               getPar,
               plotSnp,              
               snpPar,
-              "snpPar<-")              
+              "snpPar<-")
+
 export(plotCytoband, .calculateYlim)
 
 ##DEPRECATED CLASSES

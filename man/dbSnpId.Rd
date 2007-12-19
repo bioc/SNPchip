@@ -18,12 +18,7 @@ dbSnpId(object)
 \value{
   A (typically very long) character vector of SNP identifiers.
 }
-\author{Robert Scharpf}
-\note{
-}
-\seealso{
-  
-}
+\author{R. Scharpf}
 
 \examples{
 data(sample.snpset)

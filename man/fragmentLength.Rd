@@ -13,17 +13,11 @@ fragmentLength(object)
   \item{object}{Object, possibly derived from class \code{SnpCallSet} or
     \code{SnpCopyNumberSet}}
 }
-\details{
-}
+
 
 \value{ Length of the PCR fragment on which the SNP resides after
   enzymatic digestion.  }
 
-\references{}
-\author{Robert Scharpf}
-\note{
-}
-\seealso{}
-\examples{}
+\author{R. Scharpf}
 \keyword{manip}
 

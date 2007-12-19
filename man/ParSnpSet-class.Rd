@@ -23,9 +23,7 @@ Class \code{\linkS4class{ParESet}}, by class "ParSnpCopyNumberSet", distance 2.
     \item{plotSnp}{\code{signature(object = "ParSnpSet", snpset = "oligoSnpSet")}}
   }
 }
-\references{}
-\author{}
-\note{}
+\author{R. Scharpf}
 
 \seealso{
   \code{\link[oligoClasses]{oligoSnpSet-class}}

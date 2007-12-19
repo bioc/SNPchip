@@ -30,11 +30,6 @@ label.cytoband=TRUE, cex.axis=1, outer=FALSE, ...)
   
 }
 
-\value{
-
-}
-
-\references{}
 \author{Robert Scharpf and Jason Ting}
 \examples{
 plotCytoband("1")

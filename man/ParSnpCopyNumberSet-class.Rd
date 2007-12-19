@@ -22,9 +22,7 @@ Class \code{\linkS4class{ParESet}}, directly.
     \item{plotSnp}{\code{signature(object = "ParSnpCopyNumberSet", snpset = "SnpCopyNumberSet")}}
   }
 }
-\references{}
-\author{}
-\note{}
+\author{R. Scharpf}
 
 \seealso{
   \code{\link[oligoClasses]{SnpCopyNumberSet-class}}

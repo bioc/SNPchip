@@ -8,14 +8,7 @@ produce estimates of copy number and genotype calls.  Due to size
 limitations, we only included every 10th SNP from the Affy's 50k Xba chip.
 }
 \usage{data(hapmap)}
-\format{
-}
-\details{
-}
-\source{
-}
-\references{
-}
+\author{R. Scharpf}
 \examples{
 data(hapmap)
 }

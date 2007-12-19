@@ -22,9 +22,7 @@ Objects can be created by calls of the form \code{new("ParSnpCallSet", ...)}.
     \item{plotSnp}{\code{signature(object = "ParSnpCallSet", snpset = "SnpCallSet")}}
   }
 }
-\references{}
-\author{}
-\note{}
+\author{R.Scharpf}
 
 \seealso{
   \code{\link[oligoClasses]{SnpCallSet-class}}

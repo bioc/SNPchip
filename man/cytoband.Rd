@@ -16,13 +16,11 @@ Contains start and stop sites of cytoband for Build 35
     \item{\code{gieStain}}{a factor with levels \code{acen} \code{gneg} \code{gpos100} \code{gpos25} \code{gpos50} \code{gpos75} \code{gvar} \code{stalk}}
   }
 }
-\details{
-}
+
 \source{
 \url{http://pevsnerlab.kennedykrieger.org/snpscan_07_sourcecode.htm}
 }
-\references{
-}
+
 \examples{
 data(cytoband)
 }

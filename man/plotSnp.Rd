@@ -23,17 +23,9 @@ plotSnp(object, snpset, ...)
 \details{
   See examples in the vignette
 }
-\value{
-  
-}
 
-\references{}
+\author{R. Scharpf}
 
-\author{}
-
-\note{
-  
-}
 \seealso{
   \code{\link{par}},
   \code{\link{ParESet-class}},
