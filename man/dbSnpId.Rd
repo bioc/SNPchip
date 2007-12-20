@@ -13,8 +13,6 @@ dbSnpId(object)
   \item{object}{Object possibly derived from \code{eSet} or
     \code{AnnotatedDataFrame} class.}
 }
-\details{
-}
 \value{
   A (typically very long) character vector of SNP identifiers.
 }
