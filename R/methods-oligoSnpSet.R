@@ -1,7 +1,7 @@
 setMethod("chromosome", "oligoSnpSet",
           function(object){
             if(!("chromosome" %in% fvarLabels(object))){
-
+              require("RSQLite") || stop("if 'chromosome' is not a varLabel in the featureData, the RSQLite package must be installed")
               fs <- featureNames(object)
               sql <- "SELECT man_fsetid, chrom FROM featureSet WHERE man_fsetid LIKE 'SNP%'"              
               ##Check if two objects have been combined
@@ -28,7 +28,7 @@ setMethod("chromosome", "oligoSnpSet",
 setMethod("position", "oligoSnpSet",
           function(object){
             if(!("position" %in% fvarLabels(object))){
-
+              require("RSQLite") || stop("If 'position' is not a varLabel in featureData, the RSQLite package must be installed")
               fs <- featureNames(object)
               sql <- "SELECT man_fsetid, physical_pos FROM featureSet WHERE man_fsetid LIKE 'SNP%'"
               pkgs <- strsplit(annotation(object), ",")[[1]]
