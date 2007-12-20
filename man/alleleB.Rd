@@ -11,8 +11,6 @@ alleleB(object)
 \arguments{
   \item{object}{one of the classes defined in \code{SNPchip}}
 }
-\details{
-}
 \value{
   Returns a vector of the B alleles 
 }
