@@ -56,6 +56,9 @@ library(SNPchip)
 <<exampledata>>=
 data(sample.snpset)
 sample.snpset
+@ 
+
+<<featureData>>=
 fD <- new("AnnotatedDataFrame", data=data.frame(row.names=featureNames(sample.snpset)),
           varMetadata=data.frame(labelDescription=character()))
 featureData(sample.snpset) <- fD
@@ -145,7 +148,7 @@ the function \Rfunction{getPar}.  The default plot layout generally
 works well, but can be adjusted through additional arguments to par
 and layout.
 
-\subsection{Subsetting for more-focused plots}
+\subsection{Subsetting for more focused plots}
 
 A more focused view of chromosomes 1, 7, 16, 19, and X of sample 2
 could be obtained by
