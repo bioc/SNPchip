@@ -1,6 +1,5 @@
 \name{plotSnp}
 \alias{plotSnp}
-\alias{plotSnp,ParESet,ANY-method}
 \alias{plotSnp,ParSnpCopyNumberSet,SnpCopyNumberSet-method}
 \alias{plotSnp,ParSnpCallSet,SnpCallSet-method}
 \alias{plotSnp,ParSnpSet,oligoSnpSet-method}
@@ -38,9 +37,9 @@ plotSnp(object, snpset, ...)
 
 data(sample.snpset)
 chr1 <- sample.snpset[chromosome(sample.snpset) == "1", 1]
-graph.par <- getPar(chr1, use.chromosome.size=TRUE)
+graph.par <- new("ParSnpSet")
+graph.par <- getPar(graph.par, chr1, use.chromosome.size=TRUE)
 plotSnp(graph.par, chr1)
-
 }
 \keyword{hplot}
 

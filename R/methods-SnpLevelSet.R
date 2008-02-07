@@ -9,76 +9,8 @@ setMethod("dbSnpId", "SnpLevelSet", function(object) dbSnpId(featureData(object)
 setMethod("enzyme", "SnpLevelSet", function(object) enzyme(featureData(object)))
 setMethod("fragmentLength", "SnpLevelSet", function(object) fragmentLength(fData(object)))
 
-setMethod("getPar", "SnpLevelSet", function(object, add.cytoband, ...){
-  op <- switch(class(object),
-               oligoSnpSet=new("ParSnpSet", ...),
-               SnpCallSet=new("ParSnpCallSet", ...),
-               SnpCopyNumberSet=new("ParSnpCopyNumberSet", ...))
-  object <- object[!is.na(chromosome(object)), ]
+##setMethod("getPar", "SnpLevelSet", function(object, add.cytoband, ...){
 
-  ##layout
-  chromosomeNames <- as.character(unique(chromosome(object)))
-  chromosomeNames[chromosomeNames == "X"] <- 23
-  chromosomeNames[chromosomeNames == "Y"] <- 24
-  chromosomeNames <- chromosomeNames[order(as.numeric(chromosomeNames))]
-  chromosomeNames[chromosomeNames == "23"] <- "X"
-  chromosomeNames[chromosomeNames == "24"] <- "Y"  
-  N <- length(chromosomeNames)
-  S <- ncol(object)  
-  data(chromosomeAnnotation, package="SNPchip", envir=environment())
-  op$heights <- rep(1, ncol(object))
-  if(!missing(add.cytoband)) op$add.cytoband <- add.cytoband
-  if(op$add.cytoband){
-    if(!op$outer.cytoband){
-      S <- S+1
-      if(S > 3){
-        op$heights <- c(op$heights, 1/(ncol(object)*1.5))
-      }
-      if(S == 2 | S == 3){
-        op$heights <- c(op$heights, 1/10)
-      }
-    } 
-  }
-  if(N > 10){
-    op$alternate.xaxis.side <- TRUE
-    side <- c(1, 3)[rep(1:2, N/2 + 1)]
-    side <- side[1:N]
-    options(warn=-1)
-    names(side) <- chromosomeNames
-    op$xaxis.side <- side
-  }
-  m <- matrix(1:(S*N), nc=N, byrow=FALSE)
-  w <- chromosomeAnnotation[chromosomeNames, "chromosomeSize"]
-  op$widths <- w/min(w)
-  op$mat <- m
-
-  ######################################################################
-  ##graphical parameters
-  if("copyNumber" %in% ls(assayData(object))){
-    if(min(copyNumber(object), na.rm=TRUE) > 0) op$log <- "y"
-    ##by default, we use the same ylimit on all the plots
-    
-    ##could make plot specific by adding an option one.ylim (or
-    ##something to that effect) and calculating ylim in .plot()
-    op$ylim <- .calculateYlim(object, op)
-  }
-  def.op <- options(warn=-1)
-  op$firstChromosome <- chromosomeNames[1]
-  options(def.op)
-
-  if(op$use.chromosome.size){
-    op$xlim <- matrix(NA, nrow=length(chromosomeNames), ncol=2)    
-    op$xlim[, 1] <- rep(0, nrow(op$xlim))
-    op$xlim[, 2] <- chromosomeSize(chromosomeNames)
-    rownames(op$xlim) <- chromosomeNames    
-  } else{
-    objList <- split(object, chromosome(object))
-    objList <- objList[chromosomeNames]
-    op$xlim <- t(sapply(objList, function(object) range(position(object))))
-  }
-  op
-  ##set up defaults according to number of samples, chromosomes, position, etc.
-})
 
 setMethod(".getX", "SnpLevelSet", function(object, ...) position(object))
 

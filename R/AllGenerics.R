@@ -2,23 +2,18 @@ setGeneric("getSnpAnnotation",             function(object, ...) standardGeneric
 setGeneric("alleleA", function(object) standardGeneric("alleleA"))
 setGeneric("alleleB", function(object) standardGeneric("alleleB"))
 setGeneric("calculateCopyNumber", function(object) standardGeneric("calculateCopyNumber"))
-
 setGeneric(".combineChips", function(x, y, ...) standardGeneric(".combineChips"))
 setGeneric("dbSnpId", function(object) standardGeneric("dbSnpId"))
 setGeneric("enzyme", function(object) standardGeneric("enzyme"))
 setGeneric("fragmentLength", function(object) standardGeneric("fragmentLength"))
-setGeneric("getPar", function(object, ...) standardGeneric("getPar"))
+setGeneric("getPar", function(object, snpset, ...) standardGeneric("getPar"))
 setGeneric(".getX", function(object, ...) standardGeneric(".getX"))
 setGeneric(".getY", function(object, ...) standardGeneric(".getY"))
 setGeneric(".plotChromosome",   function(object, ...) standardGeneric(".plotChromosome"))
-
 setGeneric("plotSnp",   function(object, snpset, ...) standardGeneric("plotSnp"))
-
-
 setGeneric("selectSomeIndex",   function(object, ...) standardGeneric("selectSomeIndex"))##Generic defined, but not exported in Biobase
 setGeneric("smoothSnp", function(object, ...) standardGeneric("smoothSnp"))
 setGeneric("unsplitSnpSet", function(from, annotatedDataFrame, ...) standardGeneric("unsplitSnpSet"))
-
 setGeneric("allPlots",   function(object) standardGeneric("allPlots"))
 setGeneric("plotSpecific",   function(object) standardGeneric("plotSpecific"))
 setGeneric("snpPar",   function(object) standardGeneric("snpPar"))

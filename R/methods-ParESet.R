@@ -112,6 +112,74 @@ setMethod("initialize", "ParESet",
             .Object
           })
 
+##updates graphical parameters with information from the data class
+setMethod("getPar", c("ParESet", "SnpLevelSet"),
+          function(object, snpset, add.cytoband, ...){
+  snpset <- snpset[!is.na(chromosome(snpset)), ]
+  ##layout
+  chromosomeNames <- as.character(sort(chromosome2numeric(chromosome(snpset))))
+  chromosomeNames[chromosomeNames == "23"] <- "X"
+  chromosomeNames[chromosomeNames == "24"] <- "XY"
+  chromosomeNames[chromosomeNames == "25"] <- "Y"
+  chromosomeNames[chromosomeNames == "26"] <- "M"
+  chromosomeNames <- unique(chromosomeNames)
+
+  N <- length(chromosomeNames)
+  S <- ncol(snpset)  
+  data(chromosomeAnnotation, package="SNPchip", envir=environment())
+  object$heights <- rep(1, ncol(snpset))
+  if(!missing(add.cytoband)) object$add.cytoband <- add.cytoband
+  if(object$add.cytoband){
+    if(!object$outer.cytoband){
+      S <- S+1
+      if(S > 3){
+        object$heights <- c(object$heights, 1/(ncol(snpset)*1.5))
+      }
+      if(S == 2 | S == 3){
+        object$heights <- c(object$heights, 1/10)
+      }
+    } 
+  }
+  if(N > 10){
+    object$alternate.xaxis.side <- TRUE
+    side <- c(1, 3)[rep(1:2, N/2 + 1)]
+    side <- side[1:N]
+    options(warn=-1)
+    names(side) <- chromosomeNames
+    object$xaxis.side <- side
+  }
+  m <- matrix(1:(S*N), nc=N, byrow=FALSE)
+  w <- chromosomeAnnotation[chromosomeNames, "chromosomeSize"]
+  object$widths <- w/min(w)
+  object$mat <- m
+
+  ######################################################################
+  ##graphical parameters
+  if("copyNumber" %in% ls(assayData(snpset))){
+    if(min(copyNumber(snpset), na.rm=TRUE) > 0) object$log <- "y" else object$log <- ""
+    ##by default, we use the same ylimit on all the plots
+    
+    ##could make plot specific by adding an option one.ylim (or
+    ##something to that effect) and calculating ylim in .plot()
+    object$ylim <- .calculateYlim(snpset, object)
+  } 
+  def.op <- options(warn=-1)
+  object$firstChromosome <- chromosomeNames[1]
+  options(def.op)
+
+  if(object$use.chromosome.size){
+    object$xlim <- matrix(NA, nrow=length(chromosomeNames), ncol=2)    
+    object$xlim[, 1] <- rep(0, nrow(object$xlim))
+    object$xlim[, 2] <- chromosomeSize(chromosomeNames)
+    rownames(object$xlim) <- chromosomeNames    
+  } else{
+    objList <- split(snpset, chromosome(snpset))
+    objList <- objList[chromosomeNames]
+    object$xlim <- t(sapply(objList, function(snpset) range(position(snpset))))
+  }
+  object
+  ##set up defaults according to number of samples, chromosomes, position, etc.
+})
 
 setMethod("$", "ParESet", function(x, name){
   eval(substitute(snpPar(x)$NAME_ARG, list(NAME_ARG=name)))

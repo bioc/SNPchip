@@ -23,8 +23,12 @@ snpPar(object)
 \seealso{ \code{\link{par}}, \code{\link[graphics]{layout}}}
 \examples{
 data(sample.snpset)
-object <- getPar(sample.snpset)
-argumentsToPar <- snpPar(object)
+gp <- new("ParSnpSet")
+object <- getPar(gp, sample.snpset)
+str(snpPar(object))
+
+##or equivalently
+show(object)
 }
 \keyword{methods}
 

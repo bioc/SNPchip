@@ -25,6 +25,7 @@ exportMethods(getSnpAnnotation,
 exportMethods(chromosome, position)
 
 export(centromere,
+       chromosome2numeric,
        chromosomeSize,
        showSummary)
 

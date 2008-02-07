@@ -1,3 +1,5 @@
+
+
 setMethod("chromosome", "oligoSnpSet",
           function(object){
             if(!("chromosome" %in% fvarLabels(object))){

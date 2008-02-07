@@ -11,10 +11,9 @@ setMethod(".plotChromosome", "SnpLevelSet",
             }
           })
 
-setMethod("plotSnp", c("ParESet", "ANY"),
+setMethod("plotSnp", c("ParESet", "SnpLevelSet"),
           function(object, snpset){
             snpset <- snpset[!is.na(chromosome(snpset)), ]
-
             if(object$useLayout){
               layout(mat=object$mat,
                      widths=object$widths,
@@ -22,12 +21,16 @@ setMethod("plotSnp", c("ParESet", "ANY"),
                      respect=object$respect)
             }
             snpList <- split(snpset, chromosome(snpset))
-
             names(snpList)[names(snpList) == "X"] <- "23"
-            names(snpList)[names(snpList) == "Y"] <- "24"
+            names(snpList)[names(snpList) == "XY"] <- "24"            
+            names(snpList)[names(snpList) == "Y"] <- "25"
+            names(snpList)[names(snpList) == "M"] <- "26"            
             snpList <- snpList[order(as.numeric(names(snpList)))]
             names(snpList)[names(snpList) == "23"] <- "X"
-            names(snpList)[names(snpList) == "24"] <- "Y"            
+            names(snpList)[names(snpList) == "24"] <- "XY"            
+            names(snpList)[names(snpList) == "25"] <- "Y"
+            names(snpList)[names(snpList) == "26"] <- "M"                        
+
 
             par(allPlots(object))
             for(i in 1:length(snpList)){

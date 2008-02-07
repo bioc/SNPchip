@@ -27,9 +27,19 @@ centromere <- function(chromosome){
   chromosomeAnnotation[chromosome, c("centromereStart", "centromereEnd")]
 }
 
+chromosome2numeric <- function(chromosome){
+  chrom <- as.character(chromosome)
+  chrom[chrom == "X"] <- 23
+  chrom[chrom == "XY"] <- 24
+  chrom[chrom == "Y"] <- 25
+  chrom[chrom == "M"] <- 26
+  chrom <- as.numeric(chrom)
+  chrom
+}
+
 chromosomeSize <- function(chromosome){
   if(!is.character(chromosome)) stop("argument to chromosomeSize must be one of the following character strings: 1, ..., 22, X, or Y")
-  if(any(!(chromosome %in% c(1:22, "X", "Y")))) stop("chromosome must be 1-22, X, or Y")  
+  if(any(!(chromosome %in% c(1:22, "X", "Y", "XY", "M")))) stop("chromosome must be 1-22, X, or Y")  
   data(chromosomeAnnotation, package="SNPchip", envir=environment())
   chromosomeAnnotation[chromosome, "chromosomeSize"]
 }
