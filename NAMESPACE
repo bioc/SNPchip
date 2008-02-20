@@ -4,10 +4,10 @@ exportClasses(ParESet,
               ParSnpCallSet,
               ParSnpSet)
 
-exportMethods(getSnpAnnotation,
+exportMethods(##getSnpAnnotation,
               alleleA,
               alleleB,
-              calculateCopyNumber,
+##              calculateCopyNumber,
               chromosome,
               coerce,
               dbSnpId,
@@ -19,8 +19,9 @@ exportMethods(getSnpAnnotation,
               show,
               smoothSnp,
               summary,
-              updateObject,
-              unsplitSnpSet)
+              updateObject#,
+##              unsplitSnpSet
+              )
 
 exportMethods(chromosome, position)
 
@@ -35,14 +36,14 @@ exportMethods("$",
               "$<-",
               allPlots,
               getPar,
-              plotSnp,              
+              plotSnp,
               snpPar,
               "snpPar<-")
 
 export(plotCytoband, .calculateYlim)
 
 ##DEPRECATED CLASSES
-exportClasses(AnnotatedSnpSet,
-              AnnotatedSnpCopyNumberSet,
-              AnnotatedSnpCallSet)
+##exportClasses(AnnotatedSnpSet,
+##              AnnotatedSnpCopyNumberSet,
+##              AnnotatedSnpCallSet)
               

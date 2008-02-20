@@ -25,12 +25,15 @@ Adds graphical parameters to an object inherited from class
       and chromosomes in the object \code{snpset}
       
 }
+
 \value{
   An object of the same class as \code{object}
 }
+
 \author{R. Scharpf}
 \seealso{\code{\link{ParESet-class}}, \code{\link{ParSnpSet-class}},
 \code{\link{ParSnpCopyNumberSet-class}}, \code{\link{ParSnpCallSet-class}}}
+
 \examples{
 data(sample.snpset)
 gp <- new("ParSnpSet")
@@ -40,5 +43,6 @@ gp$mat
 gp <- getPar(gp, sample.snpset)
 gp$mat
 }
+
 \keyword{manip}
 \keyword{methods}

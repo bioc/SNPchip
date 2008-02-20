@@ -1,0 +1,160 @@
+% \VignetteIndexEntry{oligoHowTo Vignette}
+% \VignetteKeywords{copy number, genotype, SNP}
+% \VignettePackage{SNPchip}
+
+\documentclass{article}
+
+\usepackage{amsmath,pstricks,fullpage}
+\usepackage[authoryear,round]{natbib}
+\usepackage{hyperref}
+\usepackage{setspace}
+\parindent 0in  % Left justify
+\newcommand{\scscst}{\scriptscriptstyle}
+\newcommand{\scst}{\scriptstyle}
+
+\newcommand{\Rpackage}[1]{\textit{#1}}
+\newcommand{\Rfunction}[1]{\texttt{#1}}
+\newcommand{\Robject}[1]{\texttt{#1}}
+\newcommand{\R}[1]{\textsf{#1}}
+
+\textwidth=6.2in
+\textheight=8.5in
+\oddsidemargin=.1in
+\evensidemargin=.1in
+\headheight=-.3in
+
+\title{Extending \Rpackage{oligo} with \Rpackage{SNPchip}}
+\author{Robert Scharpf}
+
+\begin{document}
+
+<<options, echo=FALSE, hide=TRUE>>=
+options(width=60)
+@ 
+
+\maketitle
+
+\section*{Introduction}
+
+This vignette describes how to plot objects created from the \R{}
+package \Rpackage{oligo}.  The \Rpackage{oligo} vignette creates an
+instance of \Robject{SnpCallSetPlus}, \Robject{crlmmOut}, from the
+call to the function \Rfunction{crlmm}.  For purposes of illustration,
+I subset the object to only include SNPs on chromosome 1.  I also took
+the liberty of adding chromosome and physical position to the
+featureData slot.  This object can be loaded by
+
+<<loadSnpCallSet>>=
+library(SNPchip)
+data(crlmmOut)
+class(crlmmOut)
+@ 
+
+\section{Creating an instance of \Robject{oligoSnpSet}}
+
+The elements in the assayData for instances of
+\Robject{SnpCallSetPlus} is dependent on the Affymetrix platform.
+
+<<assayData>>=
+annotation(crlmmOut)
+ls(assayData(crlmmOut))
+@ 
+
+The method \Rfunction{calculateCopyNumber} averages the A and B allele
+intensities for objects of class \Robject{SnpCallSetPlus}.  We assume
+that the averaged intensities are proportional to the copy number.
+Because the accessors for the A and B allele intensities are defined
+in the \R{} package \Rpackage{oligo}, we require this package here.
+
+<<averageAB, fig=TRUE>>=
+if(require(oligo)){
+  avgAB <- calculateCopyNumber(crlmmOut)
+  par(las=1)
+  boxplot(as.data.frame(avgAB))
+} else {
+  plot(1, 1, main="oligo required for this plot")
+}
+@ 
+
+Assuming that the average autosomal copy number in a sample is two, we
+can mean center the intensities using the autosomes.  Because only
+chromosome 1 is present in this object, we assume that these subjects'
+had an average of two copies for each chromosome 1 SNP:
+
+<<avgAb>>=
+colmn <- colMeans(avgAB)
+centerAB <- sweep(avgAB, 2, colmn) + log2(2)
+@ 
+
+One may use SNPchip to plot the copy number estimates versus physical
+position (as described in the SNPchip vignette) by coercing the
+\Robject{SnpCallSet} object to an instance of \Robject{oligoSnpSet}.
+This coercion assigns the uncentered average of the A and B
+intensities to the copyNumber element in assayData.
+
+<<coerce>>=
+snpset <- as(crlmmOut, "oligoSnpSet")
+@ 
+
+A plot of chromosome 1:
+
+<<oligoSnpSet, fig=TRUE, width=8, height=5>>=
+gp <- new("ParSnpSet")
+gp <- getPar(gp, snpset)
+gp$ylab <- "Avg allele A/B intensities"
+plotSnp(gp, snpset)
+@ 
+
+A hidden Markov models can be used to identify chromosomal alterations
+using genotype and copy number estimates as described in the
+\Rpackage{VanillaICE} vignette.
+
+\section{Combining data objects using different annotation platforms}
+
+Here we illustrate how one may combine different objects of class
+\Robject{SnpCallSetPlus}.  Following the \Rpackage{oligo} vignette, I
+created \Robject{hind} and \Robject{xba} instances of
+\Robject{SnpCallSetPlus}:
+
+<<eval=FALSE>>=
+library("oligo")
+library("hapmap100kxba")
+pathCelFiles <- system.file("celFiles", package="hapmap100kxba")
+fullFilenames <- list.celfiles(path=pathCelFiles, full.names=TRUE)
+aboutSamples <- data.frame(gender=c("female", "female", "male"))
+rownames(aboutSamples) <- basename(fullFilenames)
+aboutVars <- data.frame(labelDescription="male/female")
+rownames(aboutVars) <- "gender"
+pd <- new("AnnotatedDataFrame",
+          data=aboutSamples,
+          varMetadata=aboutVars)
+xba <- justCRLMM(fullFilenames, phenoData=pd, verbose=FALSE)
+
+library("hapmap100khind")
+pathCelFiles <- system.file("celFiles", package="hapmap100khind")
+fullFilenames <- list.celfiles(path=pathCelFiles, full.names=TRUE)
+aboutSamples <- data.frame(gender=c("female", "female", "male"))
+rownames(aboutSamples) <- basename(fullFilenames)
+aboutVars <- data.frame(labelDescription="male/female")
+rownames(aboutVars) <- "gender"
+pd <- new("AnnotatedDataFrame",
+          data=aboutSamples,
+          varMetadata=aboutVars)
+hind <- justCRLMM(fullFilenames, phenoData=pd, verbose=FALSE)
+@
+
+To combine into one object, simply 
+
+<<eval=FALSE>>=
+callset <- combine(xba, hind)
+@ 
+
+\section{Session Information}
+
+<<sessionInfo, results=tex, echo=FALSE>>=
+toLatex(sessionInfo())
+@ 
+
+\end{document}
+
+

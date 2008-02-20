@@ -1,5 +1,3 @@
-
-
 setMethod("chromosome", "oligoSnpSet",
           function(object){
             if(!("chromosome" %in% fvarLabels(object))){
@@ -54,10 +52,10 @@ setMethod("position", "oligoSnpSet",
           })
             
 
-setMethod("getSnpAnnotation", "oligoSnpSet",
-          function(object){
-            callNextMethod()
-          })
+##setMethod("getSnpAnnotation", "oligoSnpSet",
+##          function(object){
+##            callNextMethod()
+##          })
 
 setMethod("show", "oligoSnpSet", function(object) {
   cat(class( object ), " (storageMode: ", storageMode(object), ")\n", sep="")

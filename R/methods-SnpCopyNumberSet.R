@@ -53,8 +53,8 @@ setMethod("position", "SnpCopyNumberSet",
 
 
 
-setMethod("getSnpAnnotation", "SnpCopyNumberSet",
-          function(object){
-            callNextMethod()
-          })
+##setMethod("getSnpAnnotation", "SnpCopyNumberSet",
+##          function(object){
+##            callNextMethod()
+##          })
 
