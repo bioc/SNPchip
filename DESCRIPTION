@@ -1,5 +1,5 @@
 Package: SNPchip
-Version: 1.3.12
+Version: 1.3.13
 Title: Classes and Methods for high throughput SNP chip data 
 Author: Robert Scharpf <rscharpf@jhsph.edu> and Ingo Ruczinski
 Maintainer: Robert Scharpf <rscharpf@jhsph.edu>
@@ -21,7 +21,6 @@ Collate: AllClasses.R
 	 methods-SnpLevelSet.R 
 	 methods-SnpCallSet.R 
 	 methods-AnnotatedDataFrame.R 
-	 methods-SnpCopyNumberSet.R 
 	 methods-oligoSnpSet.R
 	 plotSnp-methods.R
 	 methods-list.R
