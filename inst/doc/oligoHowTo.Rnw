@@ -105,16 +105,18 @@ gp$ylab <- "Avg allele A/B intensities"
 plotSnp(gp, snpset)
 @ 
 
-A hidden Markov models can be used to identify chromosomal alterations
+A hidden Markov model can be used to identify chromosomal alterations
 using genotype and copy number estimates as described in the
 \Rpackage{VanillaICE} vignette.
 
-\section{Combining data objects using different annotation platforms}
+\section{Combining objects that use different annotation packages}
 
-Here we illustrate how one may combine different objects of class
-\Robject{SnpCallSetPlus}.  Following the \Rpackage{oligo} vignette, I
-created \Robject{hind} and \Robject{xba} instances of
-\Robject{SnpCallSetPlus}:
+Here we illustrate how one may combine two objects of class
+\Robject{SnpCallSetPlus} that use different annotation packages: e.g.,
+\Rpackage{pd.mapping50k.hind240} and \Rpackage{pd.mapping50k.xba240}.
+Following the \Rpackage{oligo} vignette, I created \Robject{hind} and
+\Robject{xba} instances of \Robject{SnpCallSetPlus}.  The following
+code is not evaluated due to time constraints.
 
 <<eval=FALSE>>=
 library("oligo")
