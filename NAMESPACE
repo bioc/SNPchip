@@ -8,13 +8,13 @@ exportMethods(##getSnpAnnotation,
               alleleA,
               alleleB,
 ##              calculateCopyNumber,
-              chromosome,
+##              chromosome,
               coerce,
               dbSnpId,
               enzyme,
               fragmentLength,
               initialize,
-              position,
+##              position,
               selectSomeIndex,  
               show,
               smoothSnp,
@@ -22,8 +22,6 @@ exportMethods(##getSnpAnnotation,
               updateObject#,
 ##              unsplitSnpSet
               )
-
-exportMethods(chromosome, position)
 
 export(centromere,
        chromosome2numeric,
