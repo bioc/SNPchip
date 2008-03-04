@@ -82,12 +82,14 @@ position calls), we add this annotation to the \Robject{featureData}
 for this vignette.
 
 <<addingFeatureData>>=
-system.time(tmp <- chromosome(sample.snpset))
-object.size(sample.snpset)
-featureData(sample.snpset)$chromosome <- chromosome(sample.snpset)
-featureData(sample.snpset)$position <- position(sample.snpset)
-system.time(tmp <- chromosome(sample.snpset))
-object.size(sample.snpset)
+if(require("pd.mapping50k.xba240")){
+  system.time(tmp <- chromosome(sample.snpset))
+  object.size(sample.snpset)
+  featureData(sample.snpset)$chromosome <- chromosome(sample.snpset)
+  featureData(sample.snpset)$position <- position(sample.snpset)
+  system.time(tmp <- chromosome(sample.snpset))
+  object.size(sample.snpset)
+}
 @ 
 
 Note that if one is using a platform for which there is no

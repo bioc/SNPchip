@@ -99,6 +99,10 @@ setMethod("show", "ParESet", function(object) str(snpPar(object)))
        ylab=ylab,
        yaxt="n",
        ...)
+  if(op$abline){
+    abline(h=op$abline.h, col=op$abline.col, lty=op$abline.lty, lwd=op$abline.lwd)
+  }
+##  if(abline == 0)
 }
 
 plotCytoband <- function(chromosome,

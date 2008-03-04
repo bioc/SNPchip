@@ -55,6 +55,11 @@ setMethod("initialize", "ParESet",
                    widths=1,
                    respect=FALSE,
                    firstChromosome="1",
+                   abline=FALSE,
+                   abline.h=2,
+                   abline.col="grey80",
+                   abline.lty=1,
+                   abline.lwd=1,
                    ...){
             .Object@snpPar <- list(col.axis=col.axis,
                                    cex.main=cex.main,
@@ -108,7 +113,12 @@ setMethod("initialize", "ParESet",
                                    heights=heights,
                                    widths=widths,
                                    respect=respect,
-                                   firstChromosome=firstChromosome)
+                                   firstChromosome=firstChromosome,
+                                   abline=abline,
+                                   abline.h=abline.h,
+                                   abline.col=abline.col,
+                                   abline.lty=abline.lty,
+                                   abline.lwd=abline.lwd)
             .Object
           })
 
