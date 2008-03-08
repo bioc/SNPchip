@@ -9,7 +9,46 @@ setMethod(".plotChromosome", "SnpLevelSet",
               .drawCytobandWrapper(S=ncol(object), cytoband=cytoband, op=op, j=j, chromosomeName=unique(chromosome(object)))
               .drawXaxis(object=object, op=op, j=j)
             }
+	    return()
           })
+
+.drawYaxis <- function(object, op, j){
+	if(unique(chromosome(object)) != op$firstChromosome) return()
+	if(op$yaxt == "n") return()
+	if("copyNumber" %in% ls(assayData(object))){
+		at <- pretty(op$ylim)
+		at <- c(op$at, at)
+		labels <- at
+	}  else {
+		at <- c(0, 1)
+		labels <- c("AA/BB", "AB")
+	}
+	axis(side=2, at=at, labels=labels, las=1, cex.axis=op$cex.axis)  
+}
+
+.drawXaxis <- function(object, op, j){
+	chromosomeName <- unique(chromosome(object))
+	if(op$xaxt == "n") return()
+	if(op$alternate.xaxis.side){
+		side <- op$xaxis.side[[unique(chromosome(object))]]
+	} else side <- op$xaxis.side
+	if(side == 1 & j == ncol(object) | side == 3 & j == 1){
+		axis(side,
+		     at=pretty(op$xlim[chromosomeName, ], op$lab[2]),
+		     outer=op$outer.axis,
+		     labels=pretty(op$xlim[chromosomeName, ], op$lab[2])/1e6,
+		     cex.axis=op$cex.axis,
+		     col=op$col.axis,
+		     col.axis=op$col.axis,
+		     las=1,
+		     line=op$line.axis,
+		     lwd=1,
+		     mgp=c(2, 0.5, 0))
+		if(op$label.chromosome){
+			mtext(unique(chromosome(object)), side=side, outer=FALSE, line=op$line.label.chromosome, cex=op$cex.lab)
+		}
+	}
+}
 
 setMethod("plotSnp", c("ParESet", "SnpLevelSet"),
           function(object, snpset){
@@ -29,7 +68,14 @@ setMethod("plotSnp", c("ParESet", "SnpLevelSet"),
             names(snpList)[names(snpList) == "23"] <- "X"
             names(snpList)[names(snpList) == "24"] <- "XY"            
             names(snpList)[names(snpList) == "25"] <- "Y"
-            names(snpList)[names(snpList) == "26"] <- "M"                        
+            names(snpList)[names(snpList) == "26"] <- "M"
+
+	    if(object$ylab == "copy number"){
+		    if(any(apply(copyNumber(snpset), 2, "median") > 3) | any(apply(copyNumber(snpset), 2, "median") < 0)){
+			    warning("The default ylabel 'copy number' may not be consistent with the quantity plotted on the vertical axes.  Typically, the median copy number is approximately 2 for autosomes or 1 for the male chromosome X")
+		    }
+	    }
+	    
             par(allPlots(object))
             for(i in 1:length(snpList)){
               if(i == 1) par(yaxt="s") else par(yaxt="n")
@@ -37,6 +83,7 @@ setMethod("plotSnp", c("ParESet", "SnpLevelSet"),
             }
             if(object$outer.ylab) mtext(object$ylab, side=object$side.ylab, outer=TRUE, las=3, cex=object$cex.ylab, line=object$line.ylab)
             mtext(object$xlab, side=object$side.xlab, outer=object$outer.xlab, cex=object$cex.xlab, line=object$line.xlab)
+	    return()
           })
 
 
@@ -85,6 +132,8 @@ setMethod("show", "ParESet", function(object) str(snpPar(object)))
   cex <- .recycle(op$cex, object, missing=1)
   pch <- .recycle(op$pch, object, missing=".")
   bg <- .recycle(op$bg, object, missing="grey40")
+
+
   plot(x=x, y=y,
        xlim=op$xlim[chromosomeName, ],
        ylim=op$ylim,
@@ -100,9 +149,12 @@ setMethod("show", "ParESet", function(object) str(snpPar(object)))
        yaxt="n",
        ...)
   if(op$abline){
-    abline(h=op$abline.h, col=op$abline.col, lty=op$abline.lty, lwd=op$abline.lwd)
+	  abline(h=op$abline.h, col=op$abline.col, lty=op$abline.lty, lwd=op$abline.lwd)
   }
-##  if(abline == 0)
+  if(!is.null(op$abline.v)){
+	  abline(v=op$abline.v, col=op$abline.v.col, lty=op$abline.v.lty, lwd=op$abline.v.lwd)
+  }
+  return()
 }
 
 plotCytoband <- function(chromosome,
@@ -210,4 +262,5 @@ plotCytoband <- function(chromosome,
          cex.axis=cex.axis,
          line=1, las=3)
   }
+  return()
 }

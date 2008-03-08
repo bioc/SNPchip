@@ -36,13 +36,35 @@ options(width=60)
 
 \section*{Introduction}
 
-This vignette describes how to plot objects created from the \R{}
-package \Rpackage{oligo}.  The \Rpackage{oligo} vignette creates an
-instance of \Robject{SnpCallSetPlus}, \Robject{crlmmOut}, from the
-call to the function \Rfunction{crlmm}.  For purposes of illustration,
-I subset the object to only include SNPs on chromosome 1.  I also took
-the liberty of adding chromosome and physical position to the
-featureData slot.  This object can be loaded by
+This vignette describes a pipeline for preprocessing and visualizing
+SNP-level summaries using the \R{} packages \Rpackage{oligo} and
+\Rpackage{SNPchip}.  We use a set of unprocessed Affymetrix files (CEL
+files) available as experimental data packages on Bioconductor.  A
+minimal set of \R{} commands to perform pre-processing with
+\Rpackage{oligo} are provided here, though one should consult the
+\Rpackage{oligo} vignette for additional information.  An \R{} object
+of the processed data is provided with this package to reduce the time
+of computation -- the code chunks for the preprocessing steps are not
+evaluated in the vignette.  An example of using \Rpackage{oligo} to
+process a batch of 209 Affymetrix 100k CEL files and
+\Rpackage{VanillaICE} to identify regions of alterations are provided
+in the \Robject{hapmap100k} vignette in the directory
+\texttt{inst/testing} of the \Rpackage{VanillaICE} package.  The
+\Robject{hapmap100k} vignette is not reproducible as it depends on
+access to the 209 CEL hapmap CEL files that are not provided with the
+\Rpackage{VanillaICE} package, but may be useful as a guideline when
+performing your own analyses.  Comparable vignettes for
+hapmapAffy500k, hapmapAffy5.0, hapmapAffy6.0, and Illumina will also
+be added to \Rpackage{VanillaICE} in the near future.
+
+\section{Creating an instance of \Robject{oligoSnpSet}}
+
+The \Rpackage{oligo} vignette creates an instance of
+\Robject{SnpCallSetPlus}, \Robject{crlmmOut}, from the call to the
+function \Rfunction{crlmm}.  For purposes of illustration, I subset
+the object to only include SNPs on chromosome 1.  I also took the
+liberty of adding chromosome and physical position to the featureData
+slot.  This object can be loaded by
 
 <<loadSnpCallSet>>=
 library(SNPchip)
@@ -50,50 +72,174 @@ data(crlmmOut)
 class(crlmmOut)
 @ 
 
-\section{Creating an instance of \Robject{oligoSnpSet}}
 
-The elements in the assayData for instances of
+The elements in the \Robject{assayData} for instances of
 \Robject{SnpCallSetPlus} is dependent on the Affymetrix platform.
 
 <<assayData>>=
 annotation(crlmmOut)
 ls(assayData(crlmmOut))
+callset <- crlmmOut
 @ 
 
-The method \Rfunction{calculateCopyNumber} averages the A and B allele
-intensities for objects of class \Robject{SnpCallSetPlus}.  We assume
-that the averaged intensities are proportional to the copy number.
-Because the accessors for the A and B allele intensities are defined
-in the \R{} package \Rpackage{oligo}, we require this package here.
+\subsection{Estimating copy number}
 
-<<averageAB, fig=TRUE>>=
+We expect that the intensities for the A and B alleles averaged over
+the sense and antisense strands will be proportional to the total copy
+number.  Because the fluorescence at a SNP is very much SNP-dependent,
+we'll center each SNP at the median value and then recenter at the
+'normal' copy number.  Here, we define normal copy number to be two
+for autosomes, 1 for the male X, and 2 for the female X. Because we've
+noticed that homozygous genotype calls appear to have overall less
+fluorescence than the heterozygous genotype calls, we'll recenter the
+median intensities for the homozygous and heterozygous genotypes to be
+equivalent.
+
+We begin by extracting an array of average values for the sense (A and
+B alleles) and antisense (A and B) strands.
+
+<<A, eval=TRUE>>=
 if(require(oligo)){
-  avgAB <- calculateCopyNumber(crlmmOut)
-  par(las=1)
-  boxplot(as.data.frame(avgAB))
+	A <- getA(callset)
+	dim(A)
 } else {
-  plot(1, 1, main="oligo required for this plot")
+	stop("R package oligo is not available")
 }
 @ 
 
-Assuming that the average autosomal copy number in a sample is two, we
-can mean center the intensities using the autosomes.  Because only
-chromosome 1 is present in this object, we assume that these subjects'
-had an average of two copies for each chromosome 1 SNP:
+We then average the sense and antisense values:
 
-<<avgAb>>=
-colmn <- colMeans(avgAB)
-centerAB <- sweep(avgAB, 2, colmn) + log2(2)
+<<avgA, eval=TRUE>>=
+log2cn <- rowMeans(A, dims=2, na.rm=TRUE)
+dim(log2cn)
 @ 
 
-One may use SNPchip to plot the copy number estimates versus physical
-position (as described in the SNPchip vignette) by coercing the
-\Robject{SnpCallSet} object to an instance of \Robject{oligoSnpSet}.
-This coercion assigns the uncentered average of the A and B
-intensities to the copyNumber element in assayData.
+The homozygous and heterozygous genotypes are centered separately
+since the average intensities differ:
 
-<<coerce>>=
-snpset <- as(crlmmOut, "oligoSnpSet")
+<<centerByGenotype, eval=TRUE>>=
+chr.matrix <- matrix(chromosome(callset), ncol=ncol(log2cn), nrow=nrow(log2cn))
+median.hom <- median(log2cn[(calls(callset) == 1 | calls(callset) == 3) & chr.matrix != "X"], na.rm=TRUE)
+median.het <- median(log2cn[calls(callset) == 2 & chr.matrix != "X"], na.rm=TRUE)
+recenterByGenotype <- function(x, callset, recenter.hom, recenter.het){
+	calls <- as.vector(calls(callset))
+	x[calls == 1 | calls == 3] <- x[calls ==1 | calls == 3] - recenter.hom
+	x[calls == 2] <- x[calls == 2] - recenter.het
+	x
+}
+for(j in 1:ncol(log2cn)){
+	log2cn[, j] <- recenterByGenotype(log2cn[, j], callset[, j], recenter.hom=median.hom, recenter.het=median.het)
+}
+@ 
+
+Next, we sweep out a robust estimate of the median from the samples
+(tries to put fluorescence intensities on a similar scale for each of
+the samples)
+
+<<bySample, eval=TRUE>>=
+f <- function(x, chromosome){
+	tmp2 <- split(x, chromosome)
+	if(length(tmp2) > 15){
+		idx <- order(sapply(tmp2, "median"))
+		tmp2 <- tmp2[idx]
+		tmp3 <- tmp2[-c(1:5, (length(tmp2)-4):length(tmp2))]
+		med <- median(unlist(tmp3))
+	} else {
+		med <- median(sapply(tmp2, "median"))
+	}
+	return(med)
+}
+robust.median <- apply(log2cn, 2, f, chromosome(callset))
+log2cn <- sweep(log2cn, 2, robust.median)
+@ 
+
+We then sweep out the SNP-specific median intensities and recenter to
+the expected copy number (depends on chromosome):
+
+<<sweepMedian, eval=TRUE>>=
+rowSweep <- function(callset, X, value, recenter, j){
+	if(length(value) == 1){
+		i <- chromosome(callset) == value
+	} else {
+		i <- chromosome(callset) %in% value
+	}
+	i[is.na(i)] <- FALSE
+	if(sum(i) > 1){
+		if(!missing(j)){
+			if(sum(j) < 5) warning("very few samples for calculating a robust average")
+			avg <- rowMedians(X[i, j], na.rm=TRUE)
+			X[i, j] <- sweep(X[i, j], 1, avg) + recenter
+		} else{
+			avg <- rowMedians(X[i, ], na.rm=TRUE)
+			X[i, ] <- sweep(X[i, ], 1, avg) + recenter
+		}
+	}
+	X
+}
+male <- callset$gender == 1
+female <- callset$gender == 2
+chromosome(callset)[is.na(chromosome(callset))] <- "NA"		  
+log2cn <- rowSweep(callset, log2cn,  "NA", log2(2))
+log2cn <- rowSweep(callset, log2cn,  "M", log2(2))		  
+log2cn <- rowSweep(callset, log2cn,  "X", log2(1), male)
+log2cn <- rowSweep(callset, log2cn,  "X", log2(2), female)
+log2cn <- rowSweep(callset, log2cn,  "Y", log2(1), male)
+log2cn <- rowSweep(callset, log2cn,  "Y", log2(0.5), female)		  
+log2cn <- rowSweep(callset, log2cn,  as.character(1:22), log2(2))
+chromosome(callset)[chromosome(callset) == "NA"] <- NA
+copyNumber <- 2^log2cn
+@ 
+
+The proceding codechunks may be replaced by the function
+\Robject{calculateCopyNumber}.
+
+<<calculateCopyNumber, eval=TRUE>>=
+cn <- calculateCopyNumber(callset, 
+			  center.autosomes=2,
+			  center.X.male=1,
+			  center.X.female=2,
+			  center.Y.male=1,
+			  center.Y.female=0.4)
+identical(cn, copyNumber)
+@ 
+
+<<echo=FALSE, results=hide, eval=TRUE>>=
+rm(cn); gc()
+@ 
+			  
+We may now create an object of class \Robject{oligoSnpSet} that
+contains \Robject{assayData} elements for SNP-level summaries of
+genotype calls and copy number.  For now, we will assign a matrix of
+missing values for copy number confidence estimates.
+
+<<createSnpSet, eval=TRUE>>=
+cnConfidence <- matrix(NA, nrow=nrow(callset), ncol=ncol(callset))
+rownames(cnConfidence) <- featureNames(callset)
+colnames(cnConfidence) <- sampleNames(callset)
+if(identical(rownames(copyNumber), featureNames(callset))){
+	snpset <- new("oligoSnpSet",
+		      copyNumber=copyNumber,
+		      cnConfidence=cnConfidence,
+		      calls=calls(callset),
+		      callsConfidence=callsConfidence(callset),
+		      experimentData=experimentData(callset),
+		      featureData=featureData(callset),
+		      phenoData=phenoData(callset),
+		      annotation=annotation(callset))
+}
+@ 
+
+<<echo=FALSE, results=hide>>=
+rm(cnConfidence); gc()
+@ 
+
+Estimating copy number from a \Robject{SnpCallSetPlus} object and
+creating an instance of the class \Robject{oligoSnpSet} are
+encapsulated in the method for coercing an object between the two
+classes:
+
+<<coerce, eval=FALSE>>=
+snpset <- as(callset, "oligoSnpSet")
 @ 
 
 A plot of chromosome 1:
@@ -101,7 +247,8 @@ A plot of chromosome 1:
 <<oligoSnpSet, fig=TRUE, width=8, height=5>>=
 gp <- new("ParSnpSet")
 gp <- getPar(gp, snpset)
-gp$ylab <- "Avg allele A/B intensities"
+gp$ylab <- "copy number"
+gp$ylim <- c(1, 4)
 plotSnp(gp, snpset)
 @ 
 

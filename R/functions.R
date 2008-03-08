@@ -62,43 +62,7 @@ chromosomeSize <- function(chromosome){
   }              
 }
 
-.drawYaxis <- function(object, op, j){
-  if(unique(chromosome(object)) != op$firstChromosome) return()
-  if(op$yaxt == "n") return()
-  if("copyNumber" %in% ls(assayData(object))){
-    ##Draw default y-axis
-    at <- pretty(op$ylim)
-    labels <- at
-  }  else {
-    at <- c(0, 1)
-    labels <- c("AA/BB", "AB")
-  }
-  axis(side=2, at=at, labels=labels, las=1, cex.axis=op$cex.axis)  
-}
 
-.drawXaxis <- function(object, op, j){
-  chromosomeName <- unique(chromosome(object))
-  if(op$xaxt == "n") return()
-  if(op$alternate.xaxis.side){
-    side <- op$xaxis.side[[unique(chromosome(object))]]
-  } else side <- op$xaxis.side
-  if(side == 1 & j == ncol(object) | side == 3 & j == 1){
-    axis(side,
-         at=pretty(op$xlim[chromosomeName, ], op$lab[2]),
-         outer=op$outer.axis,
-         labels=pretty(op$xlim[chromosomeName, ], op$lab[2])/1e6,
-         cex.axis=op$cex.axis,
-         col=op$col.axis,
-         col.axis=op$col.axis,
-         las=1,
-         line=op$line.axis,
-         lwd=1,
-         mgp=c(2, 0.5, 0))
-    if(op$label.chromosome){
-      mtext(unique(chromosome(object)), side=side, outer=FALSE, line=op$line.label.chromosome, cex=op$cex.lab)
-    }
-  }
-}
 
 .getCytoband <- function(object, op){
   if(op$add.cytoband){
