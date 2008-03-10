@@ -84,6 +84,15 @@ callset <- crlmmOut
 
 \subsection{Estimating copy number}
 
+The simplest way to obtain copy number estimates from
+\Robject{crlmmOut} is to coerce to an \Robject{oligoSnpSet}
+
+<<eval=FALSE>>=
+snpset <- as(callset, "oligoSnpSet")
+@ 
+
+\noindent The details for this coercion are provided below.
+
 We expect that the intensities for the A and B alleles averaged over
 the sense and antisense strands will be proportional to the total copy
 number.  Because the fluorescence at a SNP is very much SNP-dependent,
