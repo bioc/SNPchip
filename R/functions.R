@@ -1,26 +1,3 @@
-.calculateYlim <- function(object, op){
-  if("copyNumber" %in% ls(assayData(object))){
-    ##only print this if there is more than one sample or more than 1 chromosome to plot
-    if(length(unique(chromosome(object))) > 1 || ncol(object) > 1){
-      print("one.ylim is FALSE. Calculating ylim based on the percentiles of the copy number distribution")
-    }
-    if(op$log == "y"){
-      ylim <- range(copyNumber(object), na.rm=TRUE)
-    } else{
-      ##use 1 and 99 quantiles to avoid outliers
-      ylim <- c(quantile(copyNumber(object), prob=0.001, na.rm=TRUE),
-                quantile(copyNumber(object), prob=0.999, na.rm=TRUE))
-    }
-  } else{
-    ##ylimits for genotypes??
-    y <- .getY(object)
-    ##jitter the genotype calls
-    y <- jitter(y, amount=0.05)
-    ylim <- range(y)
-  }
-  ylim
-}
-
 centromere <- function(chromosome){
   if(missing(chromosome) | !(chromosome %in% c(1:22, "X", "Y"))) stop("must specify chromosome 1-22, X or Y as a character string")
   data(chromosomeAnnotation, package="SNPchip", envir=environment())
@@ -44,16 +21,6 @@ chromosomeSize <- function(chromosome){
   chromosomeAnnotation[chromosome, "chromosomeSize"]
 }
 
-.drawCentromere <- function(object, op){
-  data(chromosomeAnnotation, package="SNPchip", envir=environment())
-  centromere <- chromosomeAnnotation[unique(chromosome(object)), ]
-  xleft <- centromere["centromereStart"]
-  xright <- centromere["centromereEnd"]
-  rect(xleft=xleft, ybottom=op$ylim[1],
-       xright=xright, ytop=op$ylim[2],
-       col=op$col.centromere,
-       border=op$border.centromere)  
-}
 
 .labelChromosome <- function(object, op, j){
   if(j == 1){
@@ -62,67 +29,8 @@ chromosomeSize <- function(chromosome){
   }              
 }
 
-
-
-.getCytoband <- function(object, op){
-  if(op$add.cytoband){
-    data(cytoband)              
-    cytoband <- cytoband[cytoband[, "chrom"] == unique(chromosome(object)), ]
-  }  else NULL
-}
-
-.drawCytobandWrapper <- function(S, cytoband, op, j, chromosomeName){
-  if(j == S){
-    if(op$add.cytoband){
-      if(nrow(cytoband) > 0)
-        plotCytoband(cytoband=cytoband,
-                     xlim=op$xlim[chromosomeName, ],
-                     xaxs=op$xaxs,
-                     label.cytoband=op$label.cytoband,
-                     cex.axis=op$cex.axis,
-                     outer=op$outer.cytoband.axis)
-    }
-  }
-}
-
-
-
 .isHomozygous <- function(object){
   calls(object) == 1 | calls(object) == 3
-}
-
-.orderByGenotype <- function(object){
-  if(!("calls" %in% ls(assayData(object)))) return(object)
-  gt <- as.vector(calls(object))
-  gt[gt == 3] <- 1
-  object[order(gt, decreasing=FALSE), ]
-}
-     
-  
-
-.recycle <- function(x, object, missing){
-  if(length(x) == nrow(object)) return(x)
-  ##assume using 2 colors for homozygous and hets
-  if(length(x) > 1){
-    if("calls" %in% ls(assayData(object))){
-      gt <- as.vector(calls(object))
-      gt[is.na(gt)] <- 4
-
-      if(sum(!(gt %in% 1:4)) > 0){
-        warning("Changing all genotypes that are not 1, 2, 3 to the value 4")
-        gt[!(gt %in% 1:4)] <- 4
-      }
-      ##assume that colors are to be recycled
-      if(max(gt) > length(x)){
-        x <- c(x, missing)
-      }
-      if(max(gt) <= length(x)){
-        x <- x[sort(unique(gt))]
-      }
-      x <- x[gt]
-    }
-  }
-  x
 }
 
 showSummary <- function(object, where, bty, legend.panel, cex, col, digits){

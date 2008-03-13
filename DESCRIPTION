@@ -8,16 +8,15 @@ Depends: R (>= 2.6.0), Biobase (>= 1.15.19), methods, oligoClasses (>=
 Suggests: RSQLite,
 	  geneplotter, 
 	  stats, 
-	  graphics 
+	  graphics,
+	  VanillaICE
 Description: This package defines classes and functions for plotting copy number and genotype in high throughput SNP platforms such as Affymetrix and Illumina.  In particular, SNPchip is a useful add-on to the oligo package for visualizing SNP-level estimates after pre-processing.  
 License: LGPL version 2 or newer
 LazyLoad: yes	     
 Collate: AllClasses.R 
 	 AllGenerics.R 
 	 methods-ParESet.R
-	 methods-ParSnpCallSet.R
-	 methods-ParSnpCopyNumberSet.R
-	 methods-ParSnpSet.R
+	 initialize-methods.R
 	 methods-SnpLevelSet.R 
 	 methods-SnpCallSet.R 
 	 methods-AnnotatedDataFrame.R 

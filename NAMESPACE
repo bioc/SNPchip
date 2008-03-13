@@ -4,30 +4,30 @@ exportClasses(ParESet,
               ParSnpCallSet,
               ParSnpSet)
 
-exportMethods(##getSnpAnnotation,
-              alleleA,
+exportMethods(alleleA,
               alleleB,
-##              calculateCopyNumber,
-##              chromosome,
               coerce,
               dbSnpId,
               enzyme,
               fragmentLength,
               initialize,
-##              position,
               selectSomeIndex,  
               show,
               smoothSnp,
               summary,
-              updateObject#,
-##              unsplitSnpSet
-              )
+              updateObject)
 
 export(centromere,
        chromosome2numeric,
        chromosomeSize,
+       plotPredictions,
        showSummary)
 
+##Uncomment when debugging
+##export(.plotChromosome,
+##       .drawXaxis,
+##       .calculateYlim)
+##exportMethods(.getX, .getY)
 
 ##par class methods
 exportMethods("$",
@@ -38,7 +38,7 @@ exportMethods("$",
               snpPar,
               "snpPar<-")
 
-export(plotCytoband, .calculateYlim)
+export(plotCytoband)
 
 ##DEPRECATED CLASSES
 ##exportClasses(AnnotatedSnpSet,

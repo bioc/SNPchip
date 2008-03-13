@@ -3,9 +3,6 @@ setMethod("alleleA", "SnpLevelSet", function(object) alleleA(featureData(object)
 setMethod("alleleB", "SnpLevelSet", function(object) alleleB(featureData(object)))
 
 
-
-
-
 ##setMethod("chromosome", "SnpLevelSet", function(object) as.character(chromosome(featureData(object))))
 setMethod("dbSnpId", "SnpLevelSet", function(object) dbSnpId(featureData(object)))
 
@@ -14,9 +11,7 @@ setMethod("fragmentLength", "SnpLevelSet", function(object) fragmentLength(fData
 
 ##setMethod("getPar", "SnpLevelSet", function(object, add.cytoband, ...){
 
-
 setMethod(".getX", "SnpLevelSet", function(object, ...) position(object))
-
 setMethod(".getY", "SnpLevelSet", function(object, op, ...){
   if("copyNumber" %in% ls(assayData(object))){
     y <- copyNumber(object)
