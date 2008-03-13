@@ -56,7 +56,7 @@ setMethod(".plotChromosome", "SnpLevelSet",
 				  op$col.predict <- col.predict
 				  op$legend.fill.predict <- col.predict
 			  }
-			  if(is.null(op$height.predictions)){
+			  if(is.null(op$height.predict)){
 				  op$height.predict <- 0.2
 			  }
 
@@ -446,7 +446,6 @@ plotPredictions <- function(object, op){
 	predictions <- predictions(object)
 
 
-	
 	chr <- unique(chromosome)
 	for(i in chr){
 	  tmp <- breakpoints[breakpoints[, "chr"] == i, , drop=FALSE]
