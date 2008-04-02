@@ -2,7 +2,9 @@ import(Biobase, oligoClasses, methods)
 exportClasses(ParESet,
               ParSnpCopyNumberSet,
               ParSnpCallSet,
-              ParSnpSet)
+              ParSnpSet,
+	      HmmPredict,
+	      RatioSnpSet)
 
 exportMethods(alleleA,
               alleleB,
@@ -25,9 +27,11 @@ export(centromere,
 
 ##Uncomment when debugging
 ##export(.plotChromosome,
-##       .drawXaxis,
-##       .calculateYlim)
+##      .drawXaxis,
+##       .calculateYlim,
+##       .recycle)
 ##exportMethods(.getX, .getY)
+##exportClasses(NULLorHmmPredict)
 
 ##par class methods
 exportMethods("$",

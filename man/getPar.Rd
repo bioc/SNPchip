@@ -1,19 +1,20 @@
 \name{getPar}
 \alias{getPar}
+\alias{getPar,ParESet-method}
 \title{Adds graphical parameters for plotting SNP data}
 \description{
+  Not intended to be called directly.
   Adds graphical parameters for plotting SNP data to one of the
   graphical parameter classes (e.g., \code{ParSnpSet},
-  \code{ParSnpCopyNumberSet}, etc)
+  \code{ParSnpCopyNumberSet}, etc).  
 }
 
 \usage{
-  getPar(object, snpset, ...)
+  getPar(object, ...)
 }
 
 \arguments{
   \item{object}{ an object inheriting from \code{ParESet}}
-  \item{snpset}{an object inheriting from \code{SnpLevelSet}}
   \item{\dots}{additional arguments to \code{par}}
 }
 \details{
@@ -31,12 +32,11 @@ Adds graphical parameters to an object inherited from class
 }
 
 \author{R. Scharpf}
-\seealso{\code{\link{ParESet-class}}, \code{\link{ParSnpSet-class}},
-\code{\link{ParSnpCopyNumberSet-class}}, \code{\link{ParSnpCallSet-class}}}
+\seealso{plotSnp}
 
 \examples{
 data(sample.snpset)
-gp <- new("ParSnpSet")
+gp <- plotSnp(sample.snpset)
 ##Default layout parameters:
 gp$mat
 ##update layout parameters, etc, using information about the data object

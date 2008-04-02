@@ -5,13 +5,13 @@ centromere <- function(chromosome){
 }
 
 chromosome2numeric <- function(chromosome){
-  chrom <- as.character(chromosome)
-  chrom[chrom == "X"] <- 23
-  chrom[chrom == "XY"] <- 24
-  chrom[chrom == "Y"] <- 25
-  chrom[chrom == "M"] <- 26
-  chrom <- as.numeric(chrom)
-  chrom
+	chrom <- as.character(chromosome)
+	chrom[chrom == "X"] <- 23
+	chrom[chrom == "XY"] <- 24
+	chrom[chrom == "Y"] <- 25
+	chrom[chrom == "M"] <- 26
+	chrom <- as.numeric(chrom)
+	chrom
 }
 
 chromosomeSize <- function(chromosome){

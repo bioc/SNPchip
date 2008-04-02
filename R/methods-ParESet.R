@@ -1,8 +1,8 @@
 ##updates graphical parameters with information from the data class
-setMethod("getPar", c("ParESet", "SnpLevelSet"),
-          function(object, snpset, hmmPredict, add.cytoband, ...){
-
-		  if(!missing(hmmPredict)){
+setMethod("getPar", "ParESet", ##c("ParESet", "SnpLevelSet"),
+          function(object, ...){
+		  if(!is.null(object@hmmPredict)){
+			  hmmPredict <- object@hmmPredict			  
 			  if(is.null(object$col.predict)){
 				  require(RColorBrewer, quietly=TRUE) || stop("RColorBrewer package not available")
 				  col.predict <- brewer.pal(length(states(hmmPredict)), "BrBG")
@@ -15,7 +15,20 @@ setMethod("getPar", c("ParESet", "SnpLevelSet"),
 			  if(is.null(object$height.predictions)){
 				  object$height.predict <- 0.2
 			  }
+			  ## indicator of whether to draw vertical lines at breakpoints
+			  if(object$abline.v){
+				  ##if position of vertical lines are not specified
+				  if(is.null(object$abline.v.pos)){
+					  if(length(sampleNames(hmmPredict)) == 1){
+						  v <- breakpoints(hmmPredict)[, c("state", "start", "last")]
+						  v <- v[v$state != "N", ]
+						  v <- c(v$start, v$last)*1e6
+						  object$abline.v.pos <- v
+					  }
+				  }
+			  }			  
 		  }
+		  snpset <- object@snpset
 		  snpset <- snpset[!is.na(chromosome(snpset)), ]
 		  ##layout
 		  chromosomeNames <- as.character(sort(chromosome2numeric(chromosome(snpset))))
@@ -29,24 +42,24 @@ setMethod("getPar", c("ParESet", "SnpLevelSet"),
 		  S <- ncol(snpset)  
 		  data(chromosomeAnnotation, package="SNPchip", envir=environment())
 		  object$heights <- rep(1, ncol(snpset))
-		  if(!missing(add.cytoband)) object$add.cytoband <- add.cytoband
-		  if(object$add.cytoband){
-			  if(!object$outer.cytoband){
-				  S <- S+1
-				  if(S > 3){
-					  ##reversed the heights since we're now plotting the data last (cytoband on top)
-					  object$heights <- c(object$heights, 1/(ncol(snpset)*1.5))
-				  }
-				  if(S == 2 | S == 3){
-					  object$heights <- c(object$heights, 1/10)
-				  }
-			  } 
-		  }
-		  if(object$add.cytoband){
-			  if(object$cytoband.side == 3){
-				  object$heights <- rev(object$heights)
-			  }
-		  }
+##		  if(!missing(add.cytoband)) object$add.cytoband <- add.cytoband
+##		  if(object$add.cytoband){
+##			  if(!object$outer.cytoband){
+##				  S <- S+1
+##				  if(S > 3){
+##					  ##reversed the heights since we're now plotting the data last (cytoband on top)
+##					  object$heights <- c(object$heights, 1/(ncol(snpset)*1.5))
+##				  }
+##				  if(S == 2 | S == 3){
+##					  object$heights <- c(object$heights, 1/10)
+##				  }
+##			  } 
+#		  }
+##		  if(object$add.cytoband){
+##			  if(object$cytoband.side == 3){
+##				  object$heights <- rev(object$heights)
+##			  }
+##		  }
 		  if(N > 10){
 			  object$alternate.xaxis.side <- TRUE
 			  side <- c(1, 3)[rep(1:2, N/2 + 1)]
@@ -69,7 +82,23 @@ setMethod("getPar", c("ParESet", "SnpLevelSet"),
 			  ##could make plot specific by adding an option one.ylim (or
 			  ##something to that effect) and calculating ylim in .plot()
 			  object$ylim <- .calculateYlim(snpset, object)
-		  } 
+		  }
+		  ##---------------------------------------------------------------------------
+		  ##By default, plot the cytoband at the bottom
+		  ##---------------------------------------------------------------------------
+		  object$cytoband.ycoords <- c(object$ylim[1], object$ylim[1] + object$cytoband.height)
+
+		  ##---------------------------------------------------------------------------
+		  ##By default, plot the predictions above the
+		  ##cytoband with a little bit of space between
+		  ##---------------------------------------------------------------------------
+		  if(!object$add.cytoband){
+			  object$hmm.ycoords <- object$cytoband.ycoords
+		  } else {
+			  y0 <- object$cytoband.ycoords[2] + 0.1
+			  object$hmm.ycoords <- c(y0, y0 + object$height.predict)
+		  }
+		  
 		  def.op <- options(warn=-1)
 		  object$firstChromosome <- chromosomeNames[1]
 		  options(def.op)
@@ -84,6 +113,7 @@ setMethod("getPar", c("ParESet", "SnpLevelSet"),
 			  objList <- objList[chromosomeNames]
 			  object$xlim <- t(sapply(objList, function(snpset) range(position(snpset))))
 		  }
+		  object@snpset <- snpset
 		  object
 		  ##set up defaults according to number of samples, chromosomes, position, etc.
 	  })
@@ -105,11 +135,11 @@ setReplaceMethod("snpPar", "ParESet", function(object, value) {
 	object
 })
 
-setMethod("show", "ParESet", function(object){
-	cat("Object of class ", class(object), "\n")
-	print(snpPar(object)[1:5])
-	cat("... \n")
-})
+##setMethod("show", "ParESet", function(object){
+##	cat("Object of class ", class(object), "\n")
+##	print(snpPar(object)[1:5])
+##	cat("... \n")
+##})
 
 setMethod("allPlots", "ParESet", function(object){
 	list(col.axis=object$col.axis,

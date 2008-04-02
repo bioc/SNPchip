@@ -83,12 +83,11 @@ for this vignette.
 
 <<addingFeatureData>>=
 if(require("pd.mapping50k.xba240")){
-  system.time(tmp <- chromosome(sample.snpset))
-  object.size(sample.snpset)
-  featureData(sample.snpset)$chromosome <- chromosome(sample.snpset)
-  featureData(sample.snpset)$position <- position(sample.snpset)
-  system.time(tmp <- chromosome(sample.snpset))
-  object.size(sample.snpset)
+	system.time(tmp <- chromosome(sample.snpset))
+	object.size(sample.snpset)
+	featureData(sample.snpset)$chromosome <- chromosome(sample.snpset)
+	featureData(sample.snpset)$position <- position(sample.snpset)
+	system.time(tmp <- chromosome(sample.snpset))
 }
 @ 
 
@@ -105,22 +104,17 @@ first three chromosomes and then generate an object of class
 the data for this subset:
 
 <<subsetting>>=
-##source("~/madman/Rpacks/SNPchip/R/methods-ParESet.R")
-##source("~/madman/Rpacks/SNPchip/R/initialize-methods.R")
-##source("~/madman/Rpacks/SNPchip/R/plotSnp-methods.R")
 snpset <- sample.snpset[chromosome(sample.snpset) %in% as.character(1:3), 1:4]
-graph.par <- new("ParSnpSet")
+graph.par <- plotSnp(snpset)
+class(graph.par)
 graph.par$use.chromosome.size <- TRUE
 graph.par$cex <- 3
-graph.par <- getPar(graph.par, snpset)
-graph.par$ylim <- c(0.7, 8)
-class(graph.par)
 @ 
 
 Plot the first few chromosomes for samples 1-4:
 
 <<plot1, fig=TRUE, width=8, height=6>>=
-plotSnp(graph.par, snpset)
+show(graph.par)
 @ 
 
 <<>>=
@@ -128,8 +122,9 @@ graph.par$cytoband.side <- 3
 graph.par$heights <- rev(graph.par$heights)
 @
 
-<<plot1a, fig=TRUE, width=8, height=6>>=
-plotSnp(graph.par, snpset)
+<<plot1a, fig=TRUE, width=8, height=6, eval=FALSE, echo=FALSE>>=
+##FIXME
+show(graph.par)
 @ 
 
 The samples are plotted by row. For each sample, the copy number
@@ -146,17 +141,17 @@ chromosomes 1-22 and X of samples 1 - 3 in the object
 \Robject{sample.snpset}:
 
 <<gw.params>>=
+graph.par <- plotSnp(sample.snpset[, 1:3], add.cytoband=FALSE)
 graph.par$mar <- c(0.1, 0.1, 2, 0.1)
 graph.par$oma <- c(3, 4, 2, 1)
 graph.par$cex <- 2
 graph.par$abline <- TRUE
 graph.par$cex.lab <- 0.9
-graph.par <- getPar(graph.par, sample.snpset[, 1:3], add.cytoband=FALSE)
 @ 
 
 
 <<plot2, fig=TRUE, width=8, height=4>>=
-plotSnp(graph.par, sample.snpset[, 1:3])
+show(graph.par)
 @ 
 
 Note that we suppress the cytobands in the above plot (the resolution
@@ -171,11 +166,9 @@ A more focused view of chromosomes 1, 7, 16, 19, and X of sample 2
 could be obtained by
 
 <<graph.par3>>=
-graph.par <- new("ParSnpSet")
-graph.par <- getPar(graph.par, sample.snpset[chromosome(sample.snpset) %in% c(1, 7, 16, 19, "X"), 2])
+graph.par <- plotSnp(sample.snpset[chromosome(sample.snpset) %in% c(1, 7, 16, 19, "X"), 2])
 graph.par$cex <- 0.8
 graph.par$mar <- rep(0.5, 4)
-##graph.par$mar <- c(0.5, 0.5, 3, 0.5)
 graph.par$pch <- c(20, 21, 20)
 graph.par$bty <- "o"
 graph.par$cex.axis <- 1.2
@@ -185,7 +178,7 @@ graph.par$abline <- TRUE; graph.par$abline.col <- "black"
 @ 
 
 <<plotSnpChromosomes, fig=TRUE, width=8, height=4>>=
-plotSnp(graph.par, sample.snpset[chromosome(sample.snpset) %in% c(1, 7, 16, 19, "X"), 2])
+show(graph.par)
 @ 
 \clearpage
 
@@ -194,12 +187,16 @@ A plot of just the p-arm in sample 2 of chromosome 1.
 data(chromosomeAnnotation)
 parm <- chromosomeAnnotation["1", "centromereStart"]
 snpset <- sample.snpset[chromosome(sample.snpset) == "1" & position(sample.snpset) < parm, 2]
+graph.par <- plotSnp(snpset)
 graph.par$use.chromosome.size <- FALSE
-graph.par <- getPar(graph.par, snpset)
+graph.par$pch <- 21
+graph.par$cex <- 1
+graph.par$ylim <- c(0.4, 9)
+graph.par$cytoband.ycoords <- c(0.5, 0.6)
 @ 
 
 <<plotP, fig=TRUE, width=8, height=7>>=
-plotSnp(graph.par, snpset) 
+show(graph.par)
 @ 
 
 Note that the cytoband is automatically subsetted appropriately. Had
@@ -207,21 +204,22 @@ we instead specified \texttt{use.chromosome.size=TRUE}, the x-axis
 limits would include the entire chromosome (and cytoband) though only
 the SNPs on the p-arm would be plotted.
 
-
 Adding a legend for the genotypes
 <<addLegend, fig=TRUE, width=8, height=5>>=
 data(sample.snpset)
 x <- sample.snpset[chromosome(sample.snpset) == "1", 1]
-gp <- new("ParSnpSet")
-gp <- getPar(gp, x)
+gp <- plotSnp(x)
 gp$legend <- c("AA", "AB", "BB")
-gp$legend.col <- gp$col
-gp$legend.bg <- gp$bg
+gp$legend.col <- unique(gp$col)
+gp$legend.bg <- unique(gp$bg)
 gp$pch <- 21; gp$cex <- 0.8
 gp$label.cytoband <- TRUE
 gp$add.centromere <- FALSE
 gp$xlab <- ""
-plotSnp(gp, x)
+gp$legend.bty="o"
+gp$ylim[2] <- 9
+show(gp)
+##plotSnp(gp, x)
 ##xlim <- c(0,max(position(x)))
 ##xlim <- range(position(x))
 ##plotCytoband("1", xlim=xlim, label.cytoband=TRUE)
@@ -229,16 +227,21 @@ plotSnp(gp, x)
 ##plotCytoband("1", xlim=xlim, label.cytoband=TRUE)
 @ 
 
-Alternatively, plot the cytoband on top and then add the legend to the plot by hand.
+%Alternatively, plot the cytoband on top and then add the legend to the plot by hand.
 
-<<>>=
-gp <- new("ParSnpSet")
-gp <- getPar(gp, x)
+%FIXME
+<<eval=FALSE, echo=FALSE>>=
+##gp <- new("ParSnpSet")
+##gp <- getPar(gp, x)
 gp$pch <- 21; gp$cex <- 0.8
-gp$cytoband.side <- 3; gp$heights <- rev(gp$heights)
+##gp$cytoband.side <- 3; 
+##gp$heights <- rev(gp$heights)
 gp$label.cytoband <- TRUE
+gp$ylim[2] <- 10
+gp$cytoband.ycoords <- c(0.9, 10)
 gp$add.centromere <- FALSE
-plotSnp(gp, x)
+gp
+##plotSnp(gp, x)
 legend("bottomleft", 
        pch=21, 
        col=gp$col, 
@@ -297,9 +300,8 @@ par(op)
 graph.par$cex <- 1
 graph.par$use.chromosome.size <- TRUE
 graph.par$main <- "Chromosome 1: Example title"
-graph.par <- getPar(graph.par, sim1)
 graph.par$label.chromosome <- FALSE
-plotSnp(graph.par, sim1)
+show(graph.par)
 @ 
 
 \subsection{Descriptive and statistical summaries}
@@ -379,7 +381,12 @@ colnames(mapping10k$annotation)
 
 \subsection{\Rpackage{oligo}}
 
-For generating \Robject{SnpCallSets} from .CEL files, see the R package \Rpackage{oligo}.  In particular, the function \Robject{crlmm} in \Rpackage{oligo} creates an instance of the class \Robject{SnpCallSetPlus}.  See the \it{oligoHowTo} vignette for details on coercing an object of class \Robject{SnpCallSetPlus} to \Robject{oligoSnpSet}.
+For generating \Robject{SnpCallSets} from .CEL files, see the R
+package \Rpackage{oligo}.  In particular, the function \Robject{crlmm}
+in \Rpackage{oligo} creates an instance of the class
+\Robject{SnpCallSetPlus}.  See the {\it oligoHowTo} vignette for
+details on coercing an object of class \Robject{SnpCallSetPlus} to
+\Robject{oligoSnpSet}.
 
 \subsection{\Rpackage{RSNPper}}
 

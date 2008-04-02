@@ -24,8 +24,12 @@ setMethod("initialize", "ParSnpSet",
           })
 
 
+
+
 setMethod("initialize", "ParESet",
           function(.Object,
+		   snpset,
+		   hmmPredict=NULL,
                    layout=TRUE,
                    col.axis="brown",
                    cex.main=1,
@@ -63,7 +67,7 @@ setMethod("initialize", "ParESet",
                    outer.axis=TRUE,
                    line.axis=0,
                    main="",
-		   add.centromere=TRUE,
+		   add.centromere=FALSE,
                    col.centromere="bisque",
                    border.centromere="bisque",
                    xlim=NULL,
@@ -73,6 +77,12 @@ setMethod("initialize", "ParESet",
                    outer.cytoband=FALSE,
                    outer.cytoband.axis=FALSE,                   
                    label.cytoband=FALSE,
+		   cytoband.ycoords=NULL,
+		   hmm.ycoords=NULL,
+		   cytoband.srt=90,
+		   cytoband.label.y=NULL,
+		   cytoband.taper=0.15,
+		   cytoband.height=0.1,
                    use.chromosome.size=FALSE, #for x-axis limits
                    label.chromosome=TRUE,
                    line.label.chromosome=2,
@@ -88,7 +98,8 @@ setMethod("initialize", "ParESet",
                    abline.col="grey80",
                    abline.lty=1,
                    abline.lwd=1,
-		   abline.v=NULL,
+		   abline.v=FALSE,
+		   abline.v.pos=NULL,
 		   abline.v.col="grey20",
 		   abline.v.lty=2,
 		   abline.v.lwd=0.8,
@@ -102,9 +113,22 @@ setMethod("initialize", "ParESet",
                    legend.location.predict="topleft",
 		   legend.fill.predict=NULL,
 		   col.predict=NULL,
-		   height.predict=NULL,
+		   height.predict=0.2,
 		   cytoband.side=1,
                    ...){
+		  if(missing(snpset)){
+			  stop("snpset missing")
+		  }
+		  if(!extends(class(snpset), "SnpLevelSet")){
+			  stop("snpset must extend SnpLevelSet")
+		  }
+		  .Object@snpset <- snpset
+		  if(!is.null(hmmPredict)){
+			  if(!extends(class(hmmPredict, "SnpLevelSet"))){
+				  stop("hmmPredict must extend SnpLevelSet. See VanillaICE package")
+			  } 
+		  }
+		  .Object@hmmPredict <- hmmPredict
             .Object@snpPar <- list(col.axis=col.axis,
                                    cex.main=cex.main,
                                    cex.axis=cex.axis,
@@ -148,6 +172,12 @@ setMethod("initialize", "ParESet",
                                    outer.cytoband=outer.cytoband,
                                    outer.cytoband.axis=outer.cytoband.axis,
                                    label.cytoband=label.cytoband,
+				   cytoband.ycoords=cytoband.ycoords,
+				   hmm.ycoords=hmm.ycoords,
+				   cytoband.srt=cytoband.srt,
+				   cytoband.label.y=cytoband.label.y,
+				   cytoband.taper=cytoband.taper,
+				   cytoband.height=cytoband.height,
                                    use.chromosome.size=use.chromosome.size,
                                    label.chromosome=label.chromosome,
                                    line.label.chromosome=line.label.chromosome,
@@ -166,6 +196,7 @@ setMethod("initialize", "ParESet",
                                    abline.lty=abline.lty,
                                    abline.lwd=abline.lwd,				   
 				   abline.v=abline.v,
+				   abline.v.pos=abline.v.pos,
 				   abline.v.col=abline.v.col,
 				   abline.v.lwd=abline.v.lwd,
 				   abline.v.lty=abline.v.lty,

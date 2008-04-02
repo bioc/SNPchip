@@ -11,23 +11,15 @@ snpPar(object)
 \arguments{
   \item{object}{object of class \code{ParESet}}
 }
-\details{
-}
 \value{
   \code{list}
 }
-\references{ }
-\author{}
-\note{ 
-}
+\author{RS}
 \seealso{ \code{\link{par}}, \code{\link[graphics]{layout}}}
 \examples{
 data(sample.snpset)
-gp <- new("ParSnpSet")
-object <- getPar(gp, sample.snpset)
+object <- plotSnp(sample.snpset)
 str(snpPar(object))
-
-##or equivalently
 show(object)
 }
 \keyword{methods}

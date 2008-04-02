@@ -3,6 +3,9 @@
 \alias{show-methods}
 \alias{show,oligoSnpSet-method}
 \alias{show,ParESet-method}
+\alias{show,ParSnpCopyNumberSet-method}
+\alias{show,ParSnpCallSet-method}
+\alias{show,ParSnpSet-method}
 \title{show methods}
 \description{
 Show methods

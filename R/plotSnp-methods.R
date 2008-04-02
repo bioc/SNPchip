@@ -1,6 +1,6 @@
-setMethod(".plotChromosome", "SnpLevelSet",
-          function(object, op, hmmPredict, ...){
-
+setMethod(".plotChromosome", "SnpLevelSet", 
+##          function(object, op, hmmPredict, ...){
+	  function(object, op){
 		  .getCytoband <- function(object, op){
 			  if(op$add.cytoband){
 				  data(cytoband)              
@@ -8,17 +8,26 @@ setMethod(".plotChromosome", "SnpLevelSet",
 			  }  else NULL
 		  }		  
 		  cytoband <- .getCytoband(object, op)
-
-
 		  .drawCytobandWrapper <- function(S, cytoband, op, j, chromosomeName){
 			  if(!op$add.cytoband) return()
 			  if(nrow(cytoband) > 0)
+##				  plotCytoband(cytoband=cytoband,
+##					       xlim=op$xlim[chromosomeName, ],
+##					       xaxs=op$xaxs,
+##					       label.cytoband=op$label.cytoband,
+##					       cex.axis=op$cex.axis,
+##					       outer=op$outer.cytoband.axis)
 				  plotCytoband(cytoband=cytoband,
+					       new=FALSE,
+					       cytoband.ycoords=op$cytoband.ycoords,
 					       xlim=op$xlim[chromosomeName, ],
 					       xaxs=op$xaxs,
 					       label.cytoband=op$label.cytoband,
+					       srt=op$cytoband.srt,
+					       label.y=op$cytoband.label.y,
 					       cex.axis=op$cex.axis,
-					       outer=op$outer.cytoband.axis)
+					       outer=op$outer.cytoband.axis,
+					       taper=op$cytoband.taper)
 		  }
 
 		  .drawYaxis <- function(object, op, j){
@@ -46,29 +55,32 @@ setMethod(".plotChromosome", "SnpLevelSet",
 			       border=op$border.centromere)  
 		  }
 
-		  if(!missing(hmmPredict)){
-			  if(is.null(op$col.predict)){
-				  require(RColorBrewer, quietly=TRUE) || stop("RColorBrewer package not available")
-				  col.predict <- brewer.pal(length(states(hmmPredict)), "BrBG")
-				  col.predict[states(hmmPredict) == "N"] <- "white"
-				  print("col.predict not specified in list of graphical parameters. Using the following colors:")
-				  print(col.predict)
-				  op$col.predict <- col.predict
-				  op$legend.fill.predict <- col.predict
-			  }
-			  if(is.null(op$height.predict)){
-				  op$height.predict <- 0.2
-			  }
-
-			  if(!is.null(op$abline.v)){
-				  if(length(sampleNames(hmmPredict)) == 1){
-					  v <- breakpoints(hmmPredict)[, c("state", "start", "last")]
-					  v <- v[v$state != "N", ]
-					  v <- c(v$start, v$last)*1e6
-					  op$abline.v <- v
-				  }
-			  }
-		  }
+##		  if(!missing(hmmPredict)){
+##			  if(is.null(op$col.predict)){
+##				  require(RColorBrewer, quietly=TRUE) || stop("RColorBrewer package not available")
+##				  col.predict <- brewer.pal(length(states(hmmPredict)), "BrBG")
+##				  col.predict[states(hmmPredict) == "N"] <- "white"
+##				  print("col.predict not specified in list of graphical parameters. Using the following colors:")
+##				  print(col.predict)
+##				  op$col.predict <- col.predict
+##				  op$legend.fill.predict <- col.predict
+##			  }
+##			  if(is.null(op$height.predict)){
+##				  op$height.predict <- 0.2
+##			  }
+##			  ## indicator of whether to draw vertical lines at breakpoints
+##			  if(op$abline.v){
+##				  ##if position of vertical lines are not specified
+##				  if(is.null(op$abline.v.pos)){
+##					  if(length(sampleNames(hmmPredict)) == 1){
+##						  v <- breakpoints(hmmPredict)[, c("state", "start", "last")]
+##						  v <- v[v$state != "N", ]
+##						  v <- c(v$start, v$last)*1e6
+##						  op$abline.v.pos <- v
+##					  }
+##				  }
+##			  }
+##		  }
 		  
 			  
 		  if(op$cytoband.side == 3) cytobandOnTop <- TRUE else cytobandOnTop <- FALSE
@@ -83,11 +95,17 @@ setMethod(".plotChromosome", "SnpLevelSet",
 		  }		  
 		  for(j in 1:ncol(object)){
 			  op$main <- op$main[j]
-			  .plot(object[, j], op=op)
+			  ##some parameters in op may get updated in the call to .plot
+			  ##e.g., the xlim
+			  op <- .plot(object[, j], op=op)
 			  .drawYaxis(object=object, op=op)
-			  if(!missing(hmmPredict)){
+##			  if(!missing(hmmPredict)){
+			  if(!is.null(op@hmmPredict)){
+				  hmmPredict <- op@hmmPredict
+				  op@hmmPredict <- NULL
 				  x <- split(hmmPredict[, j], chromosome(hmmPredict))
 				  lapply(x, plotPredictions, op=op)
+				  op@hmmPredict <- hmmPredict
 			  }
 			  if(op$add.centromere)
 				  .drawCentromere(object[, j], op)
@@ -145,12 +163,70 @@ setMethod(".plotChromosome", "SnpLevelSet",
 	}
 }
 
-setMethod("plotSnp", c("ParESet", "SnpLevelSet"),
-          function(object, snpset, ...){
+.recycle <- function(x, object, missing){
+	if(length(x) == nrow(object)) return(x)
+	##assume using 2 colors for homozygous and hets
+	if(length(x) >= 1){
+		if("calls" %in% ls(assayData(object))){
+			gt <- as.vector(calls(object))
+			gt[is.na(gt)] <- 4
+			  
+			if(sum(!(gt %in% 1:4)) > 0){
+				warning("Changing all genotypes that are not 1, 2, 3 to the value 4")
+				gt[!(gt %in% 1:4)] <- 4
+			}
+			##assume that colors are to be recycled
+			if(length(x) > length(unique(gt))){
+				x <- x[1:length(unique(gt))]
+			}
+			
+			##number of unique calls is greater than the
+			##length of the supplied colors
+			if(length(x) < length(unique(gt))){
+				l <- length(unique(gt)) - length(x) 
+				x <- c(x, rep(missing, l))
+			}
 
-		  if(!missing(...)){
-			  require(VanillaICE) || stop("VanillaICE package not available")
-		  }
+			##After above steps, the number of unique
+			##calls and number of supplied colors in x
+			##should be the same
+			if(length(unique(gt)) == length(x)){
+				x <- x[sort(unique(gt))]
+			} else{
+				stop("length of supplied col, bg, or plotting symbols is not equal to number of unique genotype calls.")
+			}
+			x <- x[gt]
+		}
+	}
+	x
+}
+
+setMethod("plotSnp", "SnpLevelSet",
+	  function(object, hmmPredict, ...){
+		  ## create an appropriate class according to the class of
+		  ## SnpLevelSet
+		  gp <- switch(class(object),
+			       oligoSnpSet=new("ParSnpSet", snpset=object, ...),
+			       SnpCallSet=new("ParSnpCallSet", snpset=object, ...),
+			       SnpCopyNumberSet=new("ParSnpCopyNumberSet", snpset=object, ...),
+			       stop("Object is not one of the available classes"))
+		  if(!missing(hmmPredict)) gp@hmmPredict <- hmmPredict
+
+		  gp <- getPar(gp)
+
+		  ##Option to recycle graphical parameters by genotype call (when available)
+		  gp$col <- .recycle(gp$col, gp@snpset, missing="grey40")
+		  gp$cex <- .recycle(gp$cex, gp@snpset, missing=1)
+		  gp$pch <- .recycle(gp$pch, gp@snpset, missing=".")
+		  gp$bg <- .recycle(gp$bg, gp@snpset, missing="grey40")
+		  return(gp)
+	  })
+
+##could we extend the trellis class? (probably too complicated)
+##setMethod("plotSnp", c("ParESet", "SnpLevelSet"),
+setMethod("show", "ParESet",	  
+	  function(object){
+		  snpset <- object@snpset
 		  snpset <- snpset[!is.na(chromosome(snpset)), ]
 		  if(object$useLayout){
 			  layout(mat=object$mat,
@@ -180,53 +256,53 @@ setMethod("plotSnp", c("ParESet", "SnpLevelSet"),
 		  par(allPlots(object))
 		  for(i in 1:length(snpList)){
 			  if(i == 1) par(yaxt="s") else par(yaxt="n")
-			  object <- .plotChromosome(snpList[[i]], op=object, ...)
+			  object <- .plotChromosome(snpList[[i]], op=object)
 		  }
 		  if(object$outer.ylab) mtext(object$ylab, side=object$side.ylab, outer=TRUE, las=3, cex=object$cex.ylab, line=object$line.ylab)
 		  mtext(object$xlab, side=object$side.xlab, outer=object$outer.xlab, cex=object$cex.xlab, line=object$line.xlab, adj=0)
-		  
 		  if(length(sampleNames(snpset) == 1)){
 			  mtext(object$main, side=3, outer=TRUE, cex=1.4)
 		  }
+		  object@snpset <- snpset
 		  return(object)
           })
 
 
-setMethod("plotSnp", c("ParSnpCopyNumberSet", "SnpCopyNumberSet"),
-          function(object, snpset, ...){
-            old.par <- par(no.readonly=TRUE)
-            on.exit(old.par)
-            callNextMethod()
+setMethod("show", "ParSnpCopyNumberSet",
+	  function(object){
+		  old.par <- par(no.readonly=TRUE)
+		  on.exit(old.par)
+		  callNextMethod()
+	  })
+
+setMethod("show", "ParSnpCallSet",
+          function(object){
+		  old.par <- par(no.readonly=TRUE)
+		  on.exit(old.par)            
+		  callNextMethod()
           })
 
-setMethod("plotSnp", c("ParSnpCallSet", "SnpCallSet"),
-          function(object, snpset, ...){
-            old.par <- par(no.readonly=TRUE)
-            on.exit(old.par)            
-            callNextMethod()
-          })
-
-setMethod("plotSnp", c("ParSnpSet", "oligoSnpSet"),
-          function(object, snpset, ...){
-            old.par <- par(no.readonly=TRUE)
-            on.exit(old.par)
-            callNextMethod()
+setMethod("show", "ParSnpSet",
+          function(object){
+		  old.par <- par(no.readonly=TRUE)
+		  on.exit(old.par)
+		  callNextMethod()
           })
 
 .calculateYlim <- function(object, op){
 	if("copyNumber" %in% ls(assayData(object))){
 		##only print this if there is more than one sample or more than 1 chromosome to plot
 		if(length(unique(chromosome(object))) > 1 || ncol(object) > 1){
-			print("one.ylim is FALSE. Calculating ylim based on the percentiles of the copy number distribution")
+			print("one.ylim is FALSE. Each panel has different ylim")
 		}
-		if(op$log == "y"){
-			ylim <- range(copyNumber(object), na.rm=TRUE)
-		} else{
+##		if(op$log == "y"){
+		ylim <- range(copyNumber(object), na.rm=TRUE)
+##		} else{
 			##use 1 and 99 quantiles to avoid outliers
-			ylim <- c(quantile(copyNumber(object), prob=0.001, na.rm=TRUE),
-				  quantile(copyNumber(object), prob=0.999, na.rm=TRUE))
-		}
-	} else{
+##			ylim <- c(quantile(copyNumber(object), prob=0.001, na.rm=TRUE),
+##				  quantile(copyNumber(object), prob=0.999, na.rm=TRUE))
+			
+	} else {
 		##ylimits for genotypes??
 		y <- .getY(object)
 		##jitter the genotype calls
@@ -237,104 +313,92 @@ setMethod("plotSnp", c("ParSnpSet", "oligoSnpSet"),
 }
 
 .plot <- function(object, op, ...){
-  ##could use a switch in the following statement to generate a
-  ##class-specific par object
-  if(missing(op)) op <- new("ParESet")
-  chromosomeName <- unique(chromosome(object))
+	##could use a switch in the following statement to generate a
+	##class-specific par object
+	if(missing(op)) op <- new("ParESet")
+	chromosomeName <- unique(chromosome(object))
 
-  if(!op$one.ylim){
-    op$ylim <- .calculateYlim(object)
-  }
+	## this changes the arguments in graphical parameters.  Should move
+	## this to plotSnp().  op$ylim should be a named list
+	if(!op$one.ylim){
+		op$ylim <- .calculateYlim(object)
+	}
 
-  .orderByGenotype <- function(object){
-	  if(!("calls" %in% ls(assayData(object)))) return(object)
-	  gt <- as.vector(calls(object))
-	  gt[gt == 3] <- 1
-	  object[order(gt, decreasing=FALSE), ]
-  }
+	if(op$use.chromosome.size){
+		op$xlim[chromosomeName, ] <- c(0, chromosomeSize(chromosomeName))
+	}
 
-  
-  
-  ##ensures homozygous genotypes are plotted first
-  object <- .orderByGenotype(object)
-  x <- .getX(object)##position
-  y <- .getY(object, op)##calls or copy number
+	##Should do this before reordering by genotype so that the
+	##returned colors are in the same order as the calls in the
+	##original object
+	col <- .recycle(op$col, object, missing="grey40")
+	cex <- .recycle(op$cex, object, missing=1)
+	pch <- .recycle(op$pch, object, missing=".")
+	bg <- .recycle(op$bg, object, missing="grey40")	
 
-  if(!op$outer.ylab) ylab <- op$ylab else ylab <- ""
+	.orderByGenotype <- function(object){
+		if(!("calls" %in% ls(assayData(object)))) return(object)
+		gt <- as.vector(calls(object))
+		gt[gt == 3] <- 1
+		order(gt, decreasing=FALSE)
+	}
 
-
-  .recycle <- function(x, object, missing){
-	  if(length(x) == nrow(object)) return(x)
-	  ##assume using 2 colors for homozygous and hets
-	  if(length(x) > 1){
-		  if("calls" %in% ls(assayData(object))){
-			  gt <- as.vector(calls(object))
-			  gt[is.na(gt)] <- 4
-			  
-			  if(sum(!(gt %in% 1:4)) > 0){
-				  warning("Changing all genotypes that are not 1, 2, 3 to the value 4")
-				  gt[!(gt %in% 1:4)] <- 4
-			  }
-			  ##assume that colors are to be recycled
-			  if(max(gt) > length(x)){
-				  x <- c(x, missing)
-			  }
-			  if(max(gt) <= length(x)){
-				  x <- x[sort(unique(gt))]
-			  }
-			  x <- x[gt]
-		  }
-	  }
-	  x
-  }
-  
-  ##Option to recycle graphical parameters by genotype call (when available)
-  col <- .recycle(op$col, object, missing="grey40")
-  cex <- .recycle(op$cex, object, missing=1)
-  pch <- .recycle(op$pch, object, missing=".")
-  bg <- .recycle(op$bg, object, missing="grey40")
-
-  plot(x=x, y=y,
-       xlim=op$xlim[chromosomeName, ],
-       ylim=op$ylim,
-       col=col,
-       cex=cex,
-       pch=pch,
-       log=op$log,
-       bg=bg,
-       xaxt="n",
-       xaxs=op$xaxs,
-       main=op$main,
-       ylab=ylab,
-       yaxt="n",
-       ...)
-  if(op$abline){
-	  abline(h=op$abline.h, col=op$abline.col, lty=op$abline.lty, lwd=op$abline.lwd)
-  }
-  if(!is.null(op$abline.v)){
-	  abline(v=op$abline.v, col=op$abline.v.col, lty=op$abline.v.lty, lwd=op$abline.v.lwd)
-  }
-  if(!is.null(op$legend)){
-##	  ix <- order(unique(op$col))
-	  legend(op$legend.location,
-##		 fill=op$legend.fill,
-		 col=op$legend.col,
-		 pt.bg=op$legend.bg,
-		 pch=op$legend.pch,
-		 legend=op$legend,
-		 bty=op$legend.bty)
-  }
-  return()
+	##ensures homozygous genotypes are plotted first
+	ix <- .orderByGenotype(object)
+	object <- object[ix, ]
+	
+	x <- .getX(object)##position
+	y <- .getY(object, op)##calls or copy number
+	if(!op$outer.ylab) ylab <- op$ylab else ylab <- ""
+	## this changes the arguments in graphical parameters.  Should move
+	## this to plotSnp().  Might want to leave this here in case cex is
+	## updated to cex=2, for instance
+	##Option to recycle graphical parameters by genotype call (when available)
+	plot(x=x, y=y,
+	     xlim=op$xlim[chromosomeName, ],
+	     ylim=op$ylim,
+	     col=col[ix],
+	     cex=cex[ix],
+	     pch=pch[ix],
+	     log=op$log,
+	     bg=bg[ix],
+	     xaxt="n",
+	     xaxs=op$xaxs,
+	     main=op$main,
+	     ylab=ylab,
+	     yaxt="n",
+	     ...)
+	if(op$abline){
+		abline(h=op$abline.h, col=op$abline.col, lty=op$abline.lty, lwd=op$abline.lwd)
+	}
+	if(op$abline.v){
+		##	  if(!is.null(op$abline.v)){
+		abline(v=op$abline.v.pos, col=op$abline.v.col, lty=op$abline.v.lty, lwd=op$abline.v.lwd)
+	}
+	if(!is.null(op$legend)){
+		legend(op$legend.location,
+		       col=op$legend.col,
+		       pt.bg=op$legend.bg,
+		       pch=op$legend.pch,
+		       legend=op$legend,
+		       bty=op$legend.bty)
+	}
+	return(op)
 }
 
 plotCytoband <- function(chromosome,
                          cytoband,
+			 cytoband.ycoords,
                          xlim,
+			 ylim=c(0, 2),			 
                          xaxs="r",
                          new=TRUE,
-                         label.cytoband=TRUE,
+                         label.cytoband=TRUE,  ##whether to label cytobands
+			 label.y=NULL,         ##if specified, use text() rather than axis()
+			 srt,
                          cex.axis=1,
                          outer=FALSE,
+			 taper=0.15,
                          ...){
 	def.par <- par(no.readonly=TRUE)
 	on.exit(def.par)
@@ -344,6 +408,9 @@ plotCytoband <- function(chromosome,
 	}
 	if(length(unique(cytoband$chrom)) > 1){
 		cytoband <- cytoband[cytoband[, "chrom"] == chromosome, ]
+	}
+	if(missing(cytoband.ycoords)){
+		cytoband.ycoords <- ylim
 	}
 	rownames(cytoband) <- as.character(cytoband[, "name"])
 	if(missing(xlim)) xlim <- c(0, chromosomeSize(unique(cytoband$chrom)))
@@ -371,15 +438,23 @@ plotCytoband <- function(chromosome,
 			cut.left[i+1] <- TRUE
 		}
 	}
-	##When plotting subregions of a chromosome, this prevents the cytobands from extending beyond the subsetted object
-	##exclude cytobands that end before the minimum plotting limits
-	include <- cytoband[, "chromEnd"] > xlim[1] & cytoband[, "chromStart"] < xlim[2]            
+	##When plotting subregions of a chromosome, this prevents the
+	##cytobands from extending beyond the subsetted object
+
+	## exclude cytobands that end before the minimum plotting
+	##limits
+	include <- cytoband[, "chromEnd"] > xlim[1] & cytoband[, "chromStart"] < xlim[2]
+
 	cytoband <- cytoband[include, ]
+	N <- nrow(cytoband)
+	cytoband[N, "chromEnd"] <- min(xlim[2], cytoband[N, "chromEnd"])
+	cytoband[1, "chromStart"] <- max(xlim[1], cytoband[1, "chromStart"])
 	cut.left <- cut.left[include]
 	cut.right <- cut.right[include]
 	if(new){
 		xx <- c(0, cytoband[nrow(cytoband), "chromEnd"])
-		yy <- c(0, 2)
+		##yy <- c(0, 2)
+		yy <- ylim
 		plot(xx,
 		     yy,
 		     xlim=xlim,
@@ -390,6 +465,10 @@ plotCytoband <- function(chromosome,
 		     xaxs=xaxs,
 		     ...)
 	}
+	top <- cytoband.ycoords[2]
+	bot <- cytoband.ycoords[1]
+	h <- top-bot
+	p <- taper
 	for (i in 1:nrow(cytoband)) {
 		start <- cytoband[i, "chromStart"]
 		last   <- cytoband[i, "chromEnd"]
@@ -410,29 +489,54 @@ plotCytoband <- function(chromosome,
 		if (is.na(cut.left[i]) & is.na(cut.right[i])) {
 			## this is a "stalk", do not draw box. Draw two vertical lines instead
 			delta <- (last-start)/3
-			lines(c(start+delta, start+delta), c(0,2), col=color)
-			lines(c(last-delta, last-delta), c(0,2), col=color)
+			lines(c(start+delta, start+delta), ylim, col=color)
+			lines(c(last-delta, last-delta), ylim, col=color)
 		} else if (cut.left[i] & cut.right[i]) {      # cut both lasts
+##			polygon(c(start, start+delta, last-delta, last, last, last-delta, start+delta, start),
+##				c(0.3, 0, 0, 0.3, 1.7, 2, 2, 1.7), col=color)
+			##Taper both ends
+			yy <- c(bot + p*h, bot, bot, bot + p*h, top - p*h, top, top, top - p*h)
 			polygon(c(start, start+delta, last-delta, last, last, last-delta, start+delta, start),
-				c(0.3, 0, 0, 0.3, 1.7, 2, 2, 1.7), col=color)
+				yy, col=color)			
 		} else if (cut.left[i]) {              # cut left last only
+			##Taper left end only
+			yy <- c(bot + p*h, bot, bot, top, top, top - p*h)
 			polygon(c(start, start+delta, last, last, start+delta, start),
-				c(0.3, 0, 0, 2, 2, 1.7), col=color)
+				yy, col=color)
 		} else if (cut.right[i]) {             # cut right last only
+			##Taper right end only
+			yy <- c(bot, bot, bot + p*h, top - p*h, top, top)
 			polygon(c(start, last-delta, last, last, last-delta, start),
-				c(0, 0, 0.3, 1.7, 2, 2),col=color)
+				yy,col=color)
 		} else {
+			##Rectangle
 			polygon(c(start, last, last, start),
-				c(0, 0, 2, 2), col=color)
+				c(bot, bot, top, top), col=color)
 		}
 	}
 	my.x <- (cytoband$chromStart+cytoband$chromEnd)/2
 	if(label.cytoband){
-		axis(1, at=my.x,
-		     labels=rownames(cytoband),
-		     outer=outer,
-		     cex.axis=cex.axis,
-		     line=1, las=3)
+		if(is.null(label.y)){
+			##if plotting on a new device
+			axis(1,
+			     at=my.x,
+			     labels=rownames(cytoband),
+			     outer=outer,
+			     cex.axis=cex.axis,
+			     line=1,
+			     las=3)
+		} else{
+			##put cytoband labels at height label.y
+			if(!is.numeric(label.y)){
+				warning("label.y must be numeric -- using default y coordinates for cytoband labels")
+				label.y <- bot - p*h
+			}
+			if(missing(srt)) srt <- 90
+			text(x=my.x,
+			     y=rep(label.y, length(my.x)),
+			     labels=rownames(cytoband),
+			     srt=srt)
+		}
 	}
 	return()
 }
@@ -444,7 +548,6 @@ plotPredictions <- function(object, op){
 	chromosome <- chromosome(object)
 	states <- states(object)
 	predictions <- predictions(object)
-
 
 	chr <- unique(chromosome)
 	for(i in chr){
@@ -462,9 +565,11 @@ plotPredictions <- function(object, op){
 		  }
 		  col <- col[unique(predict)]
 		  rect(xleft=start,
-		       ybottom=op$ylim[1],
+		       ybottom=op$hmm.ycoords[1],
+##		       ybottom=op$ylim[1],
 		       xright=last,
-		       ytop=op$height.predict+op$ylim[1],
+		       ytop=op$hmm.ycoords[2],
+##		       ytop=op$height.predict+op$ylim[1],
 		       col=col,
 		       border=col)
 	  }
