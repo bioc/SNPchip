@@ -8,7 +8,7 @@ setMethod("fragmentLength", "SnpLevelSet", function(object) fragmentLength(fData
 
 setMethod(".getX", "SnpLevelSet", function(object, ...) position(object))
 setMethod(".getY", "SnpLevelSet", function(object, op, ...){
-	if("copyNumber" %in% ls(assayData(object))){
+	if("copyNumber" %in% ls(assayData(object)) | "ratio" %in% ls(assayData(object))){
 		y <- copyNumber(object)
 		y[y < op$ylim[1]] <- op$ylim[1]
 		y[y > op$ylim[2]] <- op$ylim[2]

@@ -33,7 +33,7 @@ setMethod(".plotChromosome", "SnpLevelSet",
 		  .drawYaxis <- function(object, op, j){
 			  if(unique(chromosome(object)) != op$firstChromosome) return()
 			  if(op$yaxt == "n") return()
-			  if("copyNumber" %in% ls(assayData(object))){
+			  if("copyNumber" %in% ls(assayData(object)) | "ratio" %in% ls(assayData(object))){
 				  at <- pretty(op$ylim)
 				  at <- c(op$at, at)
 				  labels <- at
@@ -163,6 +163,7 @@ setMethod(".plotChromosome", "SnpLevelSet",
 	}
 }
 
+
 .recycle <- function(x, object, missing){
 	if(length(x) == nrow(object)) return(x)
 	##assume using 2 colors for homozygous and hets
@@ -196,6 +197,9 @@ setMethod(".plotChromosome", "SnpLevelSet",
 				stop("length of supplied col, bg, or plotting symbols is not equal to number of unique genotype calls.")
 			}
 			x <- x[gt]
+		} else{
+			##Calls not in assay data.  Just use the first color
+			x <- rep(x[1], nrow(object))
 		}
 	}
 	x
@@ -209,6 +213,7 @@ setMethod("plotSnp", "SnpLevelSet",
 			       oligoSnpSet=new("ParSnpSet", snpset=object, ...),
 			       SnpCallSet=new("ParSnpCallSet", snpset=object, ...),
 			       SnpCopyNumberSet=new("ParSnpCopyNumberSet", snpset=object, ...),
+			       RatioSnpSet=new("ParSnpSet", snpset=object, ...),
 			       stop("Object is not one of the available classes"))
 		  if(!missing(hmmPredict)) gp@hmmPredict <- hmmPredict
 
@@ -290,7 +295,7 @@ setMethod("show", "ParSnpSet",
           })
 
 .calculateYlim <- function(object, op){
-	if("copyNumber" %in% ls(assayData(object))){
+	if("copyNumber" %in% ls(assayData(object)) | "ratio" %in% ls(assayData(object))){
 		##only print this if there is more than one sample or more than 1 chromosome to plot
 		if(length(unique(chromosome(object))) > 1 || ncol(object) > 1){
 			print("one.ylim is FALSE. Each panel has different ylim")
@@ -337,7 +342,9 @@ setMethod("show", "ParSnpSet",
 	bg <- .recycle(op$bg, object, missing="grey40")	
 
 	.orderByGenotype <- function(object){
-		if(!("calls" %in% ls(assayData(object)))) return(object)
+		if(!("calls" %in% ls(assayData(object)))){
+			return(1:nrow(object))
+		}
 		gt <- as.vector(calls(object))
 		gt[gt == 3] <- 1
 		order(gt, decreasing=FALSE)

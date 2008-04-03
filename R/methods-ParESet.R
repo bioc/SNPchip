@@ -75,7 +75,7 @@ setMethod("getPar", "ParESet", ##c("ParESet", "SnpLevelSet"),
 
                   ######################################################################
 		  ##graphical parameters
-		  if("copyNumber" %in% ls(assayData(snpset))){
+		  if("copyNumber" %in% ls(assayData(snpset)) | "ratio" %in% ls(assayData(snpset))){
 			  if(min(copyNumber(snpset), na.rm=TRUE) > 0) object$log <- "y" else object$log <- ""
 			  ##by default, we use the same ylimit on all the plots
 			  

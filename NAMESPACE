@@ -9,6 +9,7 @@ exportClasses(ParESet,
 exportMethods(alleleA,
               alleleB,
               coerce,
+	      copyNumber,
               dbSnpId,
               enzyme,
               fragmentLength,
@@ -17,7 +18,9 @@ exportMethods(alleleA,
               show,
               smoothSnp,
               summary,
-              updateObject)
+              updateObject,
+	      ratio,
+	      "ratio<-")
 
 export(centromere,
        chromosome2numeric,
@@ -25,7 +28,7 @@ export(centromere,
        plotPredictions,
        showSummary)
 
-##Uncomment when debugging
+#Uncomment when debugging
 ##export(.plotChromosome,
 ##      .drawXaxis,
 ##       .calculateYlim,

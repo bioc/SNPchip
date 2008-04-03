@@ -23,7 +23,24 @@ setMethod("initialize", "ParSnpSet",
             .Object
           })
 
-
+setMethod("initialize", "RatioSnpSet",
+          function(.Object,
+                   calls=new("matrix"),
+                   ratio=new("matrix"),
+		   ratioConfidence, ...){
+		  if(missing(ratioConfidence)){
+			  ratioConfidence <- matrix(NA, nrow=nrow(calls), ncol=ncol(calls))
+			  rownames(ratioConfidence) <- rownames(calls)
+			  colnames(ratioConfidence) <- colnames(calls)
+		  }
+		  .Object <- callNextMethod(.Object, ...)
+		  ad <- assayDataNew("lockedEnvironment",
+				     calls=calls,
+				     ratio=ratio,
+				     ratioConfidence=ratioConfidence)		  
+		  assayData(.Object) <- ad
+		  .Object
+          })
 
 
 setMethod("initialize", "ParESet",

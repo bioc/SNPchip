@@ -21,3 +21,7 @@ setGeneric("snpPar",   function(object) standardGeneric("snpPar"))
 setGeneric("snpPar<-",   function(object, value) standardGeneric("snpPar<-"))
 
 
+setGeneric("ratio", function(object) standardGeneric("ratio"))
+setGeneric("ratio<-", function(object, value) standardGeneric("ratio<-"))
+
+

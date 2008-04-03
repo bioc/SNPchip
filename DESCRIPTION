@@ -21,6 +21,7 @@ Collate: AllClasses.R
 	 methods-SnpCallSet.R 
 	 methods-AnnotatedDataFrame.R 
 	 methods-oligoSnpSet.R
+	 methods-RatioSnpSet.R
 	 plotSnp-methods.R
 	 methods-list.R
 	 functions.R
