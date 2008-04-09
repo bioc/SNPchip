@@ -1,6 +1,6 @@
 setMethod(".plotChromosome", "SnpLevelSet", 
-##          function(object, op, hmmPredict, ...){
 	  function(object, op){
+		  if(length(unique(chromosome(object))) > 1) stop(".plotChromosome should only receive one chromosome")
 		  .getCytoband <- function(object, op){
 			  if(op$add.cytoband){
 				  data(cytoband)              
@@ -11,12 +11,6 @@ setMethod(".plotChromosome", "SnpLevelSet",
 		  .drawCytobandWrapper <- function(S, cytoband, op, j, chromosomeName){
 			  if(!op$add.cytoband) return()
 			  if(nrow(cytoband) > 0)
-##				  plotCytoband(cytoband=cytoband,
-##					       xlim=op$xlim[chromosomeName, ],
-##					       xaxs=op$xaxs,
-##					       label.cytoband=op$label.cytoband,
-##					       cex.axis=op$cex.axis,
-##					       outer=op$outer.cytoband.axis)
 				  plotCytoband(cytoband=cytoband,
 					       new=FALSE,
 					       cytoband.ycoords=op$cytoband.ycoords,
@@ -29,7 +23,6 @@ setMethod(".plotChromosome", "SnpLevelSet",
 					       outer=op$outer.cytoband.axis,
 					       taper=op$cytoband.taper)
 		  }
-
 		  .drawYaxis <- function(object, op, j){
 			  if(unique(chromosome(object)) != op$firstChromosome) return()
 			  if(op$yaxt == "n") return()
@@ -54,38 +47,7 @@ setMethod(".plotChromosome", "SnpLevelSet",
 			       col=op$col.centromere,
 			       border=op$border.centromere)  
 		  }
-
-##		  if(!missing(hmmPredict)){
-##			  if(is.null(op$col.predict)){
-##				  require(RColorBrewer, quietly=TRUE) || stop("RColorBrewer package not available")
-##				  col.predict <- brewer.pal(length(states(hmmPredict)), "BrBG")
-##				  col.predict[states(hmmPredict) == "N"] <- "white"
-##				  print("col.predict not specified in list of graphical parameters. Using the following colors:")
-##				  print(col.predict)
-##				  op$col.predict <- col.predict
-##				  op$legend.fill.predict <- col.predict
-##			  }
-##			  if(is.null(op$height.predict)){
-##				  op$height.predict <- 0.2
-##			  }
-##			  ## indicator of whether to draw vertical lines at breakpoints
-##			  if(op$abline.v){
-##				  ##if position of vertical lines are not specified
-##				  if(is.null(op$abline.v.pos)){
-##					  if(length(sampleNames(hmmPredict)) == 1){
-##						  v <- breakpoints(hmmPredict)[, c("state", "start", "last")]
-##						  v <- v[v$state != "N", ]
-##						  v <- c(v$start, v$last)*1e6
-##						  op$abline.v.pos <- v
-##					  }
-##				  }
-##			  }
-##		  }
-		  
-			  
 		  if(op$cytoband.side == 3) cytobandOnTop <- TRUE else cytobandOnTop <- FALSE
-
-##		  browser()
 		  if(cytobandOnTop){
 			  .drawCytobandWrapper(S=ncol(object),
 					       cytoband=cytoband,
@@ -99,7 +61,6 @@ setMethod(".plotChromosome", "SnpLevelSet",
 			  ##e.g., the xlim
 			  op <- .plot(object[, j], op=op)
 			  .drawYaxis(object=object, op=op)
-##			  if(!missing(hmmPredict)){
 			  if(!is.null(op@hmmPredict)){
 				  hmmPredict <- op@hmmPredict
 				  op@hmmPredict <- NULL
@@ -178,6 +139,7 @@ setMethod(".plotChromosome", "SnpLevelSet",
 			}
 			##assume that colors are to be recycled
 			if(length(x) > length(unique(gt))){
+				##this is a bad idea
 				x <- x[1:length(unique(gt))]
 			}
 			
@@ -220,10 +182,14 @@ setMethod("plotSnp", "SnpLevelSet",
 		  gp <- getPar(gp)
 
 		  ##Option to recycle graphical parameters by genotype call (when available)
-		  gp$col <- .recycle(gp$col, gp@snpset, missing="grey40")
-		  gp$cex <- .recycle(gp$cex, gp@snpset, missing=1)
-		  gp$pch <- .recycle(gp$pch, gp@snpset, missing=".")
-		  gp$bg <- .recycle(gp$bg, gp@snpset, missing="grey40")
+		  
+		  ##object contains multiple chromosomes and we're
+		  ##passing one chromosome at a time to the plot
+		  ##function.  
+##		  gp$col <- .recycle(gp$col, gp@snpset, missing="grey40")
+##		  gp$cex <- .recycle(gp$cex, gp@snpset, missing=1)
+##		  gp$pch <- .recycle(gp$pch, gp@snpset, missing=".")
+##		  gp$bg <- .recycle(gp$bg, gp@snpset, missing="grey40")
 		  return(gp)
 	  })
 
@@ -337,10 +303,9 @@ setMethod("show", "ParSnpSet",
 	##returned colors are in the same order as the calls in the
 	##original object
 	col <- .recycle(op$col, object, missing="grey40")
-	cex <- .recycle(op$cex, object, missing=1)
-	pch <- .recycle(op$pch, object, missing=".")
+	cex <- .recycle(op$cex, object, missing=op$cex[1])
+	pch <- .recycle(op$pch, object, missing=op$pch[1])
 	bg <- .recycle(op$bg, object, missing="grey40")	
-
 	.orderByGenotype <- function(object){
 		if(!("calls" %in% ls(assayData(object)))){
 			return(1:nrow(object))

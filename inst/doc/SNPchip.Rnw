@@ -108,6 +108,7 @@ snpset <- sample.snpset[chromosome(sample.snpset) %in% as.character(1:3), 1:4]
 graph.par <- plotSnp(snpset)
 class(graph.par)
 graph.par$use.chromosome.size <- TRUE
+graph.par$pch <- "."
 graph.par$cex <- 3
 @ 
 
@@ -142,6 +143,7 @@ chromosomes 1-22 and X of samples 1 - 3 in the object
 
 <<gw.params>>=
 graph.par <- plotSnp(sample.snpset[, 1:3], add.cytoband=FALSE)
+graph.par$one.ylim <- TRUE
 graph.par$mar <- c(0.1, 0.1, 2, 0.1)
 graph.par$oma <- c(3, 4, 2, 1)
 graph.par$cex <- 2
