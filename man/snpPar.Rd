@@ -20,7 +20,9 @@ snpPar(object)
 data(sample.snpset)
 object <- plotSnp(sample.snpset)
 str(snpPar(object))
+\dontrun{
 show(object)
+}
 }
 \keyword{methods}
 

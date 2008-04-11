@@ -1,8 +1,8 @@
 ##updates graphical parameters with information from the data class
 setMethod("getPar", "ParESet", ##c("ParESet", "SnpLevelSet"),
           function(object, ...){
-		  if(!is.null(object@hmmPredict)){
-			  hmmPredict <- object@hmmPredict			  
+		  if(!is.null(hmmPredict(object))){
+			  hmmPredict <- hmmPredict(object)
 			  if(is.null(object$col.predict)){
 				  require(RColorBrewer, quietly=TRUE) || stop("RColorBrewer package not available")
 				  col.predict <- brewer.pal(length(states(hmmPredict)), "BrBG")
@@ -28,7 +28,7 @@ setMethod("getPar", "ParESet", ##c("ParESet", "SnpLevelSet"),
 				  }
 			  }			  
 		  }
-		  snpset <- object@snpset
+		  snpset <- snpset(object)
 		  snpset <- snpset[!is.na(chromosome(snpset)), ]
 		  ##layout
 		  chromosomeNames <- as.character(sort(chromosome2numeric(chromosome(snpset))))
@@ -134,6 +134,8 @@ setReplaceMethod("snpPar", "ParESet", function(object, value) {
 	object@snpPar <- value
 	object
 })
+setMethod("snpset", "ParESet", function(object) object@snpset)
+setMethod("hmmPredict", "ParESet", function(object) object@hmmPredict)
 
 ##setMethod("show", "ParESet", function(object){
 ##	cat("Object of class ", class(object), "\n")

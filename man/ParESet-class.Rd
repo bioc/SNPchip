@@ -3,12 +3,15 @@
 \alias{ParESet-class}
 \alias{$,ParESet-method}
 \alias{$<-,ParESet-method}
-\alias{allPlots,ParESet-method}
-\alias{getPar,ParESet,SnpLevelSet-method}
+%\alias{allPlots,ParESet-method}
+%\alias{getPar,ParESet,SnpLevelSet-method}
+\alias{hmmPredict,ParESet-method}
 \alias{initialize,ParESet-method}
 \alias{plotSnp,ParESet,SnpLevelSet-method}
 \alias{snpPar,ParESet-method}
 \alias{snpPar<-,ParESet-method}
+\alias{snpset,ParESet-method}
+
 
 \title{Class "ParESet"}
 \description{A class containing a list of graphical parameters for
@@ -23,12 +26,17 @@ Objects can be created by calls of the form \code{new("ParESet", layout, col.axi
 }
 \section{Methods}{
   \describe{
-    \item{allPlots}{\code{signature(object = "ParESet")}}
-    \item{getPar}{\code{ParESet, SnpLevelSet}: See also \code{\link{getPar}}}
+%    \item{allPlots}{\code{signature(object = "ParESet")}}
+%    \item{getPar}{\code{ParESet, SnpLevelSet}: See also
+%      \code{\link{getPar}}}
+    \item{hmmPredict}{\code{signature(object="ParESet")}: Accessor for
+     \code{HmmPredict} instance.  See also \code{\link{hmmPredict}}}
     \item{initialize}{\code{signature(.Object = "ParESet")}}
     \item{plotSnp}{\code{ParESet, SnpLevelSet}:See also \code{\link{plotSnp}}}
     \item{snpPar}{\code{signature(object = "ParESet")}}
     \item{snpPar<-}{\code{signature(object = "ParESet")}}
+    \item{snpset}{\code{signature(object="ParESet")}: Accessor for
+      SNP data (\code{SnpLevelSet} instance).  See \code{\link{snpset}}.}
   }
 }
 \author{R. Scharpf}

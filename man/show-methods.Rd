@@ -16,4 +16,9 @@ Show methods
   \item{object = "ParESet"}{show method for objects inheriting from the
     \code{ParESet} class}
 }}
+\details{
+  The show methods can be used to plot instances of the ParESet
+  classes.  An object of the class is created using \code{plotSnp}.
+}
+\seealso{\code{\link{plotSnp}}}
 \keyword{methods}

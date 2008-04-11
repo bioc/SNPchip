@@ -19,8 +19,10 @@ dbSnpId(object)
 \author{R. Scharpf}
 
 \examples{
+\dontrun{
 data(sample.snpset)
 dbSnpId(sample.snpset)[1:5]
+}
 }
 \keyword{manip}
 

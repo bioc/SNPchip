@@ -43,7 +43,9 @@ data(sample.snpset)
 chr1 <- sample.snpset[chromosome(sample.snpset) == "1", 1]
 graph.par <- plotSnp(chr1)
 class(graph.par)
-show(graph.par) ##makes the plot
+\dontrun{
+graph.par
+}
 }
 \keyword{hplot}
 

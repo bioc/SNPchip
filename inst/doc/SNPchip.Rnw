@@ -58,7 +58,7 @@ data(sample.snpset)
 sample.snpset
 @ 
 
-<<featureData>>=
+<<featureData,eval=FALSE, echo=FALSE>>=
 fD <- new("AnnotatedDataFrame", data=data.frame(row.names=featureNames(sample.snpset)),
           varMetadata=data.frame(labelDescription=character()))
 featureData(sample.snpset) <- fD
@@ -81,7 +81,7 @@ graphing the data (the graphs make repeated use of chromosome and
 position calls), we add this annotation to the \Robject{featureData}
 for this vignette.
 
-<<addingFeatureData>>=
+<<addingFeatureData, eval=FALSE>>=
 if(require("pd.mapping50k.xba240")){
 	system.time(tmp <- chromosome(sample.snpset))
 	object.size(sample.snpset)
@@ -112,10 +112,12 @@ graph.par$pch <- "."
 graph.par$cex <- 3
 @ 
 
-Plot the first few chromosomes for samples 1-4:
+Plot the first few chromosomes for samples 1-4 (note the print()
+command is needed for producing the figures in the vignette, but just
+typing the object name is sufficient for plotting):
 
 <<plot1, fig=TRUE, width=8, height=6>>=
-show(graph.par)
+print(graph.par)
 @ 
 
 <<>>=
@@ -149,11 +151,12 @@ graph.par$oma <- c(3, 4, 2, 1)
 graph.par$cex <- 2
 graph.par$abline <- TRUE
 graph.par$cex.lab <- 0.9
+graph.par$add.cytoband <- FALSE
 @ 
 
 
 <<plot2, fig=TRUE, width=8, height=4>>=
-show(graph.par)
+print(graph.par)
 @ 
 
 Note that we suppress the cytobands in the above plot (the resolution
@@ -180,7 +183,7 @@ graph.par$abline <- TRUE; graph.par$abline.col <- "black"
 @ 
 
 <<plotSnpChromosomes, fig=TRUE, width=8, height=4>>=
-show(graph.par)
+print(graph.par)
 @ 
 \clearpage
 
@@ -198,7 +201,7 @@ graph.par$cytoband.ycoords <- c(0.5, 0.6)
 @ 
 
 <<plotP, fig=TRUE, width=8, height=7>>=
-show(graph.par)
+print(graph.par)
 @ 
 
 Note that the cytoband is automatically subsetted appropriately. Had
@@ -220,7 +223,7 @@ gp$add.centromere <- FALSE
 gp$xlab <- ""
 gp$legend.bty="o"
 gp$ylim[2] <- 9
-show(gp)
+print(gp)
 ##plotSnp(gp, x)
 ##xlim <- c(0,max(position(x)))
 ##xlim <- range(position(x))
@@ -303,7 +306,7 @@ graph.par$cex <- 1
 graph.par$use.chromosome.size <- TRUE
 graph.par$main <- "Chromosome 1: Example title"
 graph.par$label.chromosome <- FALSE
-show(graph.par)
+print(graph.par)
 @ 
 
 \subsection{Descriptive and statistical summaries}

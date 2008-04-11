@@ -24,14 +24,14 @@ setMethod("show", "oligoSnpSet", function(object) {
 
 setMethod("updateObject", "oligoSnpSet",
           function(object, ..., verbose=FALSE){
-            new("oligoSnpSet",
-                calls=calls(object),
-                callsConfidence=callsConfidence(object),
-                copyNumber=copyNumber(object),
-                cnConfidence=cnConfidence(object),
-                experimentData=experimentData(object),
-                phenoData=phenoData(object),
-                featureData=featureData(object))
+		  new("oligoSnpSet",
+		      calls=calls(object),
+		      callsConfidence=callsConfidence(object),
+		      copyNumber=copyNumber(object),
+		      cnConfidence=cnConfidence(object),
+		      experimentData=experimentData(object),
+		      phenoData=phenoData(object),
+		      featureData=featureData(object))
           })
 
 
@@ -41,25 +41,25 @@ setMethod("summary", "oligoSnpSet",
             ##Calculate mean,sd copy number and prop no calls, prop het calls
             ##for each chromosome in each sample.  Return an S x 23 matrix for
             ##each.
-            require(genefilter) || stop("package genefilter is not available")
-            obj <- split(object, chromosome(object))
-            means <- do.call("rbind", lapply(obj, function(x) colMeans(copyNumber(x))))
+		  require(genefilter) || stop("package genefilter is not available")
+		  obj <- split(object, chromosome(object))
+		  means <- do.call("rbind", lapply(obj, function(x) colMeans(copyNumber(x))))
 
-            colSds <- function(x) rowSds(t(x))            
-            sds <- do.call("rbind", lapply(obj, function(x) colSds(copyNumber(x))))
+		  colSds <- function(x) rowSds(t(x))            
+		  sds <- do.call("rbind", lapply(obj, function(x) colSds(copyNumber(x))))
             
-            ##Proportion of no calls for each chromosome
-            if(!is.na(MISSING.CODE)){
-              pNoCall <- do.call("rbind", lapply(obj, function(x, MISSING.CODE) colMeans(calls(x) == MISSING.CODE), MISSING.CODE))
-            } else{
-              pNoCall <- do.call("rbind", lapply(obj, function(x, MISSING.CODE) colMeans(is.na(calls(x))), MISSING.CODE))
-            }
-            pHom <- do.call("rbind", lapply(obj, function(x) colMeans(calls(x) == 1 | calls(x) == 3)))
-            pHet <- do.call("rbind", lapply(obj, function(x) colMeans(calls(x) == 2)))
-            x <- list(means, sds, pHom, pHet, pNoCall)
-            names(x) <- c("avg.CN", "sd.CN", "prop.Hom", "prop.Het", "prop.NoCall")            
-            x <- lapply(x, round, digits)
-            return(x)
+		  ##Proportion of no calls for each chromosome
+		  if(!is.na(MISSING.CODE)){
+			  pNoCall <- do.call("rbind", lapply(obj, function(x, MISSING.CODE) colMeans(calls(x) == MISSING.CODE), MISSING.CODE))
+		  } else{
+			  pNoCall <- do.call("rbind", lapply(obj, function(x, MISSING.CODE) colMeans(is.na(calls(x))), MISSING.CODE))
+		  }
+		  pHom <- do.call("rbind", lapply(obj, function(x) colMeans(calls(x) == 1 | calls(x) == 3)))
+		  pHet <- do.call("rbind", lapply(obj, function(x) colMeans(calls(x) == 2)))
+		  x <- list(means, sds, pHom, pHet, pNoCall)
+		  names(x) <- c("avg.CN", "sd.CN", "prop.Hom", "prop.Het", "prop.NoCall")            
+		  x <- lapply(x, round, digits)
+		  return(x)
           })
 
 

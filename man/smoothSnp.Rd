@@ -14,22 +14,25 @@ smoothSnp(object, ...)
   \item{\dots}{For additional arguments see details.}
 }
 \details{
+  
   Additional arguments include the chromosomes (character vector) and
   samples (numerical vector) to smooth.  Options for smoothing are set
-  by specifying the span and the method.  The loess method is the
-  default and the only method currently available.
+  by specifying the span and the method.  See the SNPchip vignette.
+
+  See the R package VanillaICE for a hidden Markov model for more formal
+  inference regarding regions of LOH and copy number alterations.
+  
 }
 
-\value{ An object of the same class, e.g., \code{AnnotatedSnpSet}, but
+\value{
+
+  An object of the same class, e.g., \code{AnnotatedSnpSet}, where
   assayData elements copyNumber and calls are replaced by the smoothed
-  values.  }
+  values.
 
-\references{ }
+}
+
+\references{RS}
 \author{Robert Scharpf}
-\note{ 
-}
-\seealso{}
-\examples{
-}
 \keyword{methods}
 

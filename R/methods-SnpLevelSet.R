@@ -3,7 +3,7 @@ setMethod("alleleA", "SnpLevelSet", function(object) alleleA(featureData(object)
 setMethod("alleleB", "SnpLevelSet", function(object) alleleB(featureData(object)))
 setMethod("dbSnpId", "SnpLevelSet", function(object) dbSnpId(featureData(object)))
 
-setMethod("enzyme", "SnpLevelSet", function(object) enzyme(featureData(object)))
+##setMethod("enzyme", "SnpLevelSet", function(object) enzyme(featureData(object)))
 setMethod("fragmentLength", "SnpLevelSet", function(object) fragmentLength(fData(object)))
 
 setMethod(".getX", "SnpLevelSet", function(object, ...) position(object))

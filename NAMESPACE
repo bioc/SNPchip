@@ -11,16 +11,18 @@ exportMethods(alleleA,
               coerce,
 	      copyNumber,
               dbSnpId,
-              enzyme,
+##              enzyme,
               fragmentLength,
-              initialize,
+	      hmmPredict,
+##              initialize,
               selectSomeIndex,  
               show,
               smoothSnp,
               summary,
               updateObject,
 	      ratio,
-	      "ratio<-")
+	      "ratio<-",
+	      snpset)
 
 export(centromere,
        chromosome2numeric,
@@ -33,14 +35,14 @@ export(centromere,
 ##      .drawXaxis,
 ##       .calculateYlim,
 ##       .recycle)
-##exportMethods(.getX, .getY)
+##exportMethods(initialize, .getX, .getY, getPar, allPlots)
 ##exportClasses(NULLorHmmPredict)
-
+exportMethods("initialize")
 ##par class methods
 exportMethods("$",
               "$<-",
-              allPlots,
-              getPar,
+##              allPlots,
+##              getPar,
               plotSnp,
               snpPar,
               "snpPar<-")

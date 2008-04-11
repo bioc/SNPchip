@@ -178,7 +178,6 @@ setMethod("plotSnp", "SnpLevelSet",
 			       RatioSnpSet=new("ParSnpSet", snpset=object, ...),
 			       stop("Object is not one of the available classes"))
 		  if(!missing(hmmPredict)) gp@hmmPredict <- hmmPredict
-
 		  gp <- getPar(gp)
 
 		  ##Option to recycle graphical parameters by genotype call (when available)
@@ -263,16 +262,13 @@ setMethod("show", "ParSnpSet",
 .calculateYlim <- function(object, op){
 	if("copyNumber" %in% ls(assayData(object)) | "ratio" %in% ls(assayData(object))){
 		##only print this if there is more than one sample or more than 1 chromosome to plot
-		if(length(unique(chromosome(object))) > 1 || ncol(object) > 1){
-			print("one.ylim is FALSE. Each panel has different ylim")
+		if(!op$one.ylim){
+			if(length(unique(chromosome(object))) > 1 || ncol(object) > 1){
+				print("one.ylim is FALSE. Each panel has different ylim")
+			}
+		} else{
+			ylim <- range(copyNumber(object), na.rm=TRUE)
 		}
-##		if(op$log == "y"){
-		ylim <- range(copyNumber(object), na.rm=TRUE)
-##		} else{
-			##use 1 and 99 quantiles to avoid outliers
-##			ylim <- c(quantile(copyNumber(object), prob=0.001, na.rm=TRUE),
-##				  quantile(copyNumber(object), prob=0.999, na.rm=TRUE))
-			
 	} else {
 		##ylimits for genotypes??
 		y <- .getY(object)

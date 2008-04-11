@@ -33,16 +33,5 @@ Adds graphical parameters to an object inherited from class
 
 \author{R. Scharpf}
 \seealso{plotSnp}
-
-\examples{
-data(sample.snpset)
-gp <- plotSnp(sample.snpset)
-##Default layout parameters:
-gp$mat
-##update layout parameters, etc, using information about the data object
-gp <- getPar(gp, sample.snpset)
-gp$mat
-}
-
 \keyword{manip}
 \keyword{methods}
