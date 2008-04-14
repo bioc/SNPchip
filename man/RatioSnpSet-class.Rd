@@ -6,15 +6,15 @@
 \description{Container for high throughput SNP data for platforms that
   provide ratios as SNP-level summaries of copy number}
 \section{Objects from the Class}{
-Objects can be created by calls of the form \code{new("RatioSnpSet", assayData, phenoData, featureData, experimentData, annotation, ...)}.
+  Objects can be created by calls of the form \code{new("RatioSnpSet", calls, callsConfidence, ratio, ratioConfidence, ...)}.
 }
 \section{Slots}{
 	 \describe{
     \item{\code{assayData}:}{Object of class \code{"AssayData"} }
     \item{\code{phenoData}:}{Object of class \code{"AnnotatedDataFrame"} }
     \item{\code{featureData}:}{Object of class \code{"AnnotatedDataFrame"} }
-    \item{\code{experimentData}:}{Object of class \code{"MIAME"}  }
-    \item{\code{annotation}:}{Object of class \code{"character"}  }
+    \item{\code{experimentData}:}{Object of class \code{"MIAME"} }
+    \item{\code{annotation}:}{Object of class \code{"character"} }
     \item{\code{.__classVersion__}:}{Object of class \code{"Versions"}}
   }
 }
@@ -25,10 +25,22 @@ Class \code{"\linkS4class{VersionedBiobase}"}, by class "SnpLevelSet", distance 
 Class \code{"\linkS4class{Versioned}"}, by class "SnpLevelSet", distance 4.
 }
 \section{Methods}{
-No methods defined with class "RatioSnpSet" in the signature.
+  \describe{
+    \item{cnConfidence}{\code{signature(object = "RatioSnpSet")}:
+      Accessor for confidence scores for the ratios }
+    \item{cnConfidence<-}{\code{signature(object = "RatioSnpSet", value
+	= "matrix")}: Replacement method for ratio confidence scores}
+    \item{copyNumber}{\code{signature(object = "RatioSnpSet")}: Accessor
+    for ratios.  See also \code{ratio}.}
+    \item{copyNumber<-}{\code{signature(object = "RatioSnpSet", value =
+	"matrix")}: Replacement method for ratios. }
+    \item{initialize}{\code{signature(.Object = "RatioSnpSet")}}
+    \item{ratioConfidence}{\code{signature(object = "RatioSnpSet")}:
+      Accessor for confidence scores of the ratios.  See also \code{cnConfidence}.}
+	 }
 }
 \author{RS}
-\note{Might be useful for bead-studio processed data}
+\seealso{\code{\link{RatioSnpSet-methods}}}
 \examples{
 showClass("RatioSnpSet")
 }

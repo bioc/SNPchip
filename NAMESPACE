@@ -8,13 +8,16 @@ exportClasses(ParESet,
 
 exportMethods(alleleA,
               alleleB,
+	      cnConfidence,
+	      "cnConfidence<-",
+	      ratioConfidence,
+	      "ratioConfidence<-",
               coerce,
 	      copyNumber,
+	      "copyNumber<-",
               dbSnpId,
-##              enzyme,
               fragmentLength,
 	      hmmPredict,
-##              initialize,
               selectSomeIndex,  
               show,
               smoothSnp,
@@ -37,12 +40,11 @@ export(centromere,
 ##       .recycle)
 ##exportMethods(initialize, .getX, .getY, getPar, allPlots)
 ##exportClasses(NULLorHmmPredict)
+
 exportMethods("initialize")
 ##par class methods
 exportMethods("$",
               "$<-",
-##              allPlots,
-##              getPar,
               plotSnp,
               snpPar,
               "snpPar<-")

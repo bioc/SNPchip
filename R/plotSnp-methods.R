@@ -169,8 +169,14 @@ setMethod(".plotChromosome", "SnpLevelSet",
 
 setMethod("plotSnp", "SnpLevelSet",
 	  function(object, hmmPredict, ...){
+		  if(!missing(hmmPredict)){
+			  require(VanillaICE) || stop("VanillaICE package not available")
+			  i <- match(featureNames(object), featureNames(hmmPredict))
+			  j <- match(sampleNames(object), sampleNames(hmmPredict))
+			  hmmPredict <- hmmPredict[i, j]
+		  }
 		  ## create an appropriate class according to the class of
-		  ## SnpLevelSet
+		  ## SnpLevelSet		  
 		  gp <- switch(class(object),
 			       oligoSnpSet=new("ParSnpSet", snpset=object, ...),
 			       SnpCallSet=new("ParSnpCallSet", snpset=object, ...),
@@ -179,9 +185,7 @@ setMethod("plotSnp", "SnpLevelSet",
 			       stop("Object is not one of the available classes"))
 		  if(!missing(hmmPredict)) gp@hmmPredict <- hmmPredict
 		  gp <- getPar(gp)
-
 		  ##Option to recycle graphical parameters by genotype call (when available)
-		  
 		  ##object contains multiple chromosomes and we're
 		  ##passing one chromosome at a time to the plot
 		  ##function.  
@@ -218,7 +222,7 @@ setMethod("show", "ParESet",
 		  if(length(snpList) > 10) object$abbreviateChromosomeNames <- TRUE else object$abbreviateChromosomeNames <- FALSE
 
 		  if(object$ylab == "copy number"){
-			  if(any(apply(copyNumber(snpset), 2, "median") > 3) | any(apply(copyNumber(snpset), 2, "median") < 0)){
+			  if(any(apply(copyNumber(snpset), 2, "median", na.rm=TRUE) > 3) | any(apply(copyNumber(snpset), 2, "median", na.rm=TRUE) < 0)){
 				  warning("The default ylabel 'copy number' may not be consistent with the quantity plotted on the vertical axes.  Typically, the median copy number is approximately 2 for autosomes or 1 for the male chromosome X")
 			  }
 		  }

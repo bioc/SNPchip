@@ -5,7 +5,11 @@ setMethod("getPar", "ParESet", ##c("ParESet", "SnpLevelSet"),
 			  hmmPredict <- hmmPredict(object)
 			  if(is.null(object$col.predict)){
 				  require(RColorBrewer, quietly=TRUE) || stop("RColorBrewer package not available")
-				  col.predict <- brewer.pal(length(states(hmmPredict)), "BrBG")
+				  if(length(states(hmmPredict)) >= 3){
+					  col.predict <- brewer.pal(length(states(hmmPredict)), "BrBG")
+				  } else{
+					  col.predict <- rep("black", 2)
+				  }
 				  col.predict[states(hmmPredict) == "N"] <- "white"
 				  print("col.predict not specified in list of graphical parameters. Using the following colors:")
 				  print(col.predict)
