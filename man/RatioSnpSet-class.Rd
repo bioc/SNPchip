@@ -19,10 +19,10 @@
   }
 }
 \section{Extends}{
-Class \code{"\linkS4class{SnpLevelSet}"}, directly.
-Class \code{"\linkS4class{eSet}"}, by class "SnpLevelSet", distance 2.
-Class \code{"\linkS4class{VersionedBiobase}"}, by class "SnpLevelSet", distance 3.
-Class \code{"\linkS4class{Versioned}"}, by class "SnpLevelSet", distance 4.
+  Class \code{\link[oligoClasses:SnpLevelSet-class]{SnpLevelSet}}, directly.
+  Class \code{\link[Biobase:class.eSet]{eSet}},  by class "SnpLevelSet", distance 2.
+  Class \code{\link[Biobase:class.VersionedBiobase]{VersionedBiobase}}, by class "SnpLevelSet", distance 3.
+  Class \code{\link[Biobase:class.Versioned]{Versioned}}, by class "SnpLevelSet", distance 4.
 }
 \section{Methods}{
   \describe{
