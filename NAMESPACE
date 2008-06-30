@@ -35,9 +35,10 @@ export(centromere,
 
 #Uncomment when debugging
 ##export(.plotChromosome,
-##      .drawXaxis,
+##       .drawXaxis,
 ##       .calculateYlim,
-##       .recycle)
+##       .recycle,
+##       .plot)
 ##exportMethods(initialize, .getX, .getY, getPar, allPlots)
 ##exportClasses(NULLorHmmPredict)
 

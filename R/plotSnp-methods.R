@@ -54,7 +54,7 @@ setMethod(".plotChromosome", "SnpLevelSet",
 					       op=op,
 					       j=j,
 					       chromosomeName=unique(chromosome(object)))
-		  }		  
+		  }
 		  for(j in 1:ncol(object)){
 			  op$main <- op$main[j]
 			  ##some parameters in op may get updated in the call to .plot
@@ -86,7 +86,7 @@ setMethod(".plotChromosome", "SnpLevelSet",
 
 
 .drawXaxis <- function(object, op, j){
-	chromosomeName <- unique(chromosome(object))
+	chromosomeName <- as.character(unique(chromosome(object)))
 	if(op$xaxt == "n") return()
 	if(op$alternate.xaxis.side){
 		side <- op$xaxis.side[[unique(chromosome(object))]]
@@ -185,14 +185,6 @@ setMethod("plotSnp", "SnpLevelSet",
 			       stop("Object is not one of the available classes"))
 		  if(!missing(hmmPredict)) gp@hmmPredict <- hmmPredict
 		  gp <- getPar(gp)
-		  ##Option to recycle graphical parameters by genotype call (when available)
-		  ##object contains multiple chromosomes and we're
-		  ##passing one chromosome at a time to the plot
-		  ##function.  
-##		  gp$col <- .recycle(gp$col, gp@snpset, missing="grey40")
-##		  gp$cex <- .recycle(gp$cex, gp@snpset, missing=1)
-##		  gp$pch <- .recycle(gp$pch, gp@snpset, missing=".")
-##		  gp$bg <- .recycle(gp$bg, gp@snpset, missing="grey40")
 		  return(gp)
 	  })
 
@@ -287,7 +279,7 @@ setMethod("show", "ParSnpSet",
 	##could use a switch in the following statement to generate a
 	##class-specific par object
 	if(missing(op)) op <- new("ParESet")
-	chromosomeName <- unique(chromosome(object))
+	chromosomeName <- as.character(unique(chromosome(object)))
 
 	## this changes the arguments in graphical parameters.  Should move
 	## this to plotSnp().  op$ylim should be a named list
@@ -319,10 +311,9 @@ setMethod("show", "ParSnpSet",
 	if("calls" %in% ls(assayData(object))){
 		ix <- .orderByGenotype(object)
 		object <- object[ix, ]
-	}
-	
+	} else { ix <- 1:nrow(object)}
 	x <- .getX(object)##position
-	g <- .getY(object, op)##calls or copy number
+	y <- .getY(object, op)##calls or copy number
 	if(!op$outer.ylab) ylab <- op$ylab else ylab <- ""
 	## this changes the arguments in graphical parameters.  Should move
 	## this to plotSnp().  Might want to leave this here in case cex is
