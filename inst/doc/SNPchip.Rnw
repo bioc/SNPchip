@@ -7,7 +7,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \documentclass[]{article}
 
-\usepackage{amsmath,pstricks,fullpage}
+\usepackage{amsmath,fullpage}
 \usepackage[authoryear,round]{natbib}
 \usepackage{hyperref}
 \usepackage{setspace}
