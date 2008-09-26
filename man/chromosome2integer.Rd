@@ -1,16 +1,18 @@
-\name{chromosome2numeric}
-\alias{chromosome2numeric}
-\title{Converts chromosome to numeric}
+\name{chromosome2integer}
+\alias{chromosome2integer}
+\alias{integer2chromosome}
+\title{Converts chromosome to integer or vice versa}
 \description{
   Provides a standard way of converting chromosome annotation stored in
   \code{SnpLevelSet} objects to the numeric class.
 }
 \usage{
-chromosome2numeric(chromosome)
+chromosome2integer(chrom)
+integer2chromosome(chrom)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{chromosome}{ an object inherited from \code{SnpLevelSet}}
+  \item{chrom}{chromosome}
 }
 \details{
   This is useful when sorting SNPs in an object by chromosome and
@@ -26,7 +28,8 @@ chromosome2numeric(chromosome)
   }
 
 \value{
-  \code{numeric}
+  \code{integer}
+  \code{character}
 }
 \author{R. Scharpf}
 \keyword{manip}

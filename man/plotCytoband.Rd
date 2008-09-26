@@ -7,8 +7,8 @@
 
 \usage{
 plotCytoband(chromosome, cytoband, cytoband.ycoords, xlim, ylim=c(0, 2),
-xaxs="r", new=TRUE,
-label.cytoband=TRUE, label.y=NULL, srt, cex.axis=1, outer=FALSE, taper=0.15, ...)
+new=TRUE, label.cytoband=TRUE, label.y=NULL, srt, cex.axis=1,
+outer=FALSE, taper=0.15, verbose=FALSE, build="hg18", ...)
 }
 \arguments{
   \item{chromosome}{character string: which chromosome to draw the
@@ -17,8 +17,7 @@ label.cytoband=TRUE, label.y=NULL, srt, cex.axis=1, outer=FALSE, taper=0.15, ...
   \item{cytoband.ycoords}{numeric: y coordinates }
   \item{xlim}{x-axis limits}
   \item{ylim}{y-axis limits}
-  \item{xaxs}{see par}
-  \item{new}{logical: if TRUE, plots the cytoband on a new device}
+  \item{new}{logical: new plotting device}
   \item{label.cytoband}{logical: if TRUE, labels the cytobands}
   \item{label.y}{numeric: height (y-coordinate) for cytoband label}
   \item{srt}{string rotation for cytoband labels.  See \code{par}}
@@ -26,6 +25,9 @@ label.cytoband=TRUE, label.y=NULL, srt, cex.axis=1, outer=FALSE, taper=0.15, ...
   \item{outer}{logical: whether to draw the labels in the outer
     margins. See par}
   \item{taper}{tapering for the ends of the cytoband}
+  \item{verbose}{Logical.  If TRUE, displays human genome build used to
+    annotated the cytoband coordinates.}
+  \item{build}{Character string.  Currently only "hg18" is allowed.}
   \item{\dots}{additional arguments to plot}
 }
 

@@ -3,7 +3,7 @@ Version: 1.5.2
 Title: Classes and Methods for high throughput SNP chip data 
 Author: Robert Scharpf <rscharpf@jhsph.edu> and Ingo Ruczinski
 Maintainer: Robert Scharpf <rscharpf@jhsph.edu>
-Depends: R (>= 2.6.0), Biobase (>= 1.15.19), methods, oligoClasses (>= 1.1.13)
+Depends: R (>= 2.6.0), Biobase (>= 1.15.19), methods, oligoClasses (>= 1.1.13), graphics
 Suggests: RSQLite,
 	  geneplotter, 
 	  stats, 

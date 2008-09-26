@@ -3,8 +3,11 @@ setMethod(".plotChromosome", "SnpLevelSet",
 		  if(length(unique(chromosome(object))) > 1) stop(".plotChromosome should only receive one chromosome")
 		  .getCytoband <- function(object, op){
 			  if(op$add.cytoband){
-				  data(cytoband)              
-				  cytoband <- cytoband[cytoband[, "chrom"] == unique(chromosome(object)), ]
+				  ##data(cytoband)
+				  pathto <- system.file("hg18", package="SNPchip")
+				  cytoband <- read.table(file.path(pathto, "cytoBand.txt"), as.is=TRUE)
+				  colnames(cytoband) <- c("chrom", "start", "end", "name", "gieStain")				  
+				  cytoband <- cytoband[cytoband[, "chrom"] == paste("chr", unique(chromosome(object)), sep=""), ]
 			  }  else NULL
 		  }		  
 		  cytoband <- .getCytoband(object, op)
@@ -38,10 +41,11 @@ setMethod(".plotChromosome", "SnpLevelSet",
 		  }
 
 		  .drawCentromere <- function(object, op){
-			  data(chromosomeAnnotation, package="SNPchip", envir=environment())
-			  centromere <- chromosomeAnnotation[unique(chromosome(object)), ]
-			  xleft <- centromere["centromereStart"]
-			  xright <- centromere["centromereEnd"]
+			  centromere.coords <- centromere(unique(chromosome(object)))
+			  ##data(chromosomeAnnotation, package="SNPchip", envir=environment())
+			  ##centromere <- chromosomeAnnotation[unique(chromosome(object)), ]
+			  xleft <- centromere.coords[1]
+			  xright <- centromere.coords[2]
 			  rect(xleft=xleft, ybottom=op$ylim[1],
 			       xright=xright, ytop=op$ylim[2],
 			       col=op$col.centromere,
@@ -188,6 +192,29 @@ setMethod("plotSnp", "SnpLevelSet",
 		  return(gp)
 	  })
 
+setMethod("plot", "SnpLevelSet",
+	  function(x, y, ...){
+		  if(!missing(y)){
+			  require(VanillaICE) || stop("VanillaICE package not available")
+			  i <- match(featureNames(x), featureNames(y))
+			  j <- match(sampleNames(x), sampleNames(y))
+			  y <- y[i, j]
+		  }
+		  ## create an appropriate class according to the class of
+		  ## SnpLevelSet		  
+		  gp <- switch(class(x),
+			       oligoSnpSet=new("ParSnpSet", snpset=x, ...),
+			       SnpCallSet=new("ParSnpCallSet", snpset=x, ...),
+			       SnpCopyNumberSet=new("ParSnpCopyNumberSet", snpset=x, ...),
+			       RatioSnpSet=new("ParSnpSet", snpset=x, ...),
+			       stop("Object is not one of the available classes"))
+		  if(!missing(y)) gp@hmmPredict <- y
+		  gp <- getPar(gp)
+		  return(gp)
+	  })
+
+
+
 ##could we extend the trellis class? (probably too complicated)
 ##setMethod("plotSnp", c("ParESet", "SnpLevelSet"),
 setMethod("show", "ParESet",	  
@@ -210,15 +237,12 @@ setMethod("show", "ParESet",
 		  names(snpList)[names(snpList) == "24"] <- "XY"            
 		  names(snpList)[names(snpList) == "25"] <- "Y"
 		  names(snpList)[names(snpList) == "26"] <- "M"
-
 		  if(length(snpList) > 10) object$abbreviateChromosomeNames <- TRUE else object$abbreviateChromosomeNames <- FALSE
-
 		  if(object$ylab == "copy number"){
 			  if(any(apply(copyNumber(snpset), 2, "median", na.rm=TRUE) > 3) | any(apply(copyNumber(snpset), 2, "median", na.rm=TRUE) < 0)){
 				  warning("The default ylabel 'copy number' may not be consistent with the quantity plotted on the vertical axes.  Typically, the median copy number is approximately 2 for autosomes or 1 for the male chromosome X")
 			  }
 		  }
-
 		  par(allPlots(object))
 		  for(i in 1:length(snpList)){
 			  if(i == 1) par(yaxt="s") else par(yaxt="n")
@@ -351,12 +375,166 @@ setMethod("show", "ParSnpSet",
 	return(op)
 }
 
+##plotCytoband <- function(chromosome,
+##                         cytoband,
+##			 cytoband.ycoords,
+##                         xlim,
+##			 ylim=c(0, 2),			 
+##                         xaxs="r",
+##                         new=TRUE,
+##                         label.cytoband=TRUE,  ##whether to label cytobands
+##			 label.y=NULL,         ##if specified, use text() rather than axis()
+##			 srt,
+##                         cex.axis=1,
+##                         outer=FALSE,
+##			 taper=0.15,
+##                         ...){
+##	def.par <- par(no.readonly=TRUE)
+##	on.exit(def.par)
+##	if(missing(cytoband)) data(cytoband, package="SNPchip", envir=environment())
+##	if(missing(chromosome)){
+##		if(length(unique(cytoband[, "chrom"])) > 1) stop("Must specify chromosome")
+##	}
+##	if(length(unique(cytoband$chrom)) > 1){
+##		cytoband <- cytoband[cytoband[, "chrom"] == chromosome, ]
+##	}
+##	if(missing(cytoband.ycoords)){
+##		cytoband.ycoords <- ylim
+##	}
+##	rownames(cytoband) <- as.character(cytoband[, "name"])
+##	if(missing(xlim)) xlim <- c(0, chromosomeSize(unique(cytoband$chrom)))
+##	cytoband_p <- cytoband[grep("^p", rownames(cytoband), value=TRUE), ]
+##	cytoband_q <- cytoband[grep("^q", rownames(cytoband), value=TRUE), ]
+##  
+##	p.bands <- nrow(cytoband_p)
+##	cut.left  <- c()
+##	cut.right <- c()
+##	##  1st  band of arm or 1st  band after  "stalk"
+##	##  last band of arm or last band before "stalk"
+##	for (i in 1:nrow(cytoband)) {
+##		if (i == 1)                             { cut.left[i] <- TRUE; cut.right[i] <- FALSE} else
+##		if (i == p.bands)                       { cut.left[i] <- FALSE; cut.right[i] <- TRUE} else
+##		if (i == (p.bands+1))                   { cut.left[i] <- TRUE; cut.right[i] <- FALSE} else
+##		if (i == nrow(cytoband)) { cut.left[i] <- FALSE; cut.right[i] <- TRUE} else{
+##			cut.left[i] <- FALSE; cut.right[i] <- FALSE
+##		}
+##	}
+##	for (i in 1:nrow(cytoband)) {
+##		if (as.character(cytoband[i, "gieStain"]) == "stalk") {
+##			cut.right[i-1] <- TRUE
+##			cut.left[i] <- NA
+##			cut.right[i] <- NA
+##			cut.left[i+1] <- TRUE
+##		}
+##	}
+##	##When plotting subregions of a chromosome, this prevents the
+##	##cytobands from extending beyond the subsetted object
+##
+##	## exclude cytobands that end before the minimum plotting
+##	##limits
+##	include <- cytoband[, "chromEnd"] > xlim[1] & cytoband[, "chromStart"] < xlim[2]
+##
+##	cytoband <- cytoband[include, ]
+##	N <- nrow(cytoband)
+##	cytoband[N, "chromEnd"] <- min(xlim[2], cytoband[N, "chromEnd"])
+##	cytoband[1, "chromStart"] <- max(xlim[1], cytoband[1, "chromStart"])
+##	cut.left <- cut.left[include]
+##	cut.right <- cut.right[include]
+##	if(new){
+##		xx <- c(0, cytoband[nrow(cytoband), "chromEnd"])
+##		yy <- c(0, 2)
+####		yy <- ylim
+##		plot(xx,
+##		     yy,
+##		     xlim=xlim,
+##		     type="n",
+##		     xlab="",
+##		     ylab="",
+##		     axes=FALSE,
+##		     xaxs=xaxs,
+##		     ...)
+##	}
+##	top <- cytoband.ycoords[2]
+##	bot <- cytoband.ycoords[1]
+##	h <- top-bot
+##	p <- taper
+##	for (i in 1:nrow(cytoband)) {
+##		start <- cytoband[i, "chromStart"]
+##		last   <- cytoband[i, "chromEnd"]
+##		delta = (last-start)/4
+##		getStain <- function(stain){
+##			switch(stain,
+##			       gneg="grey100",
+##			       gpos25="grey90",
+##			       gpos50="grey70",
+##			       gpos75="grey40",
+##			       gpos100="grey0",
+##			       gvar="grey100",
+##			       stalk="brown3",
+##			       acen="brown4",
+##			       "white")
+##		}
+##		color <- getStain(as.character(cytoband[i, "gieStain"]))
+##		if (is.na(cut.left[i]) & is.na(cut.right[i])) {
+##			## this is a "stalk", do not draw box. Draw two vertical lines instead
+##			delta <- (last-start)/3
+##			lines(c(start+delta, start+delta), ylim, col=color)
+##			lines(c(last-delta, last-delta), ylim, col=color)
+##		} else if (cut.left[i] & cut.right[i]) {      # cut both lasts
+####			polygon(c(start, start+delta, last-delta, last, last, last-delta, start+delta, start),
+####				c(0.3, 0, 0, 0.3, 1.7, 2, 2, 1.7), col=color)
+##			##Taper both ends
+##			yy <- c(bot + p*h, bot, bot, bot + p*h, top - p*h, top, top, top - p*h)
+##			polygon(c(start, start+delta, last-delta, last, last, last-delta, start+delta, start),
+##				yy, col=color)			
+##		} else if (cut.left[i]) {              # cut left last only
+##			##Taper left end only
+##			yy <- c(bot + p*h, bot, bot, top, top, top - p*h)
+##			polygon(c(start, start+delta, last, last, start+delta, start),
+##				yy, col=color)
+##		} else if (cut.right[i]) {             # cut right last only
+##			##Taper right end only
+##			yy <- c(bot, bot, bot + p*h, top - p*h, top, top)
+##			polygon(c(start, last-delta, last, last, last-delta, start),
+##				yy,col=color)
+##		} else {
+##			##Rectangle
+##			polygon(c(start, last, last, start),
+##				c(bot, bot, top, top), col=color)
+##		}
+##	}
+##	my.x <- (cytoband$chromStart+cytoband$chromEnd)/2
+##	if(label.cytoband){
+##		if(is.null(label.y)){
+##			##if plotting on a new device
+##			axis(1,
+##			     at=my.x,
+##			     labels=rownames(cytoband),
+##			     outer=outer,
+##			     cex.axis=cex.axis,
+##			     line=1,
+##			     las=3)
+##		} else{
+##			##put cytoband labels at height label.y
+##			if(!is.numeric(label.y)){
+##				warning("label.y must be numeric -- using default y coordinates for cytoband labels")
+##				label.y <- bot - p*h
+##			}
+##			if(missing(srt)) srt <- 90
+##			text(x=my.x,
+##			     y=rep(label.y, length(my.x)),
+##			     labels=rownames(cytoband),
+##			     srt=srt)
+##		}
+##	}
+##	return()
+##}
+
 plotCytoband <- function(chromosome,
                          cytoband,
 			 cytoband.ycoords,
                          xlim,
 			 ylim=c(0, 2),			 
-                         xaxs="r",
                          new=TRUE,
                          label.cytoband=TRUE,  ##whether to label cytobands
 			 label.y=NULL,         ##if specified, use text() rather than axis()
@@ -364,15 +542,23 @@ plotCytoband <- function(chromosome,
                          cex.axis=1,
                          outer=FALSE,
 			 taper=0.15,
+			 verbose=FALSE,
+			 build="hg18",
                          ...){
-	def.par <- par(no.readonly=TRUE)
-	on.exit(def.par)
-	if(missing(cytoband)) data(cytoband, package="SNPchip", envir=environment())
+	##def.par <- par(no.readonly=TRUE)
+	##on.exit(def.par)
+	if(missing(cytoband)){
+		if(verbose) message(paste("Cytoband annotation obtained from build", build))
+		pathto <- system.file("hg18", package="SNPchip")
+		cytoband <- read.table(file.path(pathto, "cytoBand.txt"), as.is=TRUE)
+		colnames(cytoband) <- c("chrom", "start", "end", "name", "gieStain")
+		##data(cytoband, package="SNPchip", envir=environment())
+	}
 	if(missing(chromosome)){
 		if(length(unique(cytoband[, "chrom"])) > 1) stop("Must specify chromosome")
 	}
 	if(length(unique(cytoband$chrom)) > 1){
-		cytoband <- cytoband[cytoband[, "chrom"] == chromosome, ]
+		cytoband <- cytoband[cytoband[, "chrom"] == paste("chr", chromosome, sep=""), ]
 	}
 	if(missing(cytoband.ycoords)){
 		cytoband.ycoords <- ylim
@@ -408,18 +594,17 @@ plotCytoband <- function(chromosome,
 
 	## exclude cytobands that end before the minimum plotting
 	##limits
-	include <- cytoband[, "chromEnd"] > xlim[1] & cytoband[, "chromStart"] < xlim[2]
-
+	include <- cytoband[, "end"] > xlim[1] & cytoband[, "start"] < xlim[2]
 	cytoband <- cytoband[include, ]
 	N <- nrow(cytoband)
-	cytoband[N, "chromEnd"] <- min(xlim[2], cytoband[N, "chromEnd"])
-	cytoband[1, "chromStart"] <- max(xlim[1], cytoband[1, "chromStart"])
+	cytoband[N, "end"] <- min(xlim[2], cytoband[N, "end"])
+	cytoband[1, "start"] <- max(xlim[1], cytoband[1, "start"])
 	cut.left <- cut.left[include]
 	cut.right <- cut.right[include]
 	if(new){
-		xx <- c(0, cytoband[nrow(cytoband), "chromEnd"])
-		##yy <- c(0, 2)
-		yy <- ylim
+		xx <- c(0, cytoband[nrow(cytoband), "end"])
+		yy <- cytoband.ycoords
+##		yy <- ylim
 		plot(xx,
 		     yy,
 		     xlim=xlim,
@@ -427,7 +612,8 @@ plotCytoband <- function(chromosome,
 		     xlab="",
 		     ylab="",
 		     axes=FALSE,
-		     xaxs=xaxs,
+		     yaxs="i",
+		     ylim=ylim,
 		     ...)
 	}
 	top <- cytoband.ycoords[2]
@@ -435,8 +621,8 @@ plotCytoband <- function(chromosome,
 	h <- top-bot
 	p <- taper
 	for (i in 1:nrow(cytoband)) {
-		start <- cytoband[i, "chromStart"]
-		last   <- cytoband[i, "chromEnd"]
+		start <- cytoband[i, "start"]
+		last   <- cytoband[i, "end"]
 		delta = (last-start)/4
 		getStain <- function(stain){
 			switch(stain,
@@ -454,8 +640,10 @@ plotCytoband <- function(chromosome,
 		if (is.na(cut.left[i]) & is.na(cut.right[i])) {
 			## this is a "stalk", do not draw box. Draw two vertical lines instead
 			delta <- (last-start)/3
-			lines(c(start+delta, start+delta), ylim, col=color)
-			lines(c(last-delta, last-delta), ylim, col=color)
+			segments(start+delta, cytoband.ycoords[1], start+delta, cytoband.ycoords[2])
+			segments(last-delta, cytoband.ycoords[1], last-delta, cytoband.ycoords[2])
+##			lines(c(start+delta, start+delta), ylim, col=color)
+##			lines(c(last-delta, last-delta), ylim, col=color)
 		} else if (cut.left[i] & cut.right[i]) {      # cut both lasts
 ##			polygon(c(start, start+delta, last-delta, last, last, last-delta, start+delta, start),
 ##				c(0.3, 0, 0, 0.3, 1.7, 2, 2, 1.7), col=color)
@@ -479,7 +667,7 @@ plotCytoband <- function(chromosome,
 				c(bot, bot, top, top), col=color)
 		}
 	}
-	my.x <- (cytoband$chromStart+cytoband$chromEnd)/2
+	my.x <- (cytoband[, "start"] + cytoband[, "end"])/2
 	if(label.cytoband){
 		if(is.null(label.y)){
 			##if plotting on a new device
@@ -520,8 +708,8 @@ plotPredictions <- function(object, op){
 	  .drawRect <- function(x, position, op){
 		  col <- op$col.predict
 		  if(length(x) < 1) return()
-		  start <- max(as.numeric(x["start"]) * 1e6, op$xlim[1])
-		  last <- min(as.numeric(x["last"]) * 1e6, op$xlim[2])
+		  start <- max(as.numeric(x["start"]), op$xlim[1])
+		  last <- min(as.numeric(x["end"]), op$xlim[2])
 		  predict <- predictions[position >= start & position <= last]
 		  predict <- predict[!is.na(predict)]
 		  if(length(unique(predict)) > 1) {
@@ -540,7 +728,7 @@ plotPredictions <- function(object, op){
 	  }
 	  if(!is.null(tmp)){
 		  ##best to draw the biggest regions first and the smallest regions last.
-		  tmp <- tmp[order(tmp[, "size"], decreasing=TRUE), ]
+		  tmp <- tmp[order(tmp[, "end"]-tmp[, "start"], decreasing=TRUE), ]
 		  apply(tmp, 1, .drawRect, position=position, op=op)
 	  }
 	  if(!is.null(op$legend.predict)){

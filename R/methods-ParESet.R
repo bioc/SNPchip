@@ -1,6 +1,6 @@
 ##updates graphical parameters with information from the data class
 setMethod("getPar", "ParESet", ##c("ParESet", "SnpLevelSet"),
-          function(object, ...){
+          function(object, build="hg18", ...){
 		  if(!is.null(hmmPredict(object))){
 			  hmmPredict <- hmmPredict(object)
 			  if(is.null(object$col.predict)){
@@ -35,16 +35,19 @@ setMethod("getPar", "ParESet", ##c("ParESet", "SnpLevelSet"),
 		  snpset <- snpset(object)
 		  snpset <- snpset[!is.na(chromosome(snpset)), ]
 		  ##layout
-		  chromosomeNames <- as.character(sort(chromosome2numeric(chromosome(snpset))))
-		  chromosomeNames[chromosomeNames == "23"] <- "X"
-		  chromosomeNames[chromosomeNames == "24"] <- "XY"
-		  chromosomeNames[chromosomeNames == "25"] <- "Y"
-		  chromosomeNames[chromosomeNames == "26"] <- "M"
-		  chromosomeNames <- unique(chromosomeNames)
-
+		  chromosomeNames <- integer2chromosome(unique(chromosome(snpset)))
+		  chromosomeNames <- chromosomeNames[order(chromosomeNames)]
+##		  chromosomeNames <- as.character(sort(chromosome2integer(chromosome(snpset))))
+##		  chromosomeNames[chromosomeNames == "23"] <- "X"
+##		  chromosomeNames[chromosomeNames == "24"] <- "XY"
+##		  chromosomeNames[chromosomeNames == "25"] <- "Y"
+##		  chromosomeNames[chromosomeNames == "26"] <- "M"
+##		  chromosomeNames <- unique(chromosomeNames)
 		  N <- length(chromosomeNames)
-		  S <- ncol(snpset)  
-		  data(chromosomeAnnotation, package="SNPchip", envir=environment())
+		  S <- ncol(snpset)
+		  pathto <- system.file(build, package="SNPchip")
+		  chromosomeAnnotation <- read.table(file.path(pathto, "chromInfo.txt"), as.is=TRUE, row.names=1)
+		  ##data(chromosomeAnnotation, package="SNPchip", envir=environment())
 		  object$heights <- rep(1, ncol(snpset))
 ##		  if(!missing(add.cytoband)) object$add.cytoband <- add.cytoband
 ##		  if(object$add.cytoband){
@@ -73,7 +76,7 @@ setMethod("getPar", "ParESet", ##c("ParESet", "SnpLevelSet"),
 			  object$xaxis.side <- side
 		  }
 		  m <- matrix(1:(S*N), nc=N, byrow=FALSE)
-		  w <- chromosomeAnnotation[chromosomeNames, "chromosomeSize"]
+		  w <- chromosomeAnnotation[paste("chr", chromosomeNames, sep=""), 1]
 		  object$widths <- w/min(w)
 		  object$mat <- m
 

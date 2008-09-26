@@ -105,11 +105,12 @@ the data for this subset:
 
 <<subsetting>>=
 snpset <- sample.snpset[chromosome(sample.snpset) %in% as.character(1:3), 1:4]
-graph.par <- plotSnp(snpset)
+graph.par <- plot(snpset)
 class(graph.par)
 graph.par$use.chromosome.size <- TRUE
 graph.par$pch <- "."
 graph.par$cex <- 3
+graph.par$oma <- c(3, 3, 3, 0.5)
 @ 
 
 Plot the first few chromosomes for samples 1-4 (note the print()
@@ -139,12 +140,12 @@ cytobands.
 
 \subsection{Genome-wide plots for multiple samples}
 A genome-wide view of copy number and genotype calls versus physical
-position can be made using \Rfunction{plotSnp}.  Here, we plot
+position can be made using \Rfunction{plot}.  Here, we plot
 chromosomes 1-22 and X of samples 1 - 3 in the object
 \Robject{sample.snpset}:
 
 <<gw.params>>=
-graph.par <- plotSnp(sample.snpset[, 1:3], add.cytoband=FALSE)
+graph.par <- plot(sample.snpset[, 1:3], add.cytoband=FALSE)
 graph.par$one.ylim <- TRUE
 graph.par$mar <- c(0.1, 0.1, 2, 0.1)
 graph.par$oma <- c(3, 4, 2, 1)
@@ -171,7 +172,7 @@ A more focused view of chromosomes 1, 7, 16, 19, and X of sample 2
 could be obtained by
 
 <<graph.par3>>=
-graph.par <- plotSnp(sample.snpset[chromosome(sample.snpset) %in% c(1, 7, 16, 19, "X"), 2])
+graph.par <- plot(sample.snpset[chromosome(sample.snpset) %in% c(1, 7, 16, 19, "X"), 2])
 graph.par$cex <- 0.8
 graph.par$mar <- rep(0.5, 4)
 graph.par$pch <- c(20, 21, 20)
@@ -189,10 +190,11 @@ print(graph.par)
 
 A plot of just the p-arm in sample 2 of chromosome 1.
 <<parm>>=
-data(chromosomeAnnotation)
-parm <- chromosomeAnnotation["1", "centromereStart"]
-snpset <- sample.snpset[chromosome(sample.snpset) == "1" & position(sample.snpset) < parm, 2]
-graph.par <- plotSnp(snpset)
+parm <- centromere("1")[1]
+##data(chromosomeAnnotation)
+##parm <- chromosomeAnnotation["1", "centromereStart"]
+snpset <- sample.snpset[chromosome(sample.snpset) == "1" & (position(sample.snpset) < parm), 2]
+graph.par <- plot(snpset)
 graph.par$use.chromosome.size <- FALSE
 graph.par$pch <- 21
 graph.par$cex <- 1
@@ -213,7 +215,7 @@ Adding a legend for the genotypes
 <<addLegend, fig=TRUE, width=8, height=5>>=
 data(sample.snpset)
 x <- sample.snpset[chromosome(sample.snpset) == "1", 1]
-gp <- plotSnp(x)
+gp <- plot(x)
 gp$legend <- c("AA", "AB", "BB")
 gp$legend.col <- unique(gp$col)
 gp$legend.bg <- unique(gp$bg)
@@ -224,7 +226,7 @@ gp$xlab <- ""
 gp$legend.bty="o"
 gp$ylim[2] <- 9
 print(gp)
-##plotSnp(gp, x)
+##plot(gp, x)
 ##xlim <- c(0,max(position(x)))
 ##xlim <- range(position(x))
 ##plotCytoband("1", xlim=xlim, label.cytoband=TRUE)
@@ -246,7 +248,7 @@ gp$ylim[2] <- 10
 gp$cytoband.ycoords <- c(0.9, 10)
 gp$add.centromere <- FALSE
 gp
-##plotSnp(gp, x)
+##plot(gp, x)
 legend("bottomleft", 
        pch=21, 
        col=gp$col, 
@@ -338,24 +340,20 @@ par(op)
 \section{Annotation}
 
 \subsection{Chromosome-level}
-The chromosome-level annotation used in the plotting methods can be
-accessed by \Robject{data()} calls:
+The chromosome-level annotation for build hg18:
 
 <<chromosomeAnnotation, echo=TRUE>>=
-data(chromosomeAnnotation)
-chromosomeAnnotation[1:5, ]
-data(cytoband)
-cytoband[1:5, ]
+list.files(system.file("hg18", package="SNPchip"))
+##data(chromosomeAnnotation)
+##chromosomeAnnotation[1:5, ]
+##data(cytoband)
+##cytoband[1:5, ]
 @ 
-
-This is a static table and will be deprecated once chromosome-level
-annotation is provided by Bioconductor.  If chromosome-level
-annotation is available in Bioconductor, please send me a note.
 
 \subsection{Feature-level}
 
 Feature-level annotation for Affymetrix platforms is available in the
-pd.mapping packages.  
+pd.mapping packages.
 
 <<annotationSlot, eval=FALSE, echo=FALSE>>=
 annotation(sample.snpset)

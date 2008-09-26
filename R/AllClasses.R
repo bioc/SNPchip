@@ -1,6 +1,5 @@
 setClass("HmmPredict", contains="SnpLevelSet",
 	 representation(states="character",
-##			SnpClass="character",
 			breakpoints="data.frame"))
 setClassUnion("NULLorHmmPredict", c("NULL", "HmmPredict"))
 setClass("ParESet",

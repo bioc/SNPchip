@@ -1,24 +1,41 @@
-centromere <- function(chromosome){
-  if(missing(chromosome) | !(chromosome %in% c(1:22, "X", "Y"))) stop("must specify chromosome 1-22, X or Y as a character string")
-  data(chromosomeAnnotation, package="SNPchip", envir=environment())
-  chromosomeAnnotation[chromosome, c("centromereStart", "centromereEnd")]
+centromere <- function(chromosome, build="hg18", verbose=FALSE){
+	if(verbose)  message(paste("centromere coordinates based on build", build))
+	if(missing(chromosome) | !(chromosome %in% c(1:22, "X"))) stop("must specify chromosome 1-22, or X as character string")
+	pathto <- system.file(build, package="SNPchip")
+	tmp <- read.table(file.path(pathto, "centromeres.txt"), as.is=TRUE)
+##	data(chromosomeAnnotation, package="SNPchip", envir=environment())
+	as.integer(tmp[paste("chr", chromosome, sep=""), ])
 }
 
-chromosome2numeric <- function(chromosome){
-	chrom <- as.character(chromosome)
-	chrom[chrom == "X"] <- 23
-	chrom[chrom == "XY"] <- 24
-	chrom[chrom == "Y"] <- 25
-	chrom[chrom == "M"] <- 26
-	chrom <- as.numeric(chrom)
+chromosome2integer <- function(chrom){
+	chrom[chrom == "X"] <- 23; chrom[chrom == "Y"] <- 24; chrom[chrom == "XY"] <- 25; chrom[chrom=="M"] <- 26
+	as.integer(chrom)
+}
+
+integer2chromosome <- function(chrom){
+	chrom[chrom == 23] <- "X"; chrom[chrom == 24] <- "Y"; chrom[chrom == 25] <- "XY"; chrom[chrom==26] <- "M"
 	chrom
 }
 
-chromosomeSize <- function(chromosome){
-  if(!is.character(chromosome)) stop("argument to chromosomeSize must be one of the following character strings: 1, ..., 22, X, or Y")
-  if(any(!(chromosome %in% c(1:22, "X", "Y", "XY", "M")))) stop("chromosome must be 1-22, X, or Y")  
-  data(chromosomeAnnotation, package="SNPchip", envir=environment())
-  chromosomeAnnotation[chromosome, "chromosomeSize"]
+##chromosome2numeric <- function(chromosome){
+##	chrom <- as.character(chromosome)
+##	chrom[chrom == "X"] <- 23
+##	chrom[chrom == "XY"] <- 24
+##	chrom[chrom == "Y"] <- 25
+##	chrom[chrom == "M"] <- 26
+##	chrom <- as.numeric(chrom)
+##	chrom
+##}
+
+chromosomeSize <- function(chromosome, build="hg18", verbose=FALSE){
+	if(verbose) message(paste("chromosome size using build", build))
+	if(!is.character(chromosome)) stop("argument to chromosomeSize must be one of the following character strings: 1, ..., 22, X, or Y")
+	if(length(grep("chr", chromosome)) == 0) chromosome <- paste("chr", chromosome, sep="")
+	if(any(!(chromosome %in% paste("chr", c(1:22, "X", "Y", "XY", "M"), sep="")))) stop("chromosome must be chr1-22, chrX, chrY, or chrM")
+	pathto <- system.file(build, package="SNPchip")
+	tmp <- read.table(file.path(pathto, "chromInfo.txt"), as.is=TRUE, row.names=1)
+	##data(chromosomeAnnotation, package="SNPchip", envir=environment())
+	tmp[chromosome, 1]
 }
 
 

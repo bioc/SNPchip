@@ -28,18 +28,31 @@ setMethod("initialize", "RatioSnpSet",
                    calls=new("matrix"),
 		   callsConfidence=new("matrix"),
                    ratio=new("matrix"),
-		   ratioConfidence, ...){
+		   ratioConfidence,
+		   BalleleFreq=new("matrix"),
+		   ...){
 		  if(missing(ratioConfidence)){
 			  ratioConfidence <- matrix(NA, nrow=nrow(calls), ncol=ncol(calls))
 			  rownames(ratioConfidence) <- rownames(calls)
 			  colnames(ratioConfidence) <- colnames(calls)
 		  }
+		  if(missing(BalleleFreq)){
+			  BalleleFreq <- matrix(NA, nrow=nrow(calls), ncol=ncol(calls))
+			  rownames(BalleleFreq) <- rownames(calls)
+			  colnames(BalleleFreq) <- colnames(calls)
+		  }
+		  if(missing(callsConfidence)){
+			  callsConfidence <- matrix(NA, nrow=nrow(calls), ncol=ncol(calls))
+			  rownames(callsConfidence) <- rownames(calls)
+			  colnames(callsConfidence) <- colnames(calls)
+		  }		  
 		  .Object <- callNextMethod(.Object, ...)
 		  ad <- assayDataNew("lockedEnvironment",
 				     calls=calls,
 				     callsConfidence=callsConfidence,
 				     ratio=ratio,
-				     ratioConfidence=ratioConfidence)		  
+				     ratioConfidence=ratioConfidence,
+				     BalleleFreq=BalleleFreq)		  
 		  assayData(.Object) <- ad
 		  .Object
           })
