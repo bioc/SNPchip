@@ -4,6 +4,10 @@
 \alias{plotSnp,ParSnpCallSet,SnpCallSet-method}
 \alias{plotSnp,ParSnpSet,oligoSnpSet-method}
 \alias{plotSnp,SnpLevelSet-method}
+\alias{plot,ParSnpCopyNumberSet,SnpCopyNumberSet-method}
+\alias{plot,ParSnpCallSet,SnpCallSet-method}
+\alias{plot,ParSnpSet,oligoSnpSet-method}
+\alias{plot,SnpLevelSet-method}
 \title{Plots copy number and genotype calls against physical position }
 \description{
 
@@ -16,11 +20,12 @@
 }
 \usage{
 plotSnp(object, hmmPredict, ...)
+\S4method{plot}{SnpLevelSet}(x, y, ...)
 }
 
 \arguments{
-  \item{object}{ An object extending \code{ParESet}}
-  \item{hmmPredict}{An object of class \code{HmmPredict}}
+  \item{object, x}{An object extending \code{ParESet}}
+  \item{hmmPredict, y}{An object of class \code{HmmPredict}}
   \item{\dots}{ Additional arguments to the initialization methods of
   the \code{ParESet} classes}
 }
