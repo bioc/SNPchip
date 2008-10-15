@@ -707,22 +707,19 @@ plotPredictions <- function(object, op){
 	  tmp <- breakpoints[breakpoints[, "chr"] == i, , drop=FALSE]
 	  .drawRect <- function(x, position, op){
 		  col <- op$col.predict
-		  if(length(x) < 1) return()
+		  ##if(length(x) < 1) return()
 		  start <- max(as.numeric(x["start"]), op$xlim[1])
 		  last <- min(as.numeric(x["end"]), op$xlim[2])
 		  predict <- predictions[position >= start & position <= last]
 		  predict <- predict[!is.na(predict)]
 		  if(length(unique(predict)) > 1) {
-			  browser()
 			  stop("predictions not unique")
 		  }
 		  col <- col[unique(predict)]
 		  rect(xleft=start,
 		       ybottom=op$hmm.ycoords[1],
-##		       ybottom=op$ylim[1],
 		       xright=last,
 		       ytop=op$hmm.ycoords[2],
-##		       ytop=op$height.predict+op$ylim[1],
 		       col=col,
 		       border=col)
 	  }
