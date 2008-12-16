@@ -43,19 +43,19 @@ setMethod("summary", "oligoSnpSet",
             ##each.
 		  require(genefilter) || stop("package genefilter is not available")
 		  obj <- split(object, chromosome(object))
-		  means <- do.call("rbind", lapply(obj, function(x) colMeans(copyNumber(x))))
+		  means <- do.call(rbind, lapply(obj, function(x) colMeans(copyNumber(x))))
 
 		  colSds <- function(x) rowSds(t(x))            
-		  sds <- do.call("rbind", lapply(obj, function(x) colSds(copyNumber(x))))
+		  sds <- do.call(rbind, lapply(obj, function(x) colSds(copyNumber(x))))
             
 		  ##Proportion of no calls for each chromosome
 		  if(!is.na(MISSING.CODE)){
-			  pNoCall <- do.call("rbind", lapply(obj, function(x, MISSING.CODE) colMeans(calls(x) == MISSING.CODE), MISSING.CODE))
+			  pNoCall <- do.call(rbind, lapply(obj, function(x, MISSING.CODE) colMeans(calls(x) == MISSING.CODE), MISSING.CODE))
 		  } else{
-			  pNoCall <- do.call("rbind", lapply(obj, function(x, MISSING.CODE) colMeans(is.na(calls(x))), MISSING.CODE))
+			  pNoCall <- do.call(rbind, lapply(obj, function(x, MISSING.CODE) colMeans(is.na(calls(x))), MISSING.CODE))
 		  }
-		  pHom <- do.call("rbind", lapply(obj, function(x) colMeans(calls(x) == 1 | calls(x) == 3)))
-		  pHet <- do.call("rbind", lapply(obj, function(x) colMeans(calls(x) == 2)))
+		  pHom <- do.call(rbind, lapply(obj, function(x) colMeans(calls(x) == 1 | calls(x) == 3)))
+		  pHet <- do.call(rbind, lapply(obj, function(x) colMeans(calls(x) == 2)))
 		  x <- list(means, sds, pHom, pHet, pNoCall)
 		  names(x) <- c("avg.CN", "sd.CN", "prop.Hom", "prop.Het", "prop.NoCall")            
 		  x <- lapply(x, round, digits)
@@ -92,10 +92,10 @@ setMethod("smoothSnp", "oligoSnpSet",
             smooth.list <- lapply(object.list, smoothChromosome, span=span)
             smooth.set <- unsplitSnpSet(smooth.list,
                                         featureData(object),
-                                        copyNumber=do.call("rbind", lapply(smooth.list, copyNumber)),
-                                        cnConfidence=do.call("rbind", lapply(smooth.list, cnConfidence)),
-                                        calls=do.call("rbind", lapply(smooth.list, calls)),
-                                        callsConfidence=do.call("rbind", lapply(smooth.list, calls)),
+                                        copyNumber=do.call(rbind, lapply(smooth.list, copyNumber)),
+                                        cnConfidence=do.call(rbind, lapply(smooth.list, cnConfidence)),
+                                        calls=do.call(rbind, lapply(smooth.list, calls)),
+                                        callsConfidence=do.call(rbind, lapply(smooth.list, calls)),
                                         phenoData=phenoData(smooth.list[[1]]),
                                         annotation=annotation(smooth.list[[1]]),
                                         experimentData=experimentData(smooth.list[[1]]))
