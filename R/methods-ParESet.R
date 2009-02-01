@@ -37,36 +37,12 @@ setMethod("getPar", "ParESet", ##c("ParESet", "SnpLevelSet"),
 		  ##layout
 		  chromosomeNames <- integer2chromosome(unique(chromosome(snpset)))
 		  chromosomeNames <- chromosomeNames[order(chromosomeNames)]
-##		  chromosomeNames <- as.character(sort(chromosome2integer(chromosome(snpset))))
-##		  chromosomeNames[chromosomeNames == "23"] <- "X"
-##		  chromosomeNames[chromosomeNames == "24"] <- "XY"
-##		  chromosomeNames[chromosomeNames == "25"] <- "Y"
-##		  chromosomeNames[chromosomeNames == "26"] <- "M"
-##		  chromosomeNames <- unique(chromosomeNames)
 		  N <- length(chromosomeNames)
 		  S <- ncol(snpset)
 		  pathto <- system.file(build, package="SNPchip")
 		  chromosomeAnnotation <- read.table(file.path(pathto, "chromInfo.txt"), as.is=TRUE, row.names=1)
 		  ##data(chromosomeAnnotation, package="SNPchip", envir=environment())
 		  object$heights <- rep(1, ncol(snpset))
-##		  if(!missing(add.cytoband)) object$add.cytoband <- add.cytoband
-##		  if(object$add.cytoband){
-##			  if(!object$outer.cytoband){
-##				  S <- S+1
-##				  if(S > 3){
-##					  ##reversed the heights since we're now plotting the data last (cytoband on top)
-##					  object$heights <- c(object$heights, 1/(ncol(snpset)*1.5))
-##				  }
-##				  if(S == 2 | S == 3){
-##					  object$heights <- c(object$heights, 1/10)
-##				  }
-##			  } 
-#		  }
-##		  if(object$add.cytoband){
-##			  if(object$cytoband.side == 3){
-##				  object$heights <- rev(object$heights)
-##			  }
-##		  }
 		  if(N > 10){
 			  object$alternate.xaxis.side <- TRUE
 			  side <- c(1, 3)[rep(1:2, N/2 + 1)]
