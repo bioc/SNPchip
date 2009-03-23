@@ -22,8 +22,8 @@ integer2chromosome(chrom)
   The function currently provides the following conversions:
 
   "X" -> 23
-  "XY" -> 24
-  "Y" -> 25
+  "Y" -> 24
+  "XY" -> 25  
   "M" -> 26
   }
 

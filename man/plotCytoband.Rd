@@ -1,6 +1,6 @@
 \name{plotCytoband}
 \alias{plotCytoband}
-\title{Plots cytoband for one chromosome}
+\title{Plots idiogram for one chromosome}
 
 \description{ Adds cytobands to views of chromosome copy number and
   genotype plots.  }
@@ -11,7 +11,7 @@ new=TRUE, label.cytoband=TRUE, label.y=NULL, srt, cex.axis=1,
 outer=FALSE, taper=0.15, verbose=FALSE, build="hg18", ...)
 }
 \arguments{
-  \item{chromosome}{character string: which chromosome to draw the
+  \item{chromosome}{character string or integer: which chromosome to draw the
     cytoband}
   \item{cytoband}{data.frame containing cytoband information}
   \item{cytoband.ycoords}{numeric: y coordinates }
