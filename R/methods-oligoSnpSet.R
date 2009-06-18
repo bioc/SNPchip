@@ -22,19 +22,6 @@ setMethod("show", "oligoSnpSet", function(object) {
   show(annotation(object))
 })
 
-setMethod("updateObject", "oligoSnpSet",
-          function(object, ..., verbose=FALSE){
-		  new("oligoSnpSet",
-		      calls=calls(object),
-		      callsConfidence=callsConfidence(object),
-		      copyNumber=copyNumber(object),
-		      cnConfidence=cnConfidence(object),
-		      experimentData=experimentData(object),
-		      phenoData=phenoData(object),
-		      featureData=featureData(object))
-          })
-
-
 
 setMethod("summary", "oligoSnpSet",
           function(object, digits=3, MISSING.CODE=4, ...){
@@ -125,7 +112,3 @@ setAs("oligoSnpSet", "SnpCopyNumberSet",
             phenoData=phenoData(from),
             annotation=annotation(from))
       })
-
-
-
-

@@ -1,32 +1,66 @@
-import(Biobase, oligoClasses, methods, graphics)
+importClassesFrom(Biobase, AnnotatedDataFrame, AssayData, eSet,
+                  MIAME, Versioned, VersionedBiobase, Versions)
+
+importClassesFrom(methods, character, data.frame, list, matrix)
+
+importClassesFrom(oligoClasses, oligoSnpSet, SnpCallSet,
+                  SnpCopyNumberSet, SnpLevelSet)
+
+importMethodsFrom(Biobase, annotation, "annotation<-", assayData,
+                  "assayData<-", experimentData, "experimentData<-",
+                  fData, featureData, "featureData<-", featureNames,
+                  pData, phenoData, "phenoData<-", pubMedIds,
+                  sampleNames, storageMode, updateObject)
+
+importMethodsFrom(methods, coerce, initialize, show)
+
+importMethodsFrom(oligoClasses, calls, "calls<-", callsConfidence,
+                  chromosome, cnConfidence, "cnConfidence<-",
+                  copyNumber, "copyNumber<-", position)
+
+importFrom(Biobase, assayDataElement, assayDataElementNames,
+           assayDataElementReplace, assayDataNew)
+
+importFrom(graphics, abline, axis, layout, legend, mtext, par, plot,
+           polygon, rect, segments, text)
+
+importFrom(grDevices, grey)
+
+importFrom(methods, "@<-", callNextMethod, extends, new, validObject)
+
+importFrom(stats, loess, sd)
+
+importFrom(utils, packageDescription, read.table)
+
+
 exportClasses(ParESet,
               ParSnpCopyNumberSet,
               ParSnpCallSet,
               ParSnpSet,
-	      HmmPredict,
-	      RatioSnpSet)
+              HmmPredict,
+              RatioSnpSet)
 
 exportMethods(alleleA,
               alleleB,
-	      cnConfidence,
-	      "cnConfidence<-",
-	      ratioConfidence,
-	      "ratioConfidence<-",
+              cnConfidence,
+              "cnConfidence<-",
+              ratioConfidence,
+              "ratioConfidence<-",
               coerce,
-	      copyNumber,
-	      "copyNumber<-",
+              copyNumber,
+              "copyNumber<-",
               dbSnpId,
               fragmentLength,
-	      hmmPredict,
-	      plot,
+              hmmPredict,
+              plot,
               selectSomeIndex,  
               show,
               smoothSnp,
               summary,
               updateObject,
-	      ratio,
-	      "ratio<-",
-	      snpset)
+              ratio,
+              "ratio<-",
+              snpset)
 
 export(centromere,
        chromosome2integer,
@@ -58,4 +92,3 @@ export(plotCytoband)
 ##exportClasses(AnnotatedSnpSet,
 ##              AnnotatedSnpCopyNumberSet,
 ##              AnnotatedSnpCallSet)
-              
