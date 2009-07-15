@@ -22,5 +22,5 @@ Collate: AllClasses.R
 	 methods-list.R
 	 functions.R
 	 zzz.R	 
-biocViews: DNACopyNumber, SNPsAndGeneticVariability, Visualization
+biocViews: CopyNumberVariants, SNP, GeneticVariability, Visualization
 URL:http://www.biostat.jhsph.edu/~iruczins/software/snpchip.html
