@@ -26,7 +26,7 @@ showSummary(object, where, bty, legend.panel, cex, col, digits)
 \author{Robert Scharpf}
 \note{
 }
-\seealso{\code{\link[graphics]{legend}}, \code{\link[base]{round}}, \code{\link[graphics]{\par}}}
+\seealso{\code{\link[graphics]{legend}}, \code{\link[base]{round}}, \code{\link[graphics]{par}}}
 \examples{
 }
 \keyword{aplot}
