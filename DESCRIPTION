@@ -1,5 +1,5 @@
 Package: SNPchip
-Version: 1.9.2
+Version: 1.9.3
 Title: Classes and Methods for high throughput SNP chip data 
 Author: Robert Scharpf <rscharpf@jhsph.edu> and Ingo Ruczinski
 Maintainer: Robert Scharpf <rscharpf@jhsph.edu>
@@ -7,7 +7,7 @@ Depends: R (>= 2.6.0), Biobase (>= 2.5.5), methods, oligoClasses (>= 1.7.8), gra
 Imports: Biobase (>= 2.5.5), graphics, grDevices, methods, oligoClasses (>= 1.7.8), stats, utils
 Suggests: RSQLite, VanillaICE, RColorBrewer, genefilter, pd.mapping50k.xba240
 Description: This package defines classes and functions for plotting copy number and genotype in high throughput SNP platforms such as Affymetrix and Illumina.  In particular, SNPchip is a useful add-on to the oligo package for visualizing SNP-level estimates after pre-processing.  
-License: LGPL version 2 or newer
+License: LGPL (>= 2)
 LazyLoad: yes	     
 Collate: AllClasses.R 
 	 AllGenerics.R 
