@@ -4,7 +4,7 @@ THISPKG <- "SNPchip"
 }
 
 .onAttach <- function(libname, pkgname) {
-  message("Welcome to crlmm version ", packageDescription(THISPKG, field="Version"))
+  message("Welcome to SNPchip version ", packageDescription(THISPKG, field="Version"))
 }
 
 .onUnload <- function( libpath ){
