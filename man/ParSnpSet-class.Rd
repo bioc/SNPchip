@@ -26,7 +26,7 @@ Class \code{\linkS4class{ParESet}}, by class "ParSnpCopyNumberSet", distance 2.
 \author{R. Scharpf}
 
 \seealso{
-  \code{\link[oligoClasses]{oligoSnpSet-class}}
+  \code{\link[oligoClasses:oligoSnpSet-methods]{oligoSnpSet-class}}
 }
 \examples{
 showClass("ParSnpSet")

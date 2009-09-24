@@ -25,7 +25,7 @@ Class \code{\linkS4class{ParESet}}, directly.
 \author{R. Scharpf}
 
 \seealso{
-  \code{\link[oligoClasses]{SnpCopyNumberSet-class}}
+  \code{\link[oligoClasses:SnpSetExtensions-class]{SnpCopyNumberSet-class}}
 }
 \examples{
 showClass("ParSnpCopyNumberSet")

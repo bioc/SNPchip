@@ -25,7 +25,7 @@ Objects can be created by calls of the form \code{new("ParSnpCallSet", ...)}.
 \author{R.Scharpf}
 
 \seealso{
-  \code{\link[oligoClasses]{SnpCallSet-class}}
+  \code{\link[oligoClasses:SnpSetExtensions-class]{SnpCallSet-class}}
 }
       
 \examples{
