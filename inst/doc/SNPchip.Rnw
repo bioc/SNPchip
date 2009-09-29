@@ -8,7 +8,7 @@
 \documentclass[]{article}
 
 \usepackage{amsmath,fullpage}
-\usepackage[authoryear,round]{natbib}
+\usepackage{natbib}
 \usepackage{hyperref}
 \usepackage{setspace}
 \parindent 0in  % Left justify

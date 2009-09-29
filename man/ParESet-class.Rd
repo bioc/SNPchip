@@ -22,6 +22,8 @@ Objects can be created by calls of the form \code{new("ParESet", layout, col.axi
 \section{Slots}{
   \describe{
     \item{\code{snpPar}:}{Object of class \code{list}}
+    \item{\code{hmmPredict}:}{Object of class \code{list}}
+    \item{\code{snpset}:}{Object inherited from class \code{SnpLevelSet}}    
     }
 }
 \section{Methods}{
