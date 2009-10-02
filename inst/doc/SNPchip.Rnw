@@ -14,7 +14,7 @@
 \parindent 0in  % Left justify
 \newcommand{\scscst}{\scriptscriptstyle}
 \newcommand{\scst}{\scriptstyle}
-\usepackage[authoryear,round]{natbib}
+\usepackage{natbib}
 
 \newcommand{\Rpackage}[1]{\textit{#1}}
 \newcommand{\Rfunction}[1]{\texttt{#1}}
