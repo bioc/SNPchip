@@ -8,7 +8,7 @@ centromere <- function(chromosome, build="hg18", verbose=FALSE){
 }
 
 chromosome2integer <- function(chrom){
-	chrom[chrom == "X"] <- 23; chrom[chrom == "Y"] <- 24; chrom[chrom == "XY"] <- 25; chrom[chrom=="M"] <- 26
+	chrom[chrom == "X"] <- 23; chrom[chrom == "Y"] <- 24; chrom[chrom == "XY"] <- 25; chrom[chrom=="M" | chrom == "MT"] <- 26
 	as.integer(chrom)
 }
 
