@@ -23,40 +23,6 @@ setMethod("initialize", "ParSnpSet",
             .Object
           })
 
-setMethod("initialize", "RatioSnpSet",
-          function(.Object,
-                   calls=new("matrix"),
-		   callsConfidence=new("matrix"),
-                   ratio=new("matrix"),
-		   ratioConfidence,
-		   BalleleFreq=new("matrix"),
-		   ...){
-		  if(missing(ratioConfidence)){
-			  ratioConfidence <- matrix(NA, nrow=nrow(calls), ncol=ncol(calls))
-			  rownames(ratioConfidence) <- rownames(calls)
-			  colnames(ratioConfidence) <- colnames(calls)
-		  }
-		  if(missing(BalleleFreq)){
-			  BalleleFreq <- matrix(NA, nrow=nrow(calls), ncol=ncol(calls))
-			  rownames(BalleleFreq) <- rownames(calls)
-			  colnames(BalleleFreq) <- colnames(calls)
-		  }
-		  if(missing(callsConfidence)){
-			  callsConfidence <- matrix(NA, nrow=nrow(calls), ncol=ncol(calls))
-			  rownames(callsConfidence) <- rownames(calls)
-			  colnames(callsConfidence) <- colnames(calls)
-		  }		  
-		  .Object <- callNextMethod(.Object, ...)
-		  ad <- assayDataNew("lockedEnvironment",
-				     calls=calls,
-				     callsConfidence=callsConfidence,
-				     ratio=ratio,
-				     ratioConfidence=ratioConfidence,
-				     BalleleFreq=BalleleFreq)		  
-		  assayData(.Object) <- ad
-		  .Object
-          })
-
 
 setMethod("initialize", "ParESet",
           function(.Object,
@@ -65,13 +31,13 @@ setMethod("initialize", "ParESet",
 		  if(missing(snpset)){
 			  stop("snpset missing")
 		  }
-		  if(!extends(class(snpset), "SnpLevelSet")){
-			  stop("snpset must extend SnpLevelSet")
+		  if(!extends(class(snpset), "eSet")){
+			  stop("snpset must extend eSet")
 		  }
 		  .Object@snpset <- snpset
 		  if(!is.null(hmmPredict)){
-			  if(!extends(class(hmmPredict, "SnpLevelSet"))){
-				  stop("hmmPredict must extend SnpLevelSet. See VanillaICE package")
+			  if(!extends(class(hmmPredict, "eSet"))){
+				  stop("hmmPredict must extend eSet. See VanillaICE package")
 			  } 
 		  }
 		  .Object@hmmPredict <- hmmPredict

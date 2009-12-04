@@ -1,5 +1,5 @@
 ##updates graphical parameters with information from the data class
-setMethod("getPar", "ParESet", ##c("ParESet", "SnpLevelSet"),
+setMethod("getPar", "ParESet", 
           function(object, build="hg18", ...){
 		  if(!is.null(hmmPredict(object))){
 			  hmmPredict <- hmmPredict(object)

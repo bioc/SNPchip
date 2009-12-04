@@ -1,4 +1,4 @@
-setMethod(".plotChromosome", "SnpLevelSet", 
+setMethod(".plotChromosome", "eSet", 
 	  function(object, op){
 		  if(length(unique(chromosome(object))) > 1) stop(".plotChromosome should only receive one chromosome")
 		  .getCytoband <- function(object, op){
@@ -171,7 +171,7 @@ setMethod(".plotChromosome", "SnpLevelSet",
 	x
 }
 
-setMethod("plotSnp", "SnpLevelSet",
+setMethod("plotSnp", "eSet",
 	  function(object, hmmPredict, ...){
 		  if(!missing(hmmPredict)){
 			  require(VanillaICE) || stop("VanillaICE package not available")
@@ -180,7 +180,7 @@ setMethod("plotSnp", "SnpLevelSet",
 			  hmmPredict <- hmmPredict[i, j]
 		  }
 		  ## create an appropriate class according to the class of
-		  ## SnpLevelSet		  
+		  ## eSet		  
 		  gp <- switch(class(object),
 			       oligoSnpSet=new("ParSnpSet", snpset=object, ...),
 			       SnpCallSet=new("ParSnpCallSet", snpset=object, ...),
@@ -192,7 +192,7 @@ setMethod("plotSnp", "SnpLevelSet",
 		  return(gp)
 	  })
 
-setMethod("plot", "SnpLevelSet",
+setMethod("plot", "eSet",
 	  function(x, y, ...){
 		  if(!missing(y)){
 			  require(VanillaICE) || stop("VanillaICE package not available")
@@ -201,7 +201,7 @@ setMethod("plot", "SnpLevelSet",
 			  y <- y[i, j]
 		  }
 		  ## create an appropriate class according to the class of
-		  ## SnpLevelSet		  
+		  ## eSet		  
 		  gp <- switch(class(x),
 			       oligoSnpSet=new("ParSnpSet", snpset=x, ...),
 			       SnpCallSet=new("ParSnpCallSet", snpset=x, ...),
@@ -216,7 +216,6 @@ setMethod("plot", "SnpLevelSet",
 
 
 ##could we extend the trellis class? (probably too complicated)
-##setMethod("plotSnp", c("ParESet", "SnpLevelSet"),
 setMethod("show", "ParESet",	  
 	  function(object){
 		  snpset <- object@snpset

@@ -1,24 +1,24 @@
 setMethod("show", "oligoSnpSet", function(object) {
-  cat(class( object ), " (storageMode: ", storageMode(object), ")\n", sep="")
-  adim <- dim(object)
-  if (length(adim)>1)
-    cat("assayData:",
-        if (length(adim)>1)
-        paste(adim[[1]], "features,",
-              adim[[2]], "samples") else NULL,
-        "\n")
-  cat("  element names:",
-      paste(assayDataElementNames(object), collapse=", "), "\n")
-  cat("experimentData: use 'experimentData(object)'\n")
-  pmids <- pubMedIds(object)
-  if (length(pmids) > 0 && all(pmids != ""))
-    cat("  pubMedIds:", paste(pmids, sep=", "), "\n")
-  cat("Annotation:", annotation(object), "\n")
-  cat("phenoData\n")
-  if(length(adim) > 1) show(phenoData(object))
-  cat("featureData\n")      
-  if(length(adim) > 1) show(featureData(object))
-  cat("Annotation ")
+	cat(class( object ), " (storageMode: ", storageMode(object), ")\n", sep="")
+	adim <- dim(object)
+	if (length(adim)>1)
+		cat("assayData:",
+		    if (length(adim)>1)
+		    paste(adim[[1]], "features,",
+			  adim[[2]], "samples") else NULL,
+		    "\n")
+	cat("  element names:",
+	    paste(assayDataElementNames(object), collapse=", "), "\n")
+	cat("experimentData: use 'experimentData(object)'\n")
+	pmids <- pubMedIds(object)
+	if (length(pmids) > 0 && all(pmids != ""))
+		cat("  pubMedIds:", paste(pmids, sep=", "), "\n")
+	cat("Annotation:", annotation(object), "\n")
+	cat("phenoData\n")
+	if(length(adim) > 1) show(phenoData(object))
+	cat("featureData\n")      
+	if(length(adim) > 1) show(featureData(object))
+	cat("Annotation ")
   show(annotation(object))
 })
 
@@ -82,7 +82,7 @@ setMethod("smoothSnp", "oligoSnpSet",
                                         copyNumber=do.call(rbind, lapply(smooth.list, copyNumber)),
                                         cnConfidence=do.call(rbind, lapply(smooth.list, cnConfidence)),
                                         calls=do.call(rbind, lapply(smooth.list, calls)),
-                                        callsConfidence=do.call(rbind, lapply(smooth.list, calls)),
+                                        callProbability=do.call(rbind, lapply(smooth.list, calls)),
                                         phenoData=phenoData(smooth.list[[1]]),
                                         annotation=annotation(smooth.list[[1]]),
                                         experimentData=experimentData(smooth.list[[1]]))
@@ -90,25 +90,15 @@ setMethod("smoothSnp", "oligoSnpSet",
           })
 
 
-##Coerce to SnpCallSet
-setAs("oligoSnpSet", "SnpCallSet",
-      function(from, to){
-        new("SnpCallSet",
-            calls=calls(from),
-            callsConfidence=callsConfidence(from),
-            featureData=featureData(from),
-            experimentData=experimentData(from),
-            phenoData=phenoData(from),
-            annotation=annotation(from))
-      })
+## setAs("oligoSnpSet", "SnpSet",
+##       function(from, to){
+## 	      new("SnpSet",
+## 		  call=calls(from),
+## 		  callProbability=assayData(from)[["callProbability"]],
+## 		  featureData=featureData(from),
+## 		  experimentData=experimentData(from),
+## 		  phenoData=phenoData(from),
+## 		  annotation=annotation(from),
+## 		  protocolData=protocolData(from))
+##       })
 
-setAs("oligoSnpSet", "SnpCopyNumberSet",
-      function(from, to){
-        new("SnpCopyNumberSet",
-            copyNumber=copyNumber(from),
-            cnConfidence=cnConfidence(from),
-            featureData=featureData(from),
-            experimentData=experimentData(from),
-            phenoData=phenoData(from),
-            annotation=annotation(from))
-      })

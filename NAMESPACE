@@ -1,28 +1,35 @@
 importClassesFrom(Biobase, AnnotatedDataFrame, AssayData, eSet,
-                  MIAME, Versioned, VersionedBiobase, Versions)
+			                     MIAME, Versioned, VersionedBiobase, Versions, SnpSet)
 
 importClassesFrom(methods, character, data.frame, list, matrix)
 
-importClassesFrom(oligoClasses, oligoSnpSet, SnpCallSet,
-                  SnpCopyNumberSet, SnpLevelSet)
+importClassesFrom(oligoClasses, oligoSnpSet)
 
-importMethodsFrom(Biobase, annotation, "annotation<-", assayData,
-                  "assayData<-", experimentData, "experimentData<-",
-                  fData, featureData, "featureData<-", featureNames,
-                  pData, phenoData, "phenoData<-", pubMedIds,
-                  sampleNames, storageMode, updateObject)
+importMethodsFrom(Biobase, 
+			   annotation, "annotation<-", assayData,
+			    "assayData<-", 
+			    experimentData, "experimentData<-",
+			    fData, 
+			    featureData, "featureData<-", 
+			    featureNames,
+			    pData, 
+			    phenoData, "phenoData<-", 
+			    pubMedIds,
+			    sampleNames, 
+			    storageMode, 
+			    updateObject)
 
 importMethodsFrom(methods, coerce, initialize, show)
 
-importMethodsFrom(oligoClasses, calls, "calls<-", callsConfidence,
-                  chromosome, cnConfidence, "cnConfidence<-",
-                  copyNumber, "copyNumber<-", position)
+importMethodsFrom(oligoClasses, calls, confs, "calls<-", "confs<-",
+				 chromosome, cnConfidence, "cnConfidence<-",
+                                 copyNumber, "copyNumber<-",  position)
 
 importFrom(Biobase, assayDataElement, assayDataElementNames,
-           assayDataElementReplace, assayDataNew)
+                   assayDataElementReplace, assayDataNew)
 
 importFrom(graphics, abline, axis, layout, legend, mtext, par, plot,
-           polygon, rect, segments, text)
+                   polygon, rect, segments, text)
 
 importFrom(grDevices, grey)
 
@@ -34,33 +41,22 @@ importFrom(utils, packageDescription, read.table)
 
 
 exportClasses(ParESet,
-              ParSnpCopyNumberSet,
-              ParSnpCallSet,
-              ParSnpSet,
-              HmmPredict,
-              RatioSnpSet)
+		       ParSnpCopyNumberSet,
+		       ParSnpCallSet,
+		       ParSnpSet,
+		       HmmPredict)
 
-exportMethods(alleleA,
-              alleleB,
-              cnConfidence,
-              "cnConfidence<-",
-              ratioConfidence,
-              "ratioConfidence<-",
+exportMethods(
               coerce,
-              copyNumber,
-              "copyNumber<-",
-              dbSnpId,
+             dbSnpId,
               fragmentLength,
               hmmPredict,
               plot,
-              selectSomeIndex,  
-              show,
+             show,
               smoothSnp,
               summary,
               updateObject,
-              ratio,
-              "ratio<-",
-              snpset)
+             snpset)
 
 export(centromere,
        chromosome2integer,
@@ -68,15 +64,6 @@ export(centromere,
        integer2chromosome,
        plotPredictions,
        showSummary)
-
-#Uncomment when debugging
-##export(.plotChromosome,
-##       .drawXaxis,
-##       .calculateYlim,
-##       .recycle,
-##       .plot)
-##exportMethods(initialize, .getX, .getY, getPar, allPlots)
-##exportClasses(NULLorHmmPredict)
 
 exportMethods("initialize")
 ##par class methods
@@ -88,7 +75,3 @@ exportMethods("$",
 
 export(plotCytoband)
 
-##DEPRECATED CLASSES
-##exportClasses(AnnotatedSnpSet,
-##              AnnotatedSnpCopyNumberSet,
-##              AnnotatedSnpCallSet)

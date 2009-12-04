@@ -17,7 +17,6 @@ setGeneric("ratio", function(object) standardGeneric("ratio"))
 setGeneric("ratio<-", function(object, value) standardGeneric("ratio<-"))
 setGeneric("ratioConfidence",   function(object) standardGeneric("ratioConfidence"))
 setGeneric("ratioConfidence<-",   function(object, value) standardGeneric("ratioConfidence<-"))
-setGeneric("selectSomeIndex",   function(object, ...) standardGeneric("selectSomeIndex"))##Generic defined, but not exported in Biobase
 setGeneric("smoothSnp", function(object, ...) standardGeneric("smoothSnp"))
 setGeneric("snpset", function(object) standardGeneric("snpset"))
 setGeneric("unsplitSnpSet", function(from, annotatedDataFrame, ...) standardGeneric("unsplitSnpSet"))
