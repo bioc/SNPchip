@@ -1,5 +1,5 @@
 importClassesFrom(Biobase, AnnotatedDataFrame, AssayData, eSet,
-			                     MIAME, Versioned, VersionedBiobase, Versions, SnpSet)
+                  MIAME, Versioned, VersionedBiobase, Versions, SnpSet)
 
 importClassesFrom(methods, character, data.frame, list, matrix)
 
@@ -23,7 +23,9 @@ importMethodsFrom(methods, coerce, initialize, show)
 
 importMethodsFrom(oligoClasses, calls, confs, "calls<-", "confs<-",
 				 chromosome, cnConfidence, "cnConfidence<-",
-                                 copyNumber, "copyNumber<-",  position)
+                                 copyNumber, "copyNumber<-",
+				 position)
+importFrom(oligoClasses, chromosome2integer)
 
 importFrom(Biobase, assayDataElement, assayDataElementNames,
                    assayDataElementReplace, assayDataNew)
@@ -43,8 +45,8 @@ importFrom(utils, packageDescription, read.table)
 exportClasses(ParESet,
 		       ParSnpCopyNumberSet,
 		       ParSnpCallSet,
-		       ParSnpSet,
-		       HmmPredict)
+		       ParSnpSet)
+
 
 exportMethods(
               coerce,
@@ -59,10 +61,9 @@ exportMethods(
              snpset)
 
 export(centromere,
-       chromosome2integer,
-       chromosomeSize,
-       integer2chromosome,
-       plotPredictions,
+      chromosomeSize,
+      integer2chromosome,
+      plotPredictions,
        showSummary)
 
 exportMethods("initialize")

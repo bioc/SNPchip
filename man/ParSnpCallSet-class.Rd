@@ -19,15 +19,10 @@ Objects can be created by calls of the form \code{new("ParSnpCallSet", ...)}.
 \section{Methods}{
   \describe{
     \item{initialize}{\code{signature(.Object = "ParSnpCallSet")} }
-    \item{plotSnp}{\code{signature(object = "ParSnpCallSet", snpset = "SnpCallSet")}}
+    \item{plotSnp}{\code{signature(object = "ParSnpCallSet", snpset = "SnpSet")}}
   }
 }
 \author{R.Scharpf}
-
-\seealso{
-  \code{\link[oligoClasses:SnpSetExtensions-class]{SnpCallSet-class}}
-}
-      
 \examples{
 showClass("ParSnpCallSet")
 }

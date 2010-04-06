@@ -1,5 +1,8 @@
 \name{plotSnp}
 \alias{plotSnp}
+\alias{plot}
+\alias{plot,eSet-method}
+\alias{plotSnp,eSet-method}
 \alias{plotSnp,ParSnpCopyNumberSet,SnpCopyNumberSet-method}
 \alias{plotSnp,ParSnpCallSet,SnpCallSet-method}
 \alias{plotSnp,ParSnpSet,oligoSnpSet-method}
@@ -45,11 +48,16 @@ plotSnp(object, hmmPredict, ...)
 
 \examples{
 data(sample.snpset)
-chr1 <- sample.snpset[chromosome(sample.snpset) == "1", 1]
-graph.par <- plotSnp(chr1)
+graph.par <- plot(sample.snpset[chromosome(sample.snpset) < 5, ])
+
 class(graph.par)
 \dontrun{
-graph.par
+	## to plot the data, the following are equivalent
+	graph.par
+	# or
+	show(graph.par)
+	# or
+	print(graph.par)
 }
 }
 \keyword{hplot}

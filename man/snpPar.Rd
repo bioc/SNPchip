@@ -18,7 +18,9 @@ snpPar(object)
 \seealso{ \code{\link{par}}, \code{\link[graphics]{layout}}}
 \examples{
 data(sample.snpset)
-object <- plotSnp(sample.snpset)
+options(error=recover)
+chr23=sample.snpset[chromosome(sample.snpset) == 23, ]
+object <- plot(sample.snpset[chromosome(sample.snpset) == 23, ])
 str(snpPar(object))
 \dontrun{
 show(object)

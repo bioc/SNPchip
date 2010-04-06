@@ -7,8 +7,8 @@ THISPKG <- "SNPchip"
   message("Welcome to SNPchip version ", packageDescription(THISPKG, field="Version"))
 }
 
-.onUnload <- function( libpath ){
-  library.dynam.unload(THISPKG, libpath)
-}
+##.onUnload <- function( libpath ){
+##  library.dynam.unload(THISPKG, libpath)
+##}
 
 .SNPchipPkgEnv <- new.env(parent=emptyenv())

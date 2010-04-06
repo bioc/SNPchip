@@ -13,6 +13,15 @@
 ##                     annotation="pd.mapping50k.xba240")
 ##save(sample.snpset, file="~/projects/software/SNPchip/data/sample.snpset.RData", compress=TRUE)
 
+sample.snpset <- new("oligoSnpSet", copyNumber=assayData(sample.snpset)[["copyNumber"]],
+	   cnConfidence=assayData(sample.snpset)[["cnConfidence"]],
+	   call=assayData(sample.snpset)[["calls"]],
+	   callProbability=assayData(sample.snpset)[["callsConfidence"]],
+	   annotation=annotation(sample.snpset),
+	   phenoData=phenoData(sample.snpset),
+	   featureData=featureData(sample.snpset),
+	   experimentData=experimentData(sample.snpset))
+
 ##fD <- featureData(sample.snpset)
 tmp <- new("AnnotatedDataFrame",
            data=data.frame(row.names=featureNames(sample.snpset)),

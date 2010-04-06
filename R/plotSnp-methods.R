@@ -133,7 +133,7 @@ setMethod(".plotChromosome", "eSet",
 	if(length(x) == nrow(object)) return(x)
 	##assume using 2 colors for homozygous and hets
 	if(length(x) >= 1){
-		if("calls" %in% ls(assayData(object))){
+		if(inherits(object, "SnpSet")){
 			gt <- as.vector(calls(object))
 			gt[is.na(gt)] <- 4
 			  
@@ -335,8 +335,10 @@ setMethod("show", "ParSnpSet",
 		ix <- .orderByGenotype(object)
 		object <- object[ix, ]
 	} else { ix <- 1:nrow(object)}
-	x <- .getX(object)##position
-	y <- .getY(object, op)##calls or copy number
+	##x <- .getX(object)##position
+	x <- position(object)
+	##y <- .getY(object, op)##calls or copy number
+	y <- copyNumber(object)
 	if(!op$outer.ylab) ylab <- op$ylab else ylab <- ""
 	## this changes the arguments in graphical parameters.  Should move
 	## this to plotSnp().  Might want to leave this here in case cex is
