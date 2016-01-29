@@ -14,7 +14,7 @@ setMethod("coerce", signature(from="BafLrrSetList", to="RangedSummarizedExperime
 	  function(from, to){
 		  ##nms <- varLabels(from@featureDataList[[1]])
 		  chrom <- rep(paste("chr", chromosome(from), sep=""),
-			       elementLengths(from))
+			       elementNROWS(from))
 		  pos <- unlist(position(from))
 		  is.snp <- unlist(lapply(featureDataList(from), isSnp))
 		  ## stack the featureDataList to make featureData
@@ -62,9 +62,9 @@ dataFrameSummarizedExperiment <- function(range, object, ...){
 	b <- unlist(lapply(selist, baf))/1000
 	is.snp <- unlist(lapply(selist, isSnp))
 	gr <- unlist(grl2)
-	interval <- rep(seq_along(gr), elementLengths(selist))
-	chrom <- rep(chromosome(gr), elementLengths(selist))
-	id <- rep(names(gr), elementLengths(selist))
+	interval <- rep(seq_along(gr), elementNROWS(selist))
+	chrom <- rep(chromosome(gr), elementNROWS(selist))
+	id <- rep(names(gr), elementNROWS(selist))
 	## an interval may contain multiple CNVs.
 	interval <- paste(chromosome(gr), " interval ", interval, ", ID: ", id, sep="")
 	df <- data.frame(x=x, lrr=r, baf=b,

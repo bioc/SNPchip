@@ -1,7 +1,4 @@
-## methods
-importMethodsFrom(methods, initialize, show)
-importFrom(methods, callNextMethod, new, validObject)
-
+import(methods)
 importFrom(utils, packageDescription)
 
 ## grid
@@ -16,16 +13,12 @@ import(lattice)
 ## foreach
 import(foreach)
 
-import(GenomeInfoDb)
 import(graphics)
+
+import(S4Vectors)
 import(IRanges)
-
-## IRanges
-##import(IRanges)
-##importMethodsFrom(IRanges, as.matrix, findOverlaps)
-
+import(GenomeInfoDb)
 import(GenomicRanges)
-
 import(SummarizedExperiment)
 
 ## oligoClasses
