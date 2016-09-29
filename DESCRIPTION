@@ -9,8 +9,7 @@ Imports: methods, graphics, lattice, grid, foreach, utils,
         SummarizedExperiment, oligoClasses (>= 1.31.1)
 Suggests: crlmm (>= 1.17.14), RUnit
 Enhances: doSNOW, VanillaICE (>= 1.21.24), RColorBrewer
-Description: This package defines methods for visualizing
-        high-throughput genomic data
+Description: Functions for plotting SNP array data; maintained for historical reasons
 License: LGPL (>= 2)
 LazyLoad: yes
 Collate: AllGenerics.R coerce-methods.R xyplot-methods.R

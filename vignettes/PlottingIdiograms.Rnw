@@ -27,6 +27,8 @@
 \begin{document}
 \maketitle
 
+This package is no longer actively developed and maintained largely for historical reasons.
+
 \section{Simple Usage}
 
 <<packages, results=hide>>=
