@@ -43,49 +43,68 @@ R. Scharpf
   \code{\link{xypanelBaf}}
 }
 \examples{
-library(crlmm)
-library(SummarizedExperiment)
-library(VanillaICE)
-data(cnSetExample, package="crlmm")
-oligoSetList <- BafLrrSetList(cnSetExample)
-fit <- hmm(oligoSetList, p.hom=0)[[1]]
-rd <- fit[sampleNames(fit)=="NA19007", ]
-## We're interested in this range
-range <- GRanges("chr8", IRanges(3.7e6, 5.9e6), sample="NA19007")
-index <- subjectHits(findOverlaps(range, rd))
-xyplotLrrBaf(rd[index, ], oligoSetList[[1]], frame=1e6,
-	     panel=xypanelBaf, cex=0.2,
-	     scales=list(x=list(relation="free"),
-	     y=list(alternating=1,
-	     at=c(-1, 0, log2(3/2), log2(4/2)),
-	     labels=expression(-1, 0, log[2](3/2), log[2](4/2)))),
-	     par.strip.text=list(cex=0.7),
-	     ylim=c(-3,1),
-	     col.hom="grey50",
-	     col.het="grey50",
-	     col.np="grey20",
-	     xlab="physical position (Mb)",
-	     ylab=expression(log[2]("R ratios")),
-	     key=list(text=list(c(expression(log[2]("R ratios")), expression("B allele freqencies")),
-		      col=c("grey", "blue")), columns=2))
+  \dontrun{
+    library(crlmm)
+    library(SummarizedExperiment)
+    library(VanillaICE)
+    data(cnSetExample, package="crlmm")
+    oligoSetList <- BafLrrSetList(cnSetExample[, 1])
+    oligoSet <- oligoSetList[[1]]
+    cn <- copyNumber(oligoSet)/100
+    cn <- log2((2^cn)/2)
+    gt <- calls(oligoSet)[,]
+    ## simulate BAFs
+    bf <- baf(oligoSet)[, ]/1000
+    gr <- GRanges(paste0("chr", chromosome(featureData(oligoSet))),
+                  IRanges(position(oligoSet), width=1))
+    cn <- as.matrix(cn)
+    bf <- as.matrix(bf)
+    dimnames(cn) <- dimnames(bf) <- list(featureNames(oligoSet), sampleNames(oligoSet))
+    se <- SnpArrayExperiment(cn=cn,
+                             baf=bf,
+                             rowRanges=gr,
+                             isSnp=rep(TRUE, length(gr)))
+    fit <- hmm2(se)
 
-## Or, plot each range of the GRanges instance in a separate panel
-xyplotLrrBaf(rd, oligoSetList[[1]], frame=1e6,
-	     panel=xypanelBaf, cex=0.2,
-	     scales=list(x=list(relation="free"),
-	     y=list(alternating=1,
-	     at=c(-1, 0, log2(3/2), log2(4/2)),
-	     labels=expression(-1, 0, log[2](3/2), log[2](4/2)))),
-	     par.strip.text=list(cex=0.7),
-	     ylim=c(-3,1),
-	     col.hom="grey50",
-	     col.het="grey50",
-	     col.np="grey20",
-	     xlab="physical position (Mb)",
-	     ylab=expression(log[2]("R ratios")),
-	     key=list(text=list(c(expression(log[2]("R ratios")), expression("B allele freqencies")),
-		      col=c("grey", "blue")), columns=2))
+    ##rd <- fit[sampleNames(fit)=="NA19007", ]
+    rd <- as(segs(fit), "GRanges")
+    ## We're interested in this range
+    range <- GRanges("chr8", IRanges(3.7e6, 5.9e6), sample="NA19007")
+    index <- subjectHits(findOverlaps(range, rd))
+    xyplotLrrBaf(rd[index, ], oligoSetList[[1]], frame=1e6,
+           panel=xypanelBaf, cex=0.2,
+           scales=list(x=list(relation="free"),
+           y=list(alternating=1,
+           at=c(-1, 0, log2(3/2), log2(4/2)),
+           labels=expression(-1, 0, log[2](3/2), log[2](4/2)))),
+           par.strip.text=list(cex=0.7),
+           ylim=c(-3,1),
+           col.hom="grey50",
+           col.het="grey50",
+           col.np="grey20",
+           xlab="physical position (Mb)",
+           ylab=expression(log[2]("R ratios")),
+           key=list(text=list(c(expression(log[2]("R ratios")), expression("B allele freqencies")),
+              col=c("grey", "blue")), columns=2))
 
+    ## Or, plot each range of the GRanges instance in a separate panel
+    xyplotLrrBaf(rd, oligoSetList[[1]], frame=1e6,
+           panel=xypanelBaf, cex=0.2,
+           scales=list(x=list(relation="free"),
+           y=list(alternating=1,
+           at=c(-1, 0, log2(3/2), log2(4/2)),
+           labels=expression(-1, 0, log[2](3/2), log[2](4/2)))),
+           par.strip.text=list(cex=0.7),
+           ylim=c(-3,1),
+           col.hom="grey50",
+           col.het="grey50",
+           col.np="grey20",
+           xlab="physical position (Mb)",
+           ylab=expression(log[2]("R ratios")),
+           key=list(text=list(c(expression(log[2]("R ratios")), expression("B allele freqencies")),
+              col=c("grey", "blue")), columns=2))
+
+  }
 }
 \keyword{hplot}
 

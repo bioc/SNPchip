@@ -12,7 +12,7 @@
 ##  checkEquals(dataFrame, dataFrame2)
 ##}
 
-test_xyplot <- function(){
+.test_xyplot <- function(){
   library(oligoClasses)
   library(IRanges)
   library(VanillaICE)

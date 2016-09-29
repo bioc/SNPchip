@@ -68,9 +68,27 @@ R. Scharpf
   ## in a future release.  Instead, we favor
   ## RangedSummarizedExperiment-derived classes defined in VanillaICE
   oligoSet <- oligoSet[chromosome(oligoSet) == 1, ]
-  grl <- hmm(oligoSet, p.hom=0, TAUP=1e10, is.log=FALSE)
-  g <- grl[[1]]
-
+  cn <- copyNumber(oligoSet)/100
+  cn <- log2((2^cn)/2)
+  gt <- calls(oligoSet)[,]
+  ## simulate BAFs
+  bf <- rep(NA, length(gt))
+  u <- runif(length(gt))
+  bf[gt==1 & u > 0.5] <- runif(sum(gt==1 & u > 0.5), 0, 0.05)
+  bf[gt==1 & u <= 0.5] <- runif(sum(gt==1 & u <= 0.5), 0.95, 1)
+  bf[gt==2] <- runif(sum(gt==2), 0.45, 0.55)
+  bf[900:1200] <- runif(length(900:1200), 0, 0.03)
+  gr <- GRanges(paste0("chr", chromosome(featureData(oligoSet))),
+                IRanges(position(oligoSet), width=1))
+  cn <- as.matrix(cn)
+  bf <- as.matrix(bf)
+  dimnames(cn) <- dimnames(bf) <- list(featureNames(oligoSet), sampleNames(oligoSet))
+  se <- SnpArrayExperiment(cn=cn,
+                           baf=bf,
+                           rowRanges=gr,
+                           isSnp=rep(TRUE, length(gr)))
+  fit <- hmm2(se)
+  g <- as(segs(fit), "GRanges")
   ## To visualize each range in it's own panel surrounded by a
   ## frame of 2,000,000 bases:
   ## (here the frames are overlapping, but the method could be
