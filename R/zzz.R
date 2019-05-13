@@ -1,5 +1,9 @@
 THISPKG <- "SNPchip"
 .onAttach <- function(libname, pkgname) {
-	packageStartupMessage("Welcome to SNPchip version ", packageDescription(THISPKG, fields="Version"))
+        msg <- sprintf(
+        "Package '%s' is deprecated and will be removed from Bioconductor
+         version %s", pkgname, "3.11")
+        .Deprecated(msg=paste(strwrap(msg, exdent=2), collapse="\n"))
+       
 }
 .SNPchipPkgEnv <- new.env(parent=emptyenv())

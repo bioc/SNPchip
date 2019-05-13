@@ -1,5 +1,5 @@
 Package: SNPchip
-Version: 2.31.0
+Version: 2.31.1
 Title: Visualizations for copy number alterations
 Author: Robert Scharpf <rscharpf@jhu.edu> and Ingo Ruczinski
 Maintainer: Robert Scharpf <rscharpf@jhu.edu>
@@ -17,3 +17,4 @@ Collate: AllGenerics.R coerce-methods.R xyplot-methods.R
         annotation-functions.R zzz.R
 URL: http://www.biostat.jhsph.edu/~iruczins/software/snpchip.html
 biocViews: CopyNumberVariation, SNP, GeneticVariability, Visualization
+PackageStatus: Deprecated
